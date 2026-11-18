@@ -39,7 +39,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
     navigate("/login", { replace: true });
   }
 
-  const navBtn = "relative rounded-lg bg-transparent px-3 py-2.5 text-left font-medium text-stone-600 shadow-none hover:bg-stone-50 hover:text-ink";
+  const navBtn = "relative rounded bg-transparent px-3 py-2.5 text-left font-medium text-stone-600 shadow-none hover:bg-stone-50 hover:text-ink";
   const navOn = "bg-pink-soft font-semibold text-pink-dark hover:bg-pink-soft before:absolute before:inset-y-[20%] before:-left-4 before:w-0.75 before:rounded-r-sm before:bg-pink before:content-['']";
   const initials = String(user.full_name ?? "?").split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
 
@@ -51,7 +51,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9.5 flex-none place-items-center rounded-xl bg-linear-to-br from-pink to-pink/60 text-lg font-bold text-white shadow-md shadow-pink/30">E</span>
+            <span className="grid size-9.5 flex-none place-items-center rounded-md bg-pink text-lg font-bold text-white">E</span>
             <div className="leading-tight">
               <h2 className="m-0 text-[.95rem]">Eli&apos;s Yummy Kitchen</h2>
               <small className="text-xs text-mute">{title}</small>
@@ -72,7 +72,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
         </nav>
         <div className="grid gap-3 border-t border-line pt-4 text-sm">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-8.5 flex-none place-items-center rounded-full bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
+            <span className="grid size-8.5 flex-none place-items-center rounded-sm bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
             <div className="grid min-w-0 leading-snug">
               <strong className="truncate">{user.full_name}</strong>
               <span className="text-xs text-mute">{ROLE_LABEL[user.role] ?? user.role}{user.branch ? ` · ${user.branch}` : ""}</span>
@@ -82,8 +82,8 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
         </div>
       </aside>
       <div className="min-w-0 flex-1">
-        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-white/90 px-4 py-2 backdrop-blur md:px-8">
-          <button className="grid size-9 place-items-center rounded-lg bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink" aria-label="Toggle menu" aria-expanded={!collapsed} onClick={toggleSidebar}><Icon d={MENU} /></button>
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-white/90 px-4 py-2 md:px-8">
+          <button className="grid size-9 place-items-center rounded bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink" aria-label="Toggle menu" aria-expanded={!collapsed} onClick={toggleSidebar}><Icon d={MENU} /></button>
           <strong>{current.label}</strong>
           <span className="ml-auto text-xs text-mute">{title}</span>
         </header>

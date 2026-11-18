@@ -25,8 +25,8 @@
   h1 { @apply mb-4 text-2xl font-semibold tracking-tight max-md:text-xl; }
   h2 { @apply mb-3 text-lg font-semibold; }
   h3 { @apply mb-2 text-base font-semibold; }
-  button { @apply cursor-pointer rounded-lg bg-pink px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-pink-dark active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11; }
-  input, select, textarea { @apply w-full rounded-lg border border-line bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base; }
+  button { @apply cursor-pointer rounded bg-pink px-4 py-2.5 text-sm font-medium text-white  transition hover:bg-pink-dark active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11; }
+  input, select, textarea { @apply w-full rounded border border-line bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base; }
   textarea { @apply min-h-21 resize-y; }
   table { @apply w-full border-collapse; }
   th, td { @apply border-b border-line px-4 py-3 text-left tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5 max-md:text-sm; }

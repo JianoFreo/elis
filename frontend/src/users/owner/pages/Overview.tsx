@@ -18,7 +18,7 @@ export default function Overview() {
 
   return (
     <div className="grid gap-5">
-      <div className="rounded-xl border border-line bg-white shadow-sm border-pink/20 bg-linear-to-br from-pink-soft to-white p-6 [&_h2]:text-2xl grid gap-5">
+      <div className="rounded-md border border-line bg-white  border-pink/20 bg-pink-soft p-6 [&_h2]:text-2xl grid gap-5">
         <div>
           <h2>Welcome back, {first}!</h2>
           <p className="text-mute" style={{ margin: 0 }}>{fmtDate(data.date)} · All branches</p>
@@ -37,14 +37,14 @@ export default function Overview() {
       </Stats>
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
-        <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4">
+        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4">
           <div className="flex flex-wrap items-center justify-between gap-4"><h2>Sales this week</h2><span className="text-mute">{peso(weekTotal)}</span></div>
           <BarChart data={data.week} />
         </div>
-        <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
+        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
           <h2>Today's priorities</h2>
           {data.priorities.length === 0 && <Notice tone="ok">All clear. No open flags or low supplies.</Notice>}
-          <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-xl [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">
+          <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-md [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">
             {data.priorities.map((p) => (
               <li key={p.ref}>
                 <span>{p.text}</span>

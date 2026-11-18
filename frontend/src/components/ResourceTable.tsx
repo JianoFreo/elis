@@ -25,7 +25,7 @@ export default function ResourceTable<T>({
       {error && <p className="m-0 text-danger">{error}</p>}
       {!rows && !error && <p className="text-mute">Loading...</p>}
       {rows && (
-        <div className="overflow-x-auto rounded-xl border border-line bg-white shadow-sm"><table>
+        <div className="overflow-x-auto rounded-md border border-line bg-white "><table>
           <thead>
             <tr>{columns.map((c) => <th key={c.header}>{c.header}</th>)}</tr>
           </thead>

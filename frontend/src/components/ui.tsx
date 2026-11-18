@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { shortDay } from "../lib/format";
 
-const CARD = "rounded-xl border border-line bg-white shadow-sm";
+const CARD = "rounded-md border border-line bg-white ";
 
 export type Tone = "ok" | "warn" | "bad" | "info" | "muted";
 
@@ -29,7 +29,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 
 export function StatCard({ label, value, hint, tone }: { label: string; value: React.ReactNode; hint?: string; tone?: Tone }) {
   return (
-    <div className={`${CARD} grid gap-1 px-5 py-4 transition-shadow hover:shadow-md`}>
+    <div className={`${CARD} grid gap-1 px-5 py-4`}>
       <span className="text-xs font-semibold uppercase tracking-wider text-mute">{label}</span>
       <strong className={`text-[1.6rem] font-semibold tracking-tight tabular-nums max-md:text-xl ${tone ? VALUE[tone] : ""}`}>{value}</strong>
       {hint && <span className="text-xs text-mute">{hint}</span>}
@@ -40,11 +40,11 @@ export function StatCard({ label, value, hint, tone }: { label: string; value: R
 export const Stats = ({ children }: { children: React.ReactNode }) => <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4 max-md:grid-cols-2 max-md:gap-2.5">{children}</div>;
 
 export function Badge({ tone = "muted", children }: { tone?: Tone; children: React.ReactNode }) {
-  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-full before:bg-current before:opacity-80 before:content-[''] ${BADGE[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm px-2.5 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-sm before:bg-current before:opacity-80 before:content-[''] ${BADGE[tone]}`}>{children}</span>;
 }
 
 export function Notice({ tone = "info", children }: { tone?: Tone; children: React.ReactNode }) {
-  return <div className={`rounded-xl border px-4 py-3 text-sm ${NOTICE[tone]}`}>{children}</div>;
+  return <div className={`rounded-md border px-4 py-3 text-sm ${NOTICE[tone]}`}>{children}</div>;
 }
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
@@ -68,8 +68,8 @@ export function Modal({
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/50 p-4 backdrop-blur-sm" onMouseDown={onClose}>
-      <div className={`${CARD} max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-2xl p-6 shadow-2xl max-md:max-h-[96vh] max-md:p-4`} role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/50 p-4" onMouseDown={onClose}>
+      <div className={`${CARD} max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-md p-6 shadow-lg max-md:max-h-[96vh] max-md:p-4`} role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
         <h2>{title}</h2>
         <div className="mb-5 grid gap-4">{children}</div>
         {footer && <div className="flex flex-wrap justify-end gap-2 max-md:flex-col-reverse max-md:[&>button]:w-full">{footer}</div>}
@@ -104,15 +104,15 @@ export function Loading({ loading, error }: { loading: boolean; error: string })
 }
 
 export function Progress({ value, tone = "info" }: { value: number; tone?: Tone }) {
-  return <div className="h-2 overflow-hidden rounded-full bg-stone-100"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
+  return <div className="h-2 overflow-hidden rounded-sm bg-stone-100"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
 export function Steps({ current, steps }: { current: number; steps: string[] }) {
   return (
     <ol className="m-0 flex list-none gap-2 overflow-x-auto p-0 md:flex-wrap">
       {steps.map((s, i) => (
-        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-stone-100 text-mute"}`}>
-          <span className="grid size-5.5 place-items-center rounded-full bg-white text-xs font-bold">{i + 1}</span> {s}
+        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-stone-100 text-mute"}`}>
+          <span className="grid size-5.5 place-items-center rounded-sm bg-white text-xs font-bold">{i + 1}</span> {s}
         </li>
       ))}
     </ol>
@@ -126,7 +126,7 @@ export function BarChart({ data }: { data: { day: string; total: number }[] }) {
       {data.map((d, i) => (
         <div key={d.day} className="group flex h-full flex-1 flex-col items-center justify-end gap-1 text-xs">
           <span className="text-[.7rem] text-mute">{Math.round(d.total).toLocaleString()}</span>
-          <div className={`min-h-0.75 w-full max-w-11 rounded-t-md transition-colors ${i === data.length - 1 ? "bg-pink" : "bg-pink/30 group-hover:bg-pink/50"}`} style={{ height: `${(d.total / max) * 100}%` }} />
+          <div className={`min-h-0.75 w-full max-w-11 rounded-t-sm transition-colors ${i === data.length - 1 ? "bg-pink" : "bg-pink/30 group-hover:bg-pink/50"}`} style={{ height: `${(d.total / max) * 100}%` }} />
           <span className="text-mute">{shortDay(d.day)}</span>
         </div>
       ))}

@@ -27,7 +27,7 @@ export default function Queue() {
         subtitle="Local-device sales waiting to sync. Pending records stay separate until synchronization succeeds."
         actions={<button disabled={busy || data.queue.length === 0} onClick={sync}>{busy ? "Syncing..." : "Sync queued transactions"}</button>}
       />
-      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
+      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
         <div className="flex flex-wrap items-center justify-between gap-4"><strong>Queue synchronization</strong><span className="text-mute">{data.queue.length} pending</span></div>
         <Progress value={data.queue.length === 0 ? 100 : 0} tone={data.queue.length === 0 ? "ok" : "info"} />
         {data.queue.length === 0

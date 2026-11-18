@@ -97,7 +97,7 @@ function AuditDetail({ code }: { code: string }) {
           <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("audits")}>All audits</button>
         </>}
       />
-      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
+      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
         <div className="flex flex-wrap items-center justify-between gap-4"><strong>{signedOff ? "Week signed off" : summary.ready ? "Ready for weekly sign-off" : "Weekly review readiness"}</strong><span>{summary.confirmed} / {summary.total}</span></div>
         <Progress value={pct} tone={summary.ready ? "ok" : "info"} />
         {signedOff

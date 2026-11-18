@@ -71,7 +71,7 @@ export default function Closing() {
       <Steps current={step} steps={["Review sales", "Count stock", "Submit closing"]} />
 
       {step === 2 && (
-        <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-4">
+        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-4">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
             {rows.map((r) => (
               <Field key={r.product_code} label={`${r.name} · expected ${r.expected}`}>

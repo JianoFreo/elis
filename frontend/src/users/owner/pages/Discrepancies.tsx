@@ -88,7 +88,7 @@ function DiscrepancyDetail({ code }: { code: string }) {
         <StatCard label="Variance" value={`${signed(d.variance)} units`} tone="warn" hint={isCount ? "Below expected" : "Actual minus dispatched"} />
       </Stats>
 
-      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
+      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
         <h2>Evidence &amp; notes</h2>
         {d.note && <p>{isCount ? "Closing note" : "Delivery note"}: “{d.note}”</p>}
         {isCount && <p className="text-mute">Source record: daily closing {d.source_ref}</p>}

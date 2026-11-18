@@ -37,7 +37,7 @@ export default function RecordSale() {
     <div className="grid gap-5">
       <PageHeader title="Record a sale" subtitle="Capture the product and quantity. A confirmed sale reduces the branch stock ledger." />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
-        <form className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-4" onSubmit={(e) => { e.preventDefault(); confirm(); }}>
+        <form className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-4" onSubmit={(e) => { e.preventDefault(); confirm(); }}>
           <h2>Sale details</h2>
           <Field label="Product">
             <select value={product?.product_code ?? ""} onChange={(e) => setCode(e.target.value)}>
@@ -60,7 +60,7 @@ export default function RecordSale() {
           </div>
         </form>
 
-        <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
+        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
           <h2>Transaction preview</h2>
           <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2">
             <dt>Product</dt><dd>{product?.name ?? "-"}</dd>

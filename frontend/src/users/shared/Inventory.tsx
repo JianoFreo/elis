@@ -178,7 +178,7 @@ function ProductDetail({ code }: { code: string }) {
         <StatCard label="On hand" value={`${data.on_hand} units`} hint={`Threshold: ${p.threshold} units`} tone={data.on_hand <= p.threshold ? "warn" : undefined} />
         <StatCard label="Best before" value={fmtDate(data.batch?.best_before)} hint={data.batch ? `batch ${data.batch.batch_no}` : undefined} />
       </Stats>
-      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4"><h2>Product information</h2><p>{p.description ?? "No description."} Quantity is tracked per product, batch and location.</p></div>
+      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4"><h2>Product information</h2><p>{p.description ?? "No description."} Quantity is tracked per product, batch and location.</p></div>
       <div>
         <h2>Ledger movements</h2>
         <DataTable

@@ -111,7 +111,7 @@ export default function Users() {
       >
         <p className="text-mute">Preset role permissions · {form.first} {form.surname} · {ROLE_LABEL[form.role]} · {location}</p>
         {perms.data
-          ? <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-xl [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">{perms.data.permissions.map((p) => <li key={p.capability}><span>{p.capability}</span><Badge tone={p.allowed ? "ok" : "muted"}>{p.allowed ? "Allowed" : "Owner only / not assigned"}</Badge></li>)}</ul>
+          ? <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-md [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">{perms.data.permissions.map((p) => <li key={p.capability}><span>{p.capability}</span><Badge tone={p.allowed ? "ok" : "muted"}>{p.allowed ? "Allowed" : "Owner only / not assigned"}</Badge></li>)}</ul>
           : <p className="text-mute">Loading...</p>}
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
