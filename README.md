@@ -1,10 +1,6 @@
 # SAD Group 3 - Eli's Yummy Kitchen Inventory & Sales System
 
-Systems Analysis and Design (SAD) group project, BS Information Systems, TUP Manila.
 
-Live frontend demo: https://tupcossad.netlify.app
-
-**Phase 4 deadline: Monday, November 23, 2026, 1:00 PM** (target: submit by 11:00 AM).
 
 ## Overview
 A web-based system that tracks sales, product stock, dispatches to branches, raw materials, discrepancies, weekly audits, staff accounts, and reports for Eli's Yummy Kitchen.

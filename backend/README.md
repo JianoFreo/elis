@@ -5,7 +5,8 @@
 cp .env.example .env     # set DATABASE_URL and JWT_SECRET
 npm install
 npm run dev              # creates any missing tables on boot, http://localhost:5000
-npm run seed             # starter branches, products, materials (safe to re-run)
+npm run seed             # master data + a year of operating history (06 Oct 2025 - 08 Nov 2026); safe to re-run
+npm run seed:reset       # wipe the operating history and load it again (accounts/products/materials are kept)
 ADMIN_USERNAME=owner ADMIN_PASSWORD='<strong>' npm run admin:create
 ```
 
@@ -25,7 +26,7 @@ src/
   middlewares/         auth, role (requireRole factory)
   routes/              auth, owner, sales, production  (guards always on)
   controllers/<role>/  getRequests / postRequests / updateRequests / deleteRequests + dto/*.dto.ts
-  scripts/             seed.ts, createOwner.ts
+  scripts/             seed.ts (+ seedPlan.ts builds the history, seedOperations.ts inserts it), createOwner.ts
   utils/               activityLogger.ts
   types/express.d.ts   req.user typing
 ```
@@ -42,3 +43,9 @@ src/
 - No `NODE_ENV` branching for security. Auth is the same everywhere.
 - Never return `password_hash`.
 - Multi-step writes: prefer one CTE statement; use `pool.connect()` + `BEGIN/COMMIT` only when step N depends on app logic from step N-1.
+
+## Demo data
+`npm run seed` creates six demo accounts (`juan.delacruz` owner, `ana.reyes` / `paolo.garcia` / `liza.mendoza` sales staff,
+`marco.santos` production head, `rica.cruz` production staff), all with password `Eli2026!demo` (override with `SEED_PASSWORD`).
+The history ends on **08 Nov 2026**, so set `BUSINESS_DATE=2026-11-08` in `.env` for the dashboards to treat that day as "today".
+Leave it empty in production and "today" is the real Philippine date.

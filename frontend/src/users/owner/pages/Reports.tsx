@@ -1,0 +1,95 @@
+import { useState } from "react";
+import { Badge, DataTable, Field, Loading, Modal, PageHeader, StatCard, Stats } from "../../../components/ui";
+import { useGo } from "../../../lib/nav";
+import { downloadCsv, useApi } from "../../../lib/useApi";
+import { fmtDate } from "../../../lib/format";
+
+type Kind = "daily" | "stock" | "dispatch" | "supply";
+interface Report { title: string; date: string; summary: Record<string, unknown>; rows: Record<string, unknown>[] }
+
+const CARDS: { kind: Kind; title: string; text: string }[] = [
+  { kind: "daily", title: "Daily sales & closing", text: "Sales quantity, totals, expected stock, physical counts and closing status." },
+  { kind: "stock", title: "Stock & reconciliation", text: "Product quantities, batch best-before dates and restock exceptions." },
+  { kind: "dispatch", title: "Dispatch status", text: "Dispatched versus received quantities and unresolved delivery alerts." },
+  { kind: "supply", title: "Supply usage & restock", text: "Material opening, received, used and remaining against thresholds." },
+];
+const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Manila" }).format(new Date());
+const label = (k: string) => k.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase());
+
+export default function Reports() {
+  const [scope, setScope] = useState<{ kind: Kind; date: string; branch_id: string } | null>(null);
+  const [open, setOpen] = useState<Kind | null>(null);
+  const [date, setDate] = useState("");
+  const [branch, setBranch] = useState("");
+  const branches = useApi<{ branches: { id: number; name: string; kind: string }[] }>("/api/shared/branches");
+  const { go } = useGo();
+  const selling = branches.data?.branches.filter((b) => b.kind === "branch") ?? [];
+
+  if (scope) return <ReportView scope={scope} back={() => setScope(null)} />;
+
+  return (
+    <div className="stack">
+      <PageHeader title="Reports, with the full picture." subtitle="Owner reporting workspace" />
+      <div className="cols">
+        {CARDS.map((c) => (
+          <div key={c.kind} className="card panel stack">
+            <h2>{c.title}</h2>
+            <p className="muted">{c.text}</p>
+            <div><button onClick={() => { setOpen(c.kind); setDate(today()); setBranch(String(selling[0]?.id ?? "")); }}>Open report</button></div>
+          </div>
+        ))}
+        <div className="card panel stack">
+          <h2>Weekly audit</h2>
+          <p className="muted">Confirmed summaries, branch stock status, exceptions and owner sign-off.</p>
+          <div><button onClick={() => go("audits")}>Open weekly audit</button></div>
+        </div>
+      </div>
+
+      <Modal
+        open={!!open} onClose={() => setOpen(null)} title="Choose report scope"
+        footer={<><button className="secondary" onClick={() => setOpen(null)}>Cancel</button>
+          <button disabled={!date || (open === "daily" && !branch)} onClick={() => { setScope({ kind: open!, date, branch_id: branch }); setOpen(null); }}>View report</button></>}
+      >
+        <p className="muted">Select the daily view for the report you want to inspect.</p>
+        <Field label="Report date"><input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        {open === "daily" && (
+          <Field label="Branch"><select value={branch} onChange={(e) => setBranch(e.target.value)}>{selling.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select></Field>
+        )}
+      </Modal>
+    </div>
+  );
+}
+
+function ReportView({ scope, back }: { scope: { kind: Kind; date: string; branch_id: string }; back: () => void }) {
+  const params = { date: scope.date, branch_id: scope.kind === "daily" ? scope.branch_id : undefined };
+  const { data, error, loading } = useApi<Report>(`/api/owner/reports/${scope.kind}`, params);
+  const [busy, setBusy] = useState(false);
+  if (!data) return <div className="stack"><button className="secondary" onClick={back}>Back to reports</button><Loading loading={loading} error={error} /></div>;
+  const cols = data.rows[0] ? Object.keys(data.rows[0]) : [];
+
+  return (
+    <div className="stack">
+      <PageHeader
+        title={data.title}
+        subtitle={fmtDate(data.date)}
+        actions={<>
+          <button disabled={busy} onClick={async () => { setBusy(true); try { await downloadCsv(`/api/owner/reports/${scope.kind}`, params, `${scope.kind}-${data.date}`); } finally { setBusy(false); } }}>Export CSV</button>
+          <button className="secondary" onClick={back}>Back to reports</button>
+        </>}
+      />
+      <Stats>
+        {Object.entries(data.summary).map(([k, v]) => (
+          <StatCard key={k} label={label(k)} value={typeof v === "number" ? v.toLocaleString() : String(v ?? "-")} />
+        ))}
+      </Stats>
+      <DataTable
+        rows={data.rows}
+        empty="No records for this date."
+        cols={cols.map((c) => ({
+          header: c,
+          render: (r: Record<string, unknown>) => (c === "Status" ? <Badge tone={/low|review|flag/i.test(String(r[c])) ? "warn" : "ok"}>{String(r[c])}</Badge> : String(r[c] ?? "")),
+        }))}
+      />
+    </div>
+  );
+}
