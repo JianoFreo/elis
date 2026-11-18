@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --pink: #e0457b;
   --pink-dark: #c2336a;

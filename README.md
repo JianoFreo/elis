@@ -12,7 +12,7 @@ A web-based system that tracks sales, product stock, dispatches to branches, raw
 ## Repository structure
 | Folder | Contents | Owner |
 | --- | --- | --- |
-| `frontend/` | React + Vite app (login, role shells). Original 53-screen static demo is in `frontend/legacy-demo/` | Developers |
+| `frontend/` | React + Vite + Tailwind app (login, role shells, role pages) | Developers |
 | `backend/` | Express + TypeScript API on Postgres (Neon) | Developers |
 | `docs/` | Diagrams, user manual, technical docs, final document | Documentation Specialist |
 | `tests/` | Test plan, test cases, test results, bug log | Tester / QA |
@@ -51,9 +51,6 @@ Each developer owns their modules and files so we avoid merge conflicts.
 3. Production build: from the repo root, `npm run build` then `npm start` (one service serves API and frontend). `render.yaml` is included.
 
 Roles: `owner`, `sales-staff`, `production-head`, `production-staff`. See `backend/README.md`.
-
-The old static demo still opens from `frontend/legacy-demo/dist/index.html` (see `frontend/legacy-demo/README.md`).
-
 ## Git workflow (all members)
 1. Never commit directly to `main`.
 2. Create a branch per task: `feature/<short-name>`, `docs/<short-name>`, `test/<short-name>`.

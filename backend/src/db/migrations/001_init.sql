@@ -53,6 +53,28 @@ CREATE TABLE IF NOT EXISTS materials (
   active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
+CREATE TABLE IF NOT EXISTS actions (
+  action_id SERIAL PRIMARY KEY,
+  action_name TEXT NOT NULL UNIQUE,
+  module TEXT,
+  is_sensitive BOOLEAN NOT NULL DEFAULT FALSE
+);
+INSERT INTO actions (action_name, module, is_sensitive) VALUES
+  ('user.create','users',FALSE), ('user.activate','users',TRUE), ('user.deactivate','users',TRUE),
+  ('product.update','products',FALSE), ('material.update','materials',FALSE)
+ON CONFLICT (action_name) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS activity_logs (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT REFERENCES users(user_id),
+  action_id INT REFERENCES actions(action_id),
+  status TEXT NOT NULL CHECK (status IN ('success','failure','blocked')),
+  target_type TEXT,
+  target_id TEXT,
+  metadata JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 INSERT INTO branches (name, kind) VALUES
   ('Main hub','hub'), ('Main Street','branch'), ('Market Road','branch'), ('Town Center','branch')
 ON CONFLICT (name) DO NOTHING;
