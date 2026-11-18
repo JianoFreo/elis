@@ -10,7 +10,7 @@ The frontend (53 screens) has been committed to the repository and runs as a dem
 
 ## 2. Completed
 - Frontend: 53 screens recreated from the Figma export (committed Nov 17, 2026).
-- Frontend self-verification notes (`Frontend/VERIFICATION.md`).
+- Frontend app in `frontend/` (React + Vite).
 
 ## 3. In progress
 _Fill in per member before sending._
