@@ -3,6 +3,12 @@ import { useNavigate, useSearchParams } from "react-router";
 import { api } from "../lib/axios";
 import { ROLE_LABEL } from "../lib/roles";
 
+const Icon = ({ d }: { d: string }) => (
+  <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>
+);
+const MENU = "M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9 4v16";
+const CLOSE = "M6 6l12 12M18 6L6 18";
+
 export interface NavItem {
   key: string;
   label: string;
@@ -51,7 +57,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
               <small className="text-xs text-mute">{title}</small>
             </div>
           </div>
-          <button className="hidden border border-line bg-white px-3 py-1.5 text-xl leading-none text-ink shadow-none hover:bg-stone-50 max-md:block" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
+          <button className="hidden size-9 place-items-center bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink max-md:grid" aria-label="Close menu" onClick={() => setOpen(false)}><Icon d={CLOSE} /></button>
         </div>
         <nav className="grid flex-1 content-start gap-0.5">
           {items.map((i) => (
@@ -77,7 +83,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
       </aside>
       <div className="min-w-0 flex-1">
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-white/90 px-4 py-2 backdrop-blur md:px-8">
-          <button className="border border-line bg-white px-3 py-1.5 text-xl leading-none text-ink shadow-none hover:bg-stone-50" aria-label="Toggle menu" aria-expanded={!collapsed} onClick={toggleSidebar}>☰</button>
+          <button className="grid size-9 place-items-center rounded-lg bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink" aria-label="Toggle menu" aria-expanded={!collapsed} onClick={toggleSidebar}><Icon d={MENU} /></button>
           <strong>{current.label}</strong>
           <span className="ml-auto text-xs text-mute">{title}</span>
         </header>
