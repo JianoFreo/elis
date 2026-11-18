@@ -31,6 +31,20 @@ const SEQUENCES = [
   "discrepancy_code_seq",
 ];
 
+// Indexes for the queries that scan the ledger, sales and usage history.
+const INDEXES = [
+  "CREATE INDEX IF NOT EXISTS idx_stock_ledger_loc_product ON stock_ledger (branch_id, product_id)",
+  "CREATE INDEX IF NOT EXISTS idx_stock_ledger_ref ON stock_ledger (reference)",
+  "CREATE INDEX IF NOT EXISTS idx_sales_branch_sold ON sales (branch_id, sold_at)",
+  "CREATE INDEX IF NOT EXISTS idx_sales_status ON sales (status)",
+  "CREATE INDEX IF NOT EXISTS idx_closings_branch_date ON daily_closings (branch_id, closing_date)",
+  "CREATE INDEX IF NOT EXISTS idx_dispatches_status ON dispatches (status, dispatched_at)",
+  "CREATE INDEX IF NOT EXISTS idx_discrepancies_status ON discrepancies (status)",
+  "CREATE INDEX IF NOT EXISTS idx_discrepancies_source ON discrepancies (source_ref)",
+  "CREATE INDEX IF NOT EXISTS idx_usage_date ON material_usage (usage_date, material_id)",
+  "CREATE INDEX IF NOT EXISTS idx_batches_product ON product_batches (product_id, id)",
+];
+
 const TABLES: TableDefinition[] = [
   {
     // 'hub' = central kitchen (Main hub), 'branch' = selling branch
@@ -393,6 +407,7 @@ async function createTables(): Promise<void> {
         sql.query(`CREATE SEQUENCE IF NOT EXISTS ${quoteIdentifier(seq)}`),
       ),
       ...TABLES.map((table) => sql.query(generateCreateTableSQL(table))),
+      ...INDEXES.map((ddl) => sql.query(ddl)),
     ]);
 
     console.log("Database initialized successfully");

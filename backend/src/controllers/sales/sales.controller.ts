@@ -15,18 +15,18 @@ export interface Position {
 }
 
 export async function productPosition(branchId: number, date: string): Promise<Position[]> {
-  const rows = await sql`
+  const [rows, counts] = await Promise.all([sql`
     SELECT p.product_code, p.name, p.price::float AS price,
            COALESCE((SELECT SUM(quantity) FROM stock_ledger l WHERE l.branch_id = ${branchId} AND l.product_id = p.id), 0)::int AS expected,
            COALESCE((SELECT SUM(quantity) FROM sales s WHERE s.branch_id = ${branchId} AND s.product_id = p.id
                       AND s.status = 'synced' AND (s.sold_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date), 0)::int AS sold
-      FROM products p WHERE p.active ORDER BY p.product_code`;
-  const counts = await sql`
+      FROM products p WHERE p.active ORDER BY p.product_code`,
+  sql`
     SELECT p.product_code, ci.physical
       FROM closing_items ci
       JOIN daily_closings dc ON dc.id = ci.closing_id
       JOIN products p ON p.id = ci.product_id
-     WHERE dc.branch_id = ${branchId} AND dc.closing_date = ${date}::date`;
+     WHERE dc.branch_id = ${branchId} AND dc.closing_date = ${date}::date`]);
   const physical = new Map(counts.map((c) => [c.product_code, c.physical as number]));
   return rows.map((r) => ({
     product_code: r.product_code as string,
@@ -47,23 +47,23 @@ async function closingFor(branchId: number, date: string) {
 export async function workspace(req: Request, res: Response) {
   const branchId = branchOf(req);
   const date = bizDate();
-  const [branch] = await sql`SELECT name FROM branches WHERE id = ${branchId}`;
+  const [[branch], [tot], [q], position, closing, recent] = await Promise.all([
+    sql`SELECT name FROM branches WHERE id = ${branchId}`,
+    sql`SELECT COALESCE(SUM(line_total),0)::float AS total, COALESCE(SUM(quantity),0)::int AS items
+          FROM sales WHERE branch_id = ${branchId} AND status = 'synced' AND (sold_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date`,
+    sql`SELECT COUNT(*)::int AS n FROM sales WHERE branch_id = ${branchId} AND status = 'queued'`,
+    productPosition(branchId, date),
+    closingFor(branchId, date),
+    sql`SELECT s.txn_code, s.local_ref, s.sold_at, p.name AS product, s.quantity, s.line_total::float AS line_total, s.status
+          FROM sales s JOIN products p ON p.id = s.product_id
+         WHERE s.branch_id = ${branchId} AND (s.sold_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date
+         ORDER BY s.sold_at DESC, s.id DESC LIMIT 12`,
+  ]);
   if (!branch) throw notFound("Branch not found");
-  const [tot] = await sql`
-    SELECT COALESCE(SUM(line_total),0)::float AS total, COALESCE(SUM(quantity),0)::int AS items
-      FROM sales WHERE branch_id = ${branchId} AND status = 'synced' AND (sold_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date`;
-  const [q] = await sql`SELECT COUNT(*)::int AS n FROM sales WHERE branch_id = ${branchId} AND status = 'queued'`;
-  const position = await productPosition(branchId, date);
-  const closing = await closingFor(branchId, date);
   // 1 = review sales, 2 = count stock, 3 = submit closing
   const step = closing && closing.status !== "open" ? 3 : position.some((p) => p.counted !== null) ? 2 : 1;
-  const recent = await sql`
-    SELECT s.txn_code, s.local_ref, s.sold_at, p.name AS product, s.quantity, s.line_total::float AS line_total, s.status
-      FROM sales s JOIN products p ON p.id = s.product_id
-     WHERE s.branch_id = ${branchId} AND (s.sold_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date
-     ORDER BY s.sold_at DESC, s.id DESC LIMIT 12`;
   res.json({
-    branch: branch.name, branch_id: branchId, date, shift: "Morning Â· 08:00â€“16:00",
+    branch: branch.name, branch_id: branchId, date, shift: "Morning · 08:00–16:00",
     sales_total: tot.total, items_sold: tot.items, queued: q.n,
     expected_on_hand: position.reduce((s, p) => s + p.expected, 0),
     closing, step, products: position, recent,
@@ -183,7 +183,7 @@ export async function submitClosing(req: Request, res: Response) {
     const flagged = lines.filter((l) => l.physical !== l.p.expected);
     if (flagged.length && !String(note ?? "").trim()) throw bad("A reason / supporting note is required when counts differ");
 
-    const code = existing?.close_code ?? `CLOSE-${date.slice(5, 7)}${date.slice(8)}-B${branchId}`;
+    const code = existing?.close_code ?? `CLOSE-${date.slice(2, 4)}${date.slice(5, 7)}${date.slice(8)}-B${branchId}`;
     let closingId: number;
     if (existing) {
       closingId = existing.id;

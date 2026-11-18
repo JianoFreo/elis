@@ -61,8 +61,8 @@ export async function listUsage(req: Request, res: Response) {
 
 // Alerts: at/below the restock threshold, or >= 95% of the shift's available supply consumed.
 export async function supplyAlerts() {
-  const low = (await materialRows()).filter((m) => m.status === "Low stock");
-  const usage = await usageRecords(bizDate());
+  const [materials, usage] = await Promise.all([materialRows(), usageRecords(bizDate())]);
+  const low = materials.filter((m) => m.status === "Low stock");
   const near = usage
     .filter((u) => u.closing !== null && u.opening + u.received > 0 && (u.used ?? 0) / (u.opening + u.received) >= 0.95)
     .map((u) => ({ ...u, pct: Math.round(((u.used ?? 0) / (u.opening + u.received)) * 100) }));
@@ -138,7 +138,7 @@ export async function logOpening(req: Request, res: Response) {
     const m = (await c.query(`SELECT id, material_code FROM materials WHERE material_code = $1`, [material_code])).rows[0];
     if (!m) throw notFound("Material not found");
     const hub = await hubId(c);
-    const ref = `OPEN-${date.slice(5, 7)}${date.slice(8)}-${m.material_code}`;
+    const ref = `OPEN-${date.slice(2, 4)}${date.slice(5, 7)}${date.slice(8)}-${m.material_code}`;
     const dup = await c.query(`SELECT 1 FROM material_usage WHERE record_ref = $1`, [ref]);
     if (dup.rowCount) throw conflict("Opening inventory for this material was already logged today");
     // deliveries already received today are part of the physical opening count

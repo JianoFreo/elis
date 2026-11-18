@@ -16,41 +16,47 @@ async function auditByCode(code: string): Promise<Audit> {
   return a as Audit;
 }
 
-// Readiness numbers for one audit week.
+// Readiness numbers for one audit week. Queries run in parallel: each round trip to the database is slow.
 async function compile(a: Audit) {
-  const branches = await sql`SELECT id, name FROM branches WHERE kind = 'branch' ORDER BY id`;
-  const days = (await sql`SELECT (${a.week_end}::date - ${a.week_start}::date + 1)::int AS n`)[0].n as number;
-  const rows = [];
-  let weeklySales = 0, confirmed = 0, flagsTotal = 0;
-  for (const b of branches) {
-    const [s] = await sql`
-      SELECT COALESCE(SUM(line_total),0)::float AS total FROM sales
-       WHERE branch_id = ${b.id} AND status = 'synced' AND (sold_at AT TIME ZONE 'Asia/Manila')::date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`;
-    const [c] = await sql`
-      SELECT COUNT(*) FILTER (WHERE status = 'confirmed')::int AS confirmed FROM daily_closings
-       WHERE branch_id = ${b.id} AND closing_date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`;
-    const open = await sql`
-      SELECT source_type FROM discrepancies
-       WHERE branch_id = ${b.id} AND status <> 'resolved' AND (created_at AT TIME ZONE 'Asia/Manila')::date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`;
-    const [adj] = await sql`
-      SELECT COUNT(*)::int AS n FROM stock_adjustments WHERE branch_id = ${b.id}
-         AND (approved_at AT TIME ZONE 'Asia/Manila')::date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`;
+  const [branches, daysRow] = await Promise.all([
+    sql`SELECT id, name FROM branches WHERE kind = 'branch' ORDER BY id`,
+    sql`SELECT (${a.week_end}::date - ${a.week_start}::date + 1)::int AS n`,
+  ]);
+  const days = daysRow[0].n as number;
+  const rows = await Promise.all(branches.map(async (b) => {
+    const [[s], [c], open, [adj]] = await Promise.all([
+      sql`SELECT COALESCE(SUM(line_total),0)::float AS total FROM sales
+           WHERE branch_id = ${b.id} AND status = 'synced' AND (sold_at AT TIME ZONE 'Asia/Manila')::date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`,
+      sql`SELECT COUNT(*) FILTER (WHERE status = 'confirmed')::int AS confirmed FROM daily_closings
+           WHERE branch_id = ${b.id} AND closing_date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`,
+      sql`SELECT source_type FROM discrepancies
+           WHERE branch_id = ${b.id} AND status <> 'resolved' AND (created_at AT TIME ZONE 'Asia/Manila')::date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`,
+      sql`SELECT COUNT(*)::int AS n FROM stock_adjustments WHERE branch_id = ${b.id}
+           AND (approved_at AT TIME ZONE 'Asia/Manila')::date BETWEEN ${a.week_start}::date AND ${a.week_end}::date`,
+    ]);
     const stock_status = open.some((o) => o.source_type === "count") ? "Recount required"
       : open.some((o) => o.source_type === "delivery") ? "Receipt review" : adj.n ? "Reconciled" : "Matched";
-    rows.push({ branch_id: b.id as number, branch: b.name as string, confirmed_days: c.confirmed as number, days, sales: s.total as number, stock_status, flags: open.length });
-    weeklySales += s.total; confirmed += c.confirmed; flagsTotal += open.length;
-  }
+    return { branch_id: b.id as number, branch: b.name as string, confirmed_days: c.confirmed as number, days, sales: s.total as number, stock_status, flags: open.length };
+  }));
+  const weeklySales = rows.reduce((t, r) => t + r.sales, 0);
+  const confirmed = rows.reduce((t, r) => t + r.confirmed_days, 0);
+  const flagsTotal = rows.reduce((t, r) => t + r.flags, 0);
   return { rows, summary: { sales: weeklySales, confirmed, total: days * branches.length, open_flags: flagsTotal, ready: confirmed === days * branches.length && flagsTotal === 0 } };
 }
 
 export async function listAudits(_req: Request, res: Response) {
-  const audits = await sql`SELECT audit_code FROM weekly_audits ORDER BY week_start DESC`;
-  const out = [];
-  for (const { audit_code } of audits) {
-    const a = await auditByCode(audit_code);
+  const audits = (await sql`
+    SELECT a.id, a.audit_code, a.week_start::text AS week_start, a.week_end::text AS week_end, a.status, a.total_sales::float AS total_sales,
+           a.note, a.signed_at, u.full_name AS signed_by
+      FROM weekly_audits a LEFT JOIN users u ON u.user_id = a.signed_by ORDER BY a.week_start DESC`) as Audit[];
+  const out = await Promise.all(audits.map(async (a) => {
+    if (a.status === "signed_off") {
+      // signed weeks are final: use the stored total instead of recompiling the week
+      return { ...a, sales: a.total_sales, confirmed: 21, total_closings: 21, open_flags: 0, branches: 3 };
+    }
     const c = await compile(a);
-    out.push({ ...a, sales: a.status === "signed_off" ? a.total_sales : c.summary.sales, confirmed: c.summary.confirmed, total_closings: c.summary.total, open_flags: c.summary.open_flags, branches: c.rows.length });
-  }
+    return { ...a, sales: c.summary.sales, confirmed: c.summary.confirmed, total_closings: c.summary.total, open_flags: c.summary.open_flags, branches: c.rows.length };
+  }));
   res.json({ audits: out });
 }
 

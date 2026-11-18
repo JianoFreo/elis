@@ -42,10 +42,10 @@ export function splitTotal(total: number): Record<ProductName, number> {
 
 // Main Street, 08 Nov: individual transactions (68 items sold). Last empanada sale is the 3-unit one at 11:45.
 export const MAIN_STREET_NOV8: { product: ProductName; qty: number; time: string }[] = [
-  { product: "Chicken empanada", qty: 8, time: "09:10" },
-  { product: "Chicken empanada", qty: 5, time: "09:50" },
-  { product: "Chicken empanada", qty: 4, time: "10:40" },
-  { product: "Chicken empanada", qty: 3, time: "11:15" },
+  { product: "Chicken empanada", qty: 8, time: "10:35" },
+  { product: "Chicken empanada", qty: 5, time: "10:50" },
+  { product: "Chicken empanada", qty: 4, time: "11:10" },
+  { product: "Chicken empanada", qty: 3, time: "11:25" },
   { product: "Cheese roll", qty: 10, time: "09:20" },
   { product: "Cheese roll", qty: 8, time: "10:05" },
   { product: "Cheese roll", qty: 7, time: "10:55" },

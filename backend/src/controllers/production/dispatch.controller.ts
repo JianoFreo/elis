@@ -5,7 +5,7 @@ import { bad, conflict, dateParam, notFound } from "../../utils/http.js";
 import { addLedger, hubId, productByCode, stockOf } from "../../utils/stock.js";
 import { logActivity } from "../../utils/activityLogger.js";
 
-export async function dispatchRows(date: string | null = null) {
+export async function dispatchRows(date: string | null = null, limit = 5000) {
   return await sql`
     SELECT d.dispatch_code, p.name AS product, b.name AS branch, pb.batch_no, d.quantity_dispatched AS sent,
            d.quantity_received AS received, (d.quantity_received - d.quantity_dispatched) AS variance, d.status,
@@ -13,18 +13,18 @@ export async function dispatchRows(date: string | null = null) {
       FROM dispatches d JOIN products p ON p.id = d.product_id JOIN branches b ON b.id = d.branch_id
       LEFT JOIN product_batches pb ON pb.id = d.batch_id
      WHERE (${date}::date IS NULL OR (d.dispatched_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date)
-     ORDER BY d.dispatch_code DESC`;
+     ORDER BY d.dispatched_at DESC, d.id DESC LIMIT ${limit}`;
 }
 
 export async function listDispatches(_req: Request, res: Response) {
-  const rows = await dispatchRows();
-  const [recvToday] = await sql`SELECT COUNT(*)::int AS n FROM dispatches WHERE status IN ('received','receipt_review') AND (received_at AT TIME ZONE 'Asia/Manila')::date = ${dateParam(undefined)}::date`;
-  res.json({
-    in_transit: rows.filter((r) => r.status === "in_transit").length,
-    received_today: recvToday.n,
-    delivery_flags: rows.filter((r) => r.status === "receipt_review").length,
-    dispatches: rows,
-  });
+  const rows = await dispatchRows(null, 100); // most recent 100; the counts below cover everything
+  const [c] = await sql`
+    SELECT COUNT(*) FILTER (WHERE status = 'in_transit')::int AS in_transit,
+           COUNT(*) FILTER (WHERE status = 'receipt_review')::int AS flags,
+           COUNT(*) FILTER (WHERE status IN ('received','receipt_review')
+                              AND (received_at AT TIME ZONE 'Asia/Manila')::date = ${dateParam(undefined)}::date)::int AS today
+      FROM dispatches`;
+  res.json({ in_transit: c.in_transit, received_today: c.today, delivery_flags: c.flags, dispatches: rows });
 }
 
 export async function dispatchDetail(req: Request<{ code: string }>, res: Response) {
