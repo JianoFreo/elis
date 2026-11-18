@@ -3,10 +3,12 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { ENV } from "./config/env.js";
+import { HttpError } from "./utils/http.js";
 import authRouter from "./routes/auth.route.js";
 import ownerRouter from "./routes/owner.route.js";
 import salesRouter from "./routes/sales.route.js";
 import productionRouter from "./routes/production.route.js";
+import sharedRouter from "./routes/shared.route.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // backend/dist
 const frontendDist = path.resolve(__dirname, "../../frontend/dist");
@@ -19,6 +21,7 @@ export function buildApp() {
 
   app.get("/api/health", (_req, res) => res.json({ ok: true }));
   app.use("/api/auth", authRouter);
+  app.use("/api/shared", sharedRouter);
   app.use("/api/owner", ownerRouter);
   app.use("/api/sales", salesRouter);
   app.use("/api/production", productionRouter);
@@ -32,7 +35,8 @@ export function buildApp() {
   });
 
   // Express 5 forwards async errors here automatically
-  app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  app.use((err: Error & { status?: number }, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    if (err instanceof HttpError) return res.status(err.status).json({ message: err.message });
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   });
