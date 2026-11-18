@@ -25,7 +25,7 @@ export default function ResourceTable<T>({
       {error && <p className="error">{error}</p>}
       {!rows && !error && <p className="muted">Loading...</p>}
       {rows && (
-        <table className="card">
+        <div className="table-wrap card"><table>
           <thead>
             <tr>{columns.map((c) => <th key={c.header}>{c.header}</th>)}</tr>
           </thead>
@@ -35,7 +35,7 @@ export default function ResourceTable<T>({
               <tr key={i}>{columns.map((c) => <td key={c.header}>{c.render(row)}</td>)}</tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   );

@@ -42,10 +42,41 @@ th, td { text-align: left; padding: .75rem 1rem; border-bottom: 1px solid var(--
 th { font-size: .8rem; text-transform: uppercase; color: var(--muted); }
 tr:last-child td { border-bottom: 0; }
 
+.topbar, .scrim { display: none; }
+.content { min-width: 0; }
+.sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+
 @media (max-width: 720px) {
-  .shell { grid-template-columns: 1fr; }
-  .sidebar { border-right: 0; border-bottom: 1px solid var(--border); }
+  html, body { overflow-x: hidden; }
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .topbar { display: flex; align-items: center; gap: .75rem; position: sticky; top: 0; z-index: 30; background: var(--card); border-bottom: 1px solid var(--border); padding: .5rem .75rem; }
+  .topbar .muted { margin-left: auto; font-size: .8rem; }
+  .menu-btn { padding: .4rem .75rem; font-size: 1.2rem; line-height: 1; }
+  .scrim { display: block; position: fixed; inset: 0; background: rgba(43,35,39,.45); z-index: 40; }
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; max-width: 82vw; height: auto; z-index: 41; transform: translateX(-105%); transition: transform .2s ease; border-right: 1px solid var(--border); }
+  .sidebar.open { transform: none; box-shadow: 0 0 30px rgba(0,0,0,.2); }
   .content { padding: 1rem; }
+  h1 { font-size: 1.25rem; }
+  button, input, select, textarea { min-height: 44px; }
+  input, select, textarea { font-size: 16px; }
+  th, td { padding: .6rem .7rem; font-size: .9rem; white-space: nowrap; }
+  .page-head { flex-direction: column; }
+  .page-head .actions, .page-head .actions button { width: 100%; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+  .stat-value { font-size: 1.25rem; }
+  .cols, .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .panel { padding: 1rem; }
+  .kv { grid-template-columns: 1fr; gap: .1rem; }
+  .kv dd { margin-bottom: .5rem; }
+  .modal { padding: 1rem; max-height: 96vh; }
+  .modal-foot { flex-direction: column-reverse; }
+  .modal-foot button { width: 100%; }
+  .bars { gap: .3rem; }
+  .list li { flex-wrap: wrap; }
+  .tabs { overflow-x: auto; flex-wrap: nowrap; }
+  .tabs button { white-space: nowrap; }
+  .steps { overflow-x: auto; flex-wrap: nowrap; }
+  .steps li { white-space: nowrap; }
 }
 
 /* ---- shared UI ---- */

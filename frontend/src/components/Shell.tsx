@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { api } from "../lib/axios";
 import { ROLE_LABEL } from "../lib/roles";
@@ -11,6 +12,7 @@ export interface NavItem {
 // Shared layout for every role: sidebar + ?page=<key> content area.
 export default function Shell({ title, items }: { title: string; items: NavItem[] }) {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [params, setParams] = useSearchParams();
   const current = items.find((i) => i.key === params.get("page")) ?? items[0];
   const user = JSON.parse(sessionStorage.getItem("user") ?? "{}");
@@ -23,14 +25,20 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
 
   return (
     <div className="shell">
-      <aside className="sidebar">
+      <header className="topbar">
+        <button className="menu-btn" aria-label="Menu" onClick={() => setOpen(true)}>☰</button>
+        <strong>{current.label}</strong>
+        <span className="muted">{title}</span>
+      </header>
+      {open && <div className="scrim" onClick={() => setOpen(false)} />}
+      <aside className={open ? "sidebar open" : "sidebar"}>
         <h2>{title}</h2>
         <nav>
           {items.map((i) => (
             <button
               key={i.key}
               className={i.key === current.key ? "nav active" : "nav"}
-              onClick={() => setParams({ page: i.key })}
+              onClick={() => { setParams({ page: i.key }); setOpen(false); }}
             >
               {i.label}
             </button>
