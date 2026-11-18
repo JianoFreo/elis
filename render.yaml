@@ -11,3 +11,4 @@ services:
       - { key: JWT_SECRET, generateValue: true }
       - { key: JWT_EXPIRES_IN, value: 1d }
       - { key: NODE_ENV, value: production }
+      - { key: IS_PRODUCTION, value: "true" }

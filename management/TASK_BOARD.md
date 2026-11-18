@@ -24,7 +24,7 @@ Copy each task into GitHub Issues / Projects with the same ID, owner, and label.
 | # | Task | Owner | Status | Target |
 | --- | --- | --- | --- | --- |
 | DEV-1 | Choose and document the backend stack (Node/Express + MySQL) | Jm | [ ] | Nov 18 |
-| DEV-2 | Base database schema from the ERD and seed data (`backend/src/db/migrations`) | Jm | [ ] | Nov 19 |
+| DEV-2 | Base database schema from the ERD and seed data (`TABLES` in `backend/src/config/db.ts`) | Jm | [ ] | Nov 19 |
 | DEV-3 | Authentication and role-based permissions (Business Owner, Sales Staff, Production Head, Production Staff) | Jm | [ ] | Nov 19 |
 | DEV-9 | API: staff accounts and permissions | Jm | [ ] | Nov 21 |
 | DEV-10 | API: reports and CSV export | Jm | [ ] | Nov 21 |

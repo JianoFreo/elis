@@ -33,20 +33,20 @@ Each developer owns their modules and files so we avoid merge conflicts.
 
 | Developer | Owns | Backend files | Frontend screens | Branches |
 | --- | --- | --- | --- | --- |
-| **Jm (John Michael Litana)** | Foundation (setup, schema, login and roles), Accounts and permissions, Reports and CSV, Deployment and final integration | `backend/src/app.ts`, `routes/auth.route.ts`, `routes/owner.route.ts`, `db/migrations/001_init.sql` | login, shift, accounts, permissions, reports | `feature/auth`, `feature/accounts`, `feature/reports` |
-| **Princess Ann Delos Reyes** | Products, production, stock baseline, Sales and daily closing (with offline sync) | `backend/src/routes/sales.route.ts`, `controllers/sales/`, `db/migrations/003_sales.sql` | overview, sales, record-sale, offline, count, closing, inventory, product, production, stock-in, next-opening | `feature/products`, `feature/sales` |
-| **Jiano Magtangob** | Dispatch and receipts, Materials and usage, Discrepancies and weekly audits | `backend/src/routes/production.route.ts`, `controllers/production/`, `db/migrations/004_dispatch.sql` | dispatches, receive, supplies, usage, discrepancies, review, adjust, audits | `feature/dispatch`, `feature/materials`, `feature/discrepancies` |
+| **Jm (John Michael Litana)** | Foundation (setup, schema, login and roles), Accounts and permissions, Reports and CSV, Deployment and final integration | `backend/src/app.ts`, `routes/auth.route.ts`, `routes/owner.route.ts`, `config/db.ts` (base tables) | login, shift, accounts, permissions, reports | `feature/auth`, `feature/accounts`, `feature/reports` |
+| **Princess Ann Delos Reyes** | Products, production, stock baseline, Sales and daily closing (with offline sync) | `backend/src/routes/sales.route.ts`, `controllers/sales/`, sales tables in `config/db.ts` | overview, sales, record-sale, offline, count, closing, inventory, product, production, stock-in, next-opening | `feature/products`, `feature/sales` |
+| **Jiano Magtangob** | Dispatch and receipts, Materials and usage, Discrepancies and weekly audits | `backend/src/routes/production.route.ts`, `controllers/production/`, dispatch tables in `config/db.ts` | dispatches, receive, supplies, usage, discrepancies, review, adjust, audits | `feature/dispatch`, `feature/materials`, `feature/discrepancies` |
 
 ### Rules to avoid conflicts
 1. Jm pushes the backend skeleton, base schema, and login first (target: Thursday, Nov 19, noon). Others build on top of it.
 2. One route file and one controllers folder per module. Only edit your own files.
-3. Add your own tables in your own numbered migration file (never edit an applied migration, never drop).
+3. Add your own tables to the `TABLES` list in `backend/src/config/db.ts`, grouped together in your own block, parents before children. They are created on boot.
 4. Build your screens under `frontend/src/users/<role>/pages/` and register them in that role's shell.
 5. Pull the latest `main` before starting work, commit small and often, and merge through pull requests.
 6. Discrepancies and audits depend on sales closing and dispatch receipts, so Jiano builds that part last.
 
 ## Running the system
-1. Backend: copy `backend/.env.example` to `backend/.env`, set `DATABASE_URL` and `JWT_SECRET`, then in `backend/` run `npm install`, `npm run db:init`, and `ADMIN_USERNAME=owner ADMIN_PASSWORD='<strong>' npm run admin:create`, then `npm run dev` (port 5000).
+1. Backend: copy `backend/.env.example` to `backend/.env`, set `DATABASE_URL` and `JWT_SECRET`, then in `backend/` run `npm install`, `npm run dev` (port 5000; tables are created on boot), then `npm run seed` and `ADMIN_USERNAME=owner ADMIN_PASSWORD='<strong>' npm run admin:create`.
 2. Frontend: in `frontend/` run `npm install` and `npm run dev` (proxies `/api` to localhost:5000).
 3. Production build: from the repo root, `npm run build` then `npm start` (one service serves API and frontend). `render.yaml` is included.
 

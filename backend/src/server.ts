@@ -1,8 +1,10 @@
 import { ENV } from "./config/env.js";
-import { connectDb } from "./config/db.js";
+import { connectNeon, syncSchema } from "./config/db.js";
 import { buildApp } from "./app.js";
 
-await connectDb();
+await connectNeon();
+if (ENV.IS_PRODUCTION) await syncSchema();
+
 const server = buildApp().listen(ENV.PORT, () => console.log(`Listening on ${ENV.PORT}`));
 
 const shutdown = () => server.close(() => process.exit(0));
