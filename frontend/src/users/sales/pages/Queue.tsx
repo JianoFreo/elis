@@ -21,20 +21,20 @@ export default function Queue() {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="Offline transaction queue"
         subtitle="Local-device sales waiting to sync. Pending records stay separate until synchronization succeeds."
         actions={<button disabled={busy || data.queue.length === 0} onClick={sync}>{busy ? "Syncing..." : "Sync queued transactions"}</button>}
       />
-      <div className="card panel stack">
-        <div className="row-between"><strong>Queue synchronization</strong><span className="muted">{data.queue.length} pending</span></div>
+      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+        <div className="flex flex-wrap items-center justify-between gap-4"><strong>Queue synchronization</strong><span className="text-mute">{data.queue.length} pending</span></div>
         <Progress value={data.queue.length === 0 ? 100 : 0} tone={data.queue.length === 0 ? "ok" : "info"} />
         {data.queue.length === 0
           ? <Notice tone="ok">You're all caught up. Nothing is waiting to sync.</Notice>
           : <Notice tone="info">Confirm a connection before synchronizing. Each local reference posts once, so nothing is counted twice.</Notice>}
       </div>
-      {msg && <p className="error">{msg}</p>}
+      {msg && <p className="m-0 text-danger">{msg}</p>}
       <DataTable
         rows={data.queue}
         empty="No pending transactions."
@@ -51,7 +51,7 @@ export default function Queue() {
           <>
             <Notice tone={result.failed.length ? "warn" : "ok"}>{result.synced.length} of {result.total} synchronized.</Notice>
             {result.synced.length > 0 && <p>Confirmed as {result.synced.join(", ")}. Local references are matched to confirmed transactions to prevent duplicate posting.</p>}
-            {result.failed.map((f) => <p key={f.local_ref} className="error">{f.local_ref}: {f.reason}. It stays in the queue.</p>)}
+            {result.failed.map((f) => <p key={f.local_ref} className="m-0 text-danger">{f.local_ref}: {f.reason}. It stays in the queue.</p>)}
           </>
         )}
       </ResultModal>

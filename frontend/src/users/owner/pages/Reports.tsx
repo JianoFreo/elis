@@ -28,29 +28,29 @@ export default function Reports() {
   if (scope) return <ReportView scope={scope} back={() => setScope(null)} />;
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader title="Reports, with the full picture." subtitle="Owner reporting workspace" />
-      <div className="cols">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
         {CARDS.map((c) => (
-          <div key={c.kind} className="card panel stack">
+          <div key={c.kind} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
             <h2>{c.title}</h2>
-            <p className="muted">{c.text}</p>
+            <p className="text-mute">{c.text}</p>
             <div><button onClick={() => { setOpen(c.kind); setDate(today()); setBranch(String(selling[0]?.id ?? "")); }}>Open report</button></div>
           </div>
         ))}
-        <div className="card panel stack">
+        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
           <h2>Weekly audit</h2>
-          <p className="muted">Confirmed summaries, branch stock status, exceptions and owner sign-off.</p>
+          <p className="text-mute">Confirmed summaries, branch stock status, exceptions and owner sign-off.</p>
           <div><button onClick={() => go("audits")}>Open weekly audit</button></div>
         </div>
       </div>
 
       <Modal
         open={!!open} onClose={() => setOpen(null)} title="Choose report scope"
-        footer={<><button className="secondary" onClick={() => setOpen(null)}>Cancel</button>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setOpen(null)}>Cancel</button>
           <button disabled={!date || (open === "daily" && !branch)} onClick={() => { setScope({ kind: open!, date, branch_id: branch }); setOpen(null); }}>View report</button></>}
       >
-        <p className="muted">Select the daily view for the report you want to inspect.</p>
+        <p className="text-mute">Select the daily view for the report you want to inspect.</p>
         <Field label="Report date"><input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
         {open === "daily" && (
           <Field label="Branch"><select value={branch} onChange={(e) => setBranch(e.target.value)}>{selling.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select></Field>
@@ -64,17 +64,17 @@ function ReportView({ scope, back }: { scope: { kind: Kind; date: string; branch
   const params = { date: scope.date, branch_id: scope.kind === "daily" ? scope.branch_id : undefined };
   const { data, error, loading } = useApi<Report>(`/api/owner/reports/${scope.kind}`, params);
   const [busy, setBusy] = useState(false);
-  if (!data) return <div className="stack"><button className="secondary" onClick={back}>Back to reports</button><Loading loading={loading} error={error} /></div>;
+  if (!data) return <div className="grid gap-5"><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={back}>Back to reports</button><Loading loading={loading} error={error} /></div>;
   const cols = data.rows[0] ? Object.keys(data.rows[0]) : [];
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title={data.title}
         subtitle={fmtDate(data.date)}
         actions={<>
           <button disabled={busy} onClick={async () => { setBusy(true); try { await downloadCsv(`/api/owner/reports/${scope.kind}`, params, `${scope.kind}-${data.date}`); } finally { setBusy(false); } }}>Export CSV</button>
-          <button className="secondary" onClick={back}>Back to reports</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={back}>Back to reports</button>
         </>}
       />
       <Stats>

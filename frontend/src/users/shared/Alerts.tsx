@@ -14,28 +14,28 @@ export default function Alerts({ url }: { url: string }) {
   if (!data) return <Loading loading={loading} error={error} />;
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader title="A little attention goes a long way." subtitle="Low-stock notifications and supply usage warnings." actions={<button onClick={() => go("supplies")}>Go to supplies</button>} />
       {data.low.length === 0 && data.near.length === 0 && <Notice tone="ok">Nothing needs attention right now.</Notice>}
 
-      <div className="cols">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
         {data.low.map((m) => {
           const pct = m.threshold ? Math.min(100, (m.on_hand / (m.threshold * 4)) * 100) : 0;
           return (
-            <div key={m.material_code} className="card panel stack">
-              <div className="row-between"><h3>{m.name}</h3><Badge tone="warn">Below threshold</Badge></div>
+            <div key={m.material_code} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+              <div className="flex flex-wrap items-center justify-between gap-4"><h3>{m.name}</h3><Badge tone="warn">Below threshold</Badge></div>
               <strong style={{ fontSize: "1.4rem" }}>{num(m.on_hand)} {m.unit} remaining</strong>
               <Progress value={pct} tone="warn" />
-              <p className="muted">Restock threshold {num(m.threshold)} {m.unit}{m.supplier ? ` · supplier ${m.supplier}` : ""}</p>
+              <p className="text-mute">Restock threshold {num(m.threshold)} {m.unit}{m.supplier ? ` · supplier ${m.supplier}` : ""}</p>
             </div>
           );
         })}
         {data.near.map((u) => (
-          <div key={u.material_code} className="card panel stack">
-            <div className="row-between"><h3>{u.material} · production supply</h3><Badge tone="bad">Near limit · {u.pct}%</Badge></div>
+          <div key={u.material_code} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+            <div className="flex flex-wrap items-center justify-between gap-4"><h3>{u.material} · production supply</h3><Badge tone="bad">Near limit · {u.pct}%</Badge></div>
             <strong style={{ fontSize: "1.4rem" }}>{num(u.used)} / {num(u.opening + u.received)} {u.unit} used</strong>
             <Progress value={u.pct} tone="bad" />
-            <p className="muted">{u.pct}% used · only {num(u.opening + u.received - u.used)} {u.unit} remains. Replenish before production.</p>
+            <p className="text-mute">{u.pct}% used · only {num(u.opening + u.received - u.used)} {u.unit} remains. Replenish before production.</p>
           </div>
         ))}
       </div>

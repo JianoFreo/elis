@@ -42,22 +42,22 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="login-split">
-      <section className="login-hero">
-        <span className="chip" style={{ alignSelf: "flex-start" }}>Your workspace, beautifully connected</span>
+    <main className="grid min-h-screen grid-cols-[1.1fr_1fr] max-[860px]:grid-cols-1">
+      <section className="flex flex-col justify-center gap-4 bg-pink p-12 text-white max-[860px]:p-6 [&_h1]:m-0 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:text-white [&_p]:m-0 [&_p]:max-w-[34ch] [&_p]:opacity-90">
+        <span className="rounded-sm bg-white/20 px-3 py-1 text-sm" style={{ alignSelf: "flex-start" }}>Your workspace, beautifully connected</span>
         <h1>Welcome back.</h1>
         <p>Track every batch, every branch, and every sale in one thoughtfully organized workspace.</p>
         <p>From production to weekly sign-off, keep the whole kitchen in view.</p>
-        <div className="chips">
-          <span className="chip">Main hub + 3 branches</span>
-          <span className="chip">Fresh, every day</span>
-          <span className="chip">Prepared with care</span>
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-sm bg-white/20 px-3 py-1 text-sm">Main hub + 3 branches</span>
+          <span className="rounded-sm bg-white/20 px-3 py-1 text-sm">Fresh, every day</span>
+          <span className="rounded-sm bg-white/20 px-3 py-1 text-sm">Prepared with care</span>
         </div>
       </section>
-      <section className="login-form-side">
-        <form className="card login-card" onSubmit={onSubmit}>
+      <section className="grid place-items-center p-4">
+        <form className="rounded-md border border-line bg-white  grid w-full max-w-sm gap-4 p-8 [&_h1]:m-0 [&_h1]:text-pink [&_p]:m-0 [&_label]:grid [&_label]:gap-1.5 [&_label]:text-sm" onSubmit={onSubmit}>
           <h1>Eli's Yummy Kitchen</h1>
-          <p className="muted">Sign in to your workspace</p>
+          <p className="text-mute">Sign in to your workspace</p>
           <label>
             Username
             <input value={username} onChange={(e) => setUsername(e.target.value)} autoFocus required autoComplete="username" />
@@ -66,11 +66,11 @@ export default function LoginPage() {
             Password
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
           </label>
-          {error && <p className="error">{error}</p>}
+          {error && <p className="m-0 text-danger">{error}</p>}
           <button type="submit" disabled={loading}>{loading ? "Signing in..." : "Sign in to dashboard"}</button>
           {SHOW_DEMO && (
-            <div className="demo-list">
-              <span className="muted">Demo accounts: choose a role</span>
+            <div className="grid gap-1.5 [&_button]:border [&_button]:border-line [&_button]:bg-white [&_button]:text-left [&_button]:text-sm [&_button]:text-ink [&_button]:shadow-none [&_button]:hover:bg-pink-soft">
+              <span className="text-mute">Demo accounts: choose a role</span>
               {DEMOS.map((d) => (
                 <button key={d.username} type="button" onClick={() => { setUsername(d.username); setPassword(DEMO_PASSWORD); }}>
                   {d.label} · {d.username}

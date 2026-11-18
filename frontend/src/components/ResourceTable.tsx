@@ -22,20 +22,20 @@ export default function ResourceTable<T>({
   return (
     <div>
       <h1>{title}</h1>
-      {error && <p className="error">{error}</p>}
-      {!rows && !error && <p className="muted">Loading...</p>}
+      {error && <p className="m-0 text-danger">{error}</p>}
+      {!rows && !error && <p className="text-mute">Loading...</p>}
       {rows && (
-        <table className="card">
+        <div className="overflow-x-auto rounded-md border border-line bg-white "><table>
           <thead>
             <tr>{columns.map((c) => <th key={c.header}>{c.header}</th>)}</tr>
           </thead>
           <tbody>
-            {rows.length === 0 && <tr><td colSpan={columns.length} className="muted">No records yet.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={columns.length} className="text-mute">No records yet.</td></tr>}
             {rows.map((row, i) => (
               <tr key={i}>{columns.map((c) => <td key={c.header}>{c.render(row)}</td>)}</tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   );

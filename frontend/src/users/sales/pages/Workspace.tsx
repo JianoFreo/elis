@@ -15,14 +15,14 @@ export default function Workspace() {
   if (!data) return <Loading loading={loading} error={error} />;
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="Sales workspace"
         subtitle={`${data.branch} · ${data.shift} · ${fmtDate(data.date)}`}
         actions={<>
           <button onClick={() => go("record")}>Record a sale</button>
-          <button className="secondary" onClick={() => go("queue")}>Offline queue</button>
-          <button className="secondary" onClick={() => go("summary")}>Daily summary</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("queue")}>Offline queue</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("summary")}>Daily summary</button>
         </>}
       />
       <Stats>
@@ -31,8 +31,8 @@ export default function Workspace() {
         <StatCard label="Expected on hand" value={data.expected_on_hand} hint="Count at the end of your shift" />
       </Stats>
 
-      <div className="card panel stack">
-        <div className="row-between">
+      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <h2>Shift closing checklist</h2>
           <Badge tone={data.step === 3 ? "ok" : "info"}>{data.step === 3 && data.closing ? `Closing ${data.closing.status}` : `Step ${data.step} of 3`}</Badge>
         </div>
