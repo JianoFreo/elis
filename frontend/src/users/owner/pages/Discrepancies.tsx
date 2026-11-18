@@ -27,7 +27,7 @@ function DiscrepancyList() {
   const { go } = useGo();
   if (!data) return <Loading loading={loading} error={error} />;
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader title="Review, resolve, reconcile." subtitle="Owner review queue" />
       <Stats>
         <StatCard label="Open flags" value={data.open_flags} tone={data.open_flags ? "warn" : "ok"} hint={`${data.open_counts} count · ${data.open_deliveries} delivery`} />
@@ -44,7 +44,7 @@ function DiscrepancyList() {
           { header: "Actual", render: (d) => d.actual_qty, align: "right" },
           { header: "Variance", render: (d) => <strong>{signed(d.variance)}</strong>, align: "right" },
           { header: "Status", render: (d) => <Badge tone={statusTone(statusLabel(d.status))}>{statusLabel(d.status)}</Badge> },
-          { header: "", render: (d) => <button className="link" onClick={() => go("discrepancies", d.disc_code)}>Review {d.disc_code}</button> },
+          { header: "", render: (d) => <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("discrepancies", d.disc_code)}>Review {d.disc_code}</button> },
         ]}
       />
     </div>
@@ -75,11 +75,11 @@ function DiscrepancyDetail({ code }: { code: string }) {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title={isCount ? `Discrepancy ${d.disc_code}` : `Delivery discrepancy · ${d.disc_code}`}
         subtitle={`${d.branch} · ${d.product} · ${fmtDateTime(d.created_at)}`}
-        actions={<button className="secondary" onClick={() => go("discrepancies")}>Back to flags</button>}
+        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("discrepancies")}>Back to flags</button>}
       />
       <Stats>
         <StatCard label="Status" value={<Badge tone={statusTone(statusLabel(d.status))}>{statusLabel(d.status)}</Badge>} />
@@ -88,12 +88,12 @@ function DiscrepancyDetail({ code }: { code: string }) {
         <StatCard label="Variance" value={`${signed(d.variance)} units`} tone="warn" hint={isCount ? "Below expected" : "Actual minus dispatched"} />
       </Stats>
 
-      <div className="card panel stack">
+      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
         <h2>Evidence &amp; notes</h2>
         {d.note && <p>{isCount ? "Closing note" : "Delivery note"}: “{d.note}”</p>}
-        {isCount && <p className="muted">Source record: daily closing {d.source_ref}</p>}
+        {isCount && <p className="text-mute">Source record: daily closing {d.source_ref}</p>}
         {data.dispatch && (
-          <dl className="kv">
+          <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2">
             <dt>Dispatch</dt><dd>{data.dispatch.dispatch_code} · batch {data.dispatch.batch_no ?? "-"}</dd>
             <dt>Quantity</dt><dd>{data.dispatch.quantity_dispatched} dispatched; {data.dispatch.quantity_received ?? "-"} received</dd>
             <dt>Receipt</dt><dd>{data.dispatch.receipt_ref ?? "-"} · {fmtDateTime(data.dispatch.received_at)} · {data.dispatch.received_by ?? "-"}</dd>
@@ -103,35 +103,35 @@ function DiscrepancyDetail({ code }: { code: string }) {
         {isCount && !resolved && <Notice tone="info">Approval records the reason, reviewer and adjustment. Recount leaves the ledger unchanged.</Notice>}
         {resolved && <Notice tone="ok">Resolved by {d.reviewed_by ?? "-"} · {fmtDateTime(d.resolved_at)} · “{d.reason}”</Notice>}
         {!resolved && (
-          <div className="actions">
+          <div className="flex flex-wrap gap-2">
             {isCount
               ? <button onClick={() => { setReason(d.note ?? ""); setMsg(""); setModal("adjust"); }}>Review stock adjustment</button>
               : <button onClick={() => { setReason(""); setMsg(""); setModal("resolve"); }}>Review delivery resolution</button>}
-            {d.status === "open" && <button className="secondary" onClick={() => run("recount", undefined, () => "Recount requested. The ledger is unchanged.")}>{isCount ? "Request recount" : "Recount delivery"}</button>}
+            {d.status === "open" && <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => run("recount", undefined, () => "Recount requested. The ledger is unchanged.")}>{isCount ? "Request recount" : "Recount delivery"}</button>}
           </div>
         )}
       </div>
 
       <Modal
         open={modal === "adjust"} onClose={() => setModal(null)} title="Approve stock adjustment?"
-        footer={<><button className="secondary" onClick={() => setModal(null)}>Cancel</button>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button>
           <button disabled={busy || !reason.trim()} onClick={() => run("approve-adjustment", { reason }, (r) => <>Ledger adjusted by {signed(r.adjustment)} units; {d.product} at {d.branch} is now {r.stock_after}. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Approve adjustment</button></>}
       >
         <p>Only the Business Owner approves a reconciled ledger adjustment.</p>
-        <dl className="kv"><dt>Adjustment</dt><dd>{signed(d.variance)} units · {d.product}</dd><dt>Approved by</dt><dd>{currentUser().full_name} · Business Owner</dd></dl>
+        <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Adjustment</dt><dd>{signed(d.variance)} units · {d.product}</dd><dt>Approved by</dt><dd>{currentUser().full_name} · Business Owner</dd></dl>
         <Field label="Reason"><textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Verified damaged goods" /></Field>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal
         open={modal === "resolve"} onClose={() => setModal(null)} title="Resolve delivery discrepancy?"
-        footer={<><button className="secondary" onClick={() => setModal(null)}>Cancel</button>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button>
           <button disabled={busy || !reason.trim()} onClick={() => run("resolve-delivery", { reason }, () => <>{d.disc_code} resolved. Branch credit remains +{d.actual_qty} units; hub deduction remains -{d.expected_qty} units. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Confirm delivery resolution</button></>}
       >
-        <dl className="kv"><dt>Source</dt><dd>{d.disc_code} · {d.source_ref}</dd><dt>Verified received</dt><dd>{d.actual_qty} units</dd></dl>
+        <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Source</dt><dd>{d.disc_code} · {d.source_ref}</dd><dt>Verified received</dt><dd>{d.actual_qty} units</dd></dl>
         <Field label="Resolution reason"><textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Verified 2-unit shortage; actual receipt retained" /></Field>
-        <p className="muted">Resolving keeps the branch credit at {d.actual_qty}. It records the reason and owner decision; it does not add the missing units.</p>
-        {msg && <p className="error">{msg}</p>}
+        <p className="text-mute">Resolving keeps the branch credit at {d.actual_qty}. It records the reason and owner decision; it does not add the missing units.</p>
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <ResultModal open={!!done} onClose={() => setDone(null)} title={isCount ? "Adjustment / recount" : "Delivery exception"} action={{ label: "Review queue", onClick: () => go("discrepancies") }}>{done}</ResultModal>

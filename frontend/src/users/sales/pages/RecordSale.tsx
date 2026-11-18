@@ -34,10 +34,10 @@ export default function RecordSale() {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader title="Record a sale" subtitle="Capture the product and quantity. A confirmed sale reduces the branch stock ledger." />
-      <div className="cols">
-        <form className="card panel form" onSubmit={(e) => { e.preventDefault(); confirm(); }}>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
+        <form className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-4" onSubmit={(e) => { e.preventDefault(); confirm(); }}>
           <h2>Sale details</h2>
           <Field label="Product">
             <select value={product?.product_code ?? ""} onChange={(e) => setCode(e.target.value)}>
@@ -53,16 +53,16 @@ export default function RecordSale() {
             Queue offline (no connection)
           </label>
           {tooMany && <Notice tone="bad">Only {product!.expected} {product!.name} available. Reduce the quantity.</Notice>}
-          {msg && <p className="error">{msg}</p>}
-          <div className="actions">
+          {msg && <p className="m-0 text-danger">{msg}</p>}
+          <div className="flex flex-wrap gap-2">
             <button type="submit" disabled={!valid || tooMany || busy}>{busy ? "Saving..." : offline ? "Queue sale" : "Confirm sale"}</button>
-            <button type="button" className="secondary" onClick={() => go("workspace")}>Back to sales</button>
+            <button type="button" className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("workspace")}>Back to sales</button>
           </div>
         </form>
 
-        <div className="card panel stack">
+        <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-5">
           <h2>Transaction preview</h2>
-          <dl className="kv">
+          <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2">
             <dt>Product</dt><dd>{product?.name ?? "-"}</dd>
             <dt>Line total</dt><dd>{valid ? peso(n * product!.price) : "-"}</dd>
             <dt>Branch stock</dt><dd>{valid && !offline ? `-${n} units` : "No change until synced"}</dd>
@@ -77,7 +77,7 @@ export default function RecordSale() {
         action={{ label: "Offline queue / workspace", onClick: () => go(result?.status === "queued" ? "queue" : "workspace") }}
       >
         {result && (
-          <dl className="kv">
+          <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2">
             <dt>Reference</dt><dd>{result.txn_code ?? result.local_ref}</dd>
             <dt>Item</dt><dd>{result.product} × {result.quantity}</dd>
             <dt>Line total</dt><dd>{peso(result.line_total)}</dd>

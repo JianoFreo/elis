@@ -16,7 +16,7 @@ export default function Summary() {
   const status = !data.closing ? "Closing not submitted" : data.closing.status === "confirmed" ? "Confirmed" : "Submitted · owner review";
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="Daily sales & stock summary"
         subtitle={`${fmtDate(data.date)} · ${data.branch}`}

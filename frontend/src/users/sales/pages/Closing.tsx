@@ -45,7 +45,7 @@ export default function Closing() {
 
   if (submitted)
     return (
-      <div className="stack">
+      <div className="grid gap-5">
         <PageHeader title="Daily closing" subtitle={`${data.closing!.close_code} · submitted for owner review`} />
         <Notice tone="ok">Your shift has been sent for owner review. Only an approved adjustment changes the reconciled ledger.</Notice>
         <DataTable
@@ -57,13 +57,13 @@ export default function Closing() {
             { header: "Variance", render: (r) => (r.counted === null ? "-" : signed(r.counted - r.expected)), align: "right" },
           ]}
         />
-        {data.closing!.note && <p className="muted">Closing note: “{data.closing!.note}”</p>}
+        {data.closing!.note && <p className="text-mute">Closing note: “{data.closing!.note}”</p>}
         <div><button onClick={() => go("summary")}>View summary</button></div>
       </div>
     );
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title={step === 2 ? "Count what's on hand" : "Review your daily closing"}
         subtitle={step === 2 ? "Enter physical closing counts. Expected = opening + received + adjustments − sales − outgoing." : "Confirm the count and submit the shift for owner review."}
@@ -71,8 +71,8 @@ export default function Closing() {
       <Steps current={step} steps={["Review sales", "Count stock", "Submit closing"]} />
 
       {step === 2 && (
-        <div className="card panel form">
-          <div className="form-grid">
+        <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4 grid gap-4">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
             {rows.map((r) => (
               <Field key={r.product_code} label={`${r.name} · expected ${r.expected}`}>
                 <input type="number" min={0} step={1} value={counts[r.product_code] ?? ""} onChange={(e) => setCounts({ ...counts, [r.product_code]: e.target.value })} />
@@ -83,18 +83,18 @@ export default function Closing() {
           {allCounted && flagged.length > 0 && (
             <Notice tone="warn">{flagged.map((f) => `${f.name} is ${Math.abs(f.variance!)} unit(s) ${f.variance! < 0 ? "below" : "above"} expected`).join("; ")}. Submitting creates a discrepancy flag.</Notice>
           )}
-          <div className="actions">
+          <div className="flex flex-wrap gap-2">
             <button disabled={!allCounted} onClick={() => setStep(3)}>Compare &amp; review closing</button>
-            <button className="secondary" onClick={() => go("summary")}>Back to summary</button>
+            <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("summary")}>Back to summary</button>
           </div>
         </div>
       )}
 
       {step === 3 && (
-        <div className="stack">
-          <div className="row-between">
+        <div className="grid gap-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <Badge tone={flagged.length ? "warn" : "ok"}>{flagged.length ? "Flagged" : "Matched"}</Badge>
-            <button className="secondary" onClick={() => setStep(2)}>Edit count</button>
+            <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setStep(2)}>Edit count</button>
           </div>
           <DataTable
             rows={rows}
@@ -109,14 +109,14 @@ export default function Closing() {
             <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Two units damaged during display." />
           </Field>
           <Notice tone="muted">A variance is a flag for review. It is not an approved inventory adjustment.</Notice>
-          {msg && <p className="error">{msg}</p>}
+          {msg && <p className="m-0 text-danger">{msg}</p>}
           <div><button disabled={busy || (flagged.length > 0 && !note.trim())} onClick={submit}>{busy ? "Submitting..." : "Submit daily closing"}</button></div>
         </div>
       )}
 
       <ResultModal open={!!done} onClose={() => setDone(null)} title="Closing submitted" action={{ label: "View summary", onClick: () => go("summary") }}>
         {done && <><Notice tone="ok">Your shift was sent for owner review ({done.close_code}).</Notice>
-          <p className="muted">{done.flagged ? `${done.flagged} count variance flagged.` : "No variances."} Only an approved adjustment changes the reconciled ledger.</p></>}
+          <p className="text-mute">{done.flagged ? `${done.flagged} count variance flagged.` : "No variances."} Only an approved adjustment changes the reconciled ledger.</p></>}
       </ResultModal>
     </div>
   );

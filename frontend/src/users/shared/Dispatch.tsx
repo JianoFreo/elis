@@ -43,7 +43,7 @@ function DispatchList() {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="From our kitchen to every branch."
         subtitle="Track dispatch details, in-transit stock, receipts and delivery discrepancies."
@@ -63,13 +63,13 @@ function DispatchList() {
           { header: "Units", render: (r) => r.sent, align: "right" },
           { header: "Received", render: (r) => r.received ?? "-", align: "right" },
           { header: "Status", render: (r) => <Badge tone={statusTone(r.status)}>{DISPATCH_STATUS[r.status] ?? r.status}</Badge> },
-          { header: "", render: (r) => <button className="link" onClick={() => go("dispatch", r.dispatch_code)}>View {r.dispatch_code}</button> },
+          { header: "", render: (r) => <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("dispatch", r.dispatch_code)}>View {r.dispatch_code}</button> },
         ]}
       />
 
       <Modal open={open} onClose={() => setOpen(false)} title="Create a dispatch"
-        footer={<><button className="secondary" onClick={() => setOpen(false)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : "Save & dispatch"}</button></>}>
-        <div className="form-grid">
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setOpen(false)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : "Save & dispatch"}</button></>}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Product">
             <select value={form.product_code ?? ""} onChange={(e) => set("product_code", e.target.value)}>
               {products.data?.products.map((p) => <option key={p.product_code} value={p.product_code}>{p.name}</option>)}
@@ -84,7 +84,7 @@ function DispatchList() {
           <Field label="Quantity dispatched"><input type="number" min={1} value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
         </div>
         <Notice tone="info">Saving records the dispatch and deducts the main hub quantity. Branch stock updates only after receipt confirmation.</Notice>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
       <ResultModal open={!!done} onClose={() => setDone(null)} title="Dispatch created" action={done ? { label: "View dispatch", onClick: () => go("dispatch", done.dispatch_code) } : undefined}>
         {done && <p>{done.dispatch_code} is in transit. Main hub stock is now {done.hub_stock_after}.</p>}
@@ -101,23 +101,23 @@ function DispatchDetail({ code }: { code: string }) {
   const diff = d.quantity_received === null ? null : d.quantity_received - d.quantity_dispatched;
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader title={`Dispatch ${d.dispatch_code}`} subtitle={`Main hub → ${d.branch} · ${fmtDateTime(d.dispatched_at)} · Batch ${d.batch_no ?? "-"}`}
-        actions={<button className="secondary" onClick={() => go("dispatch")}>All dispatches</button>} />
+        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("dispatch")}>All dispatches</button>} />
       <Stats>
         <StatCard label="Status" value={<Badge tone={statusTone(d.status)}>{DISPATCH_STATUS[d.status]}</Badge>} />
         <StatCard label="Dispatched" value={`${d.quantity_dispatched} units`} hint={d.product} />
         <StatCard label="Received" value={d.quantity_received ?? "Awaiting"} hint="Branch confirmation" />
         <StatCard label="Difference" value={diff === null ? "--" : diff} tone={diff ? "warn" : undefined} />
       </Stats>
-      <div className="card panel">
+      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4">
         <h2>Dispatch timeline</h2>
-        <ul className="list">
+        <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-xl [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">
           <li><span>{fmtTime(d.dispatched_at)} · Created by {d.prepared_by ?? "-"}</span></li>
           <li><span>{fmtTime(d.dispatched_at)} · Main hub stock deducted</span></li>
           {d.received_at
             ? <li><span>{fmtTime(d.received_at)} · Received by {d.received_by ?? "-"}: {d.quantity_received} units{d.delivery_note ? ` · “${d.delivery_note}”` : ""}</span></li>
-            : <li><span className="muted">Pending · Branch physical receipt confirmation</span></li>}
+            : <li><span className="text-mute">Pending · Branch physical receipt confirmation</span></li>}
         </ul>
       </div>
       {data.discrepancy && <Notice tone={data.discrepancy.status === "resolved" ? "ok" : "warn"}>Delivery discrepancy {data.discrepancy.disc_code} is {data.discrepancy.status}.</Notice>}

@@ -69,18 +69,18 @@ export default function Supplies() {
     </Field>
   );
   const unitOf = sup.data.materials.find((m) => m.material_code === form.material_code)?.unit ?? "";
-  const footer = (label: string) => <><button className="secondary" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : label}</button></>;
+  const footer = (label: string) => <><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : label}</button></>;
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="The ingredients behind it all."
         subtitle="Materials, supplier sources, stock-in and daily usage."
         actions={<>
           {canRegister && <button onClick={() => open("register")}>Register material</button>}
-          <button className="secondary" onClick={() => open("stockin")}>Receive stock-in</button>
-          <button className="secondary" onClick={() => open("opening")}>Log shift opening</button>
-          <button className="secondary" onClick={() => open("closing")}>Log closing &amp; usage</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("stockin")}>Receive stock-in</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("opening")}>Log shift opening</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("closing")}>Log closing &amp; usage</button>
         </>}
       />
       <Stats>
@@ -88,9 +88,9 @@ export default function Supplies() {
         <StatCard label="Low-stock materials" value={sup.data.low_stock} tone={sup.data.low_stock ? "warn" : "ok"} hint="Below their set thresholds" />
         <StatCard label="Stock received today" value={sup.data.received_today} hint="Supplier deliveries" />
       </Stats>
-      <div className="tabs">
-        <button className={tab === "materials" ? "active" : ""} onClick={() => setTab("materials")}>Materials</button>
-        <button className={tab === "usage" ? "active" : ""} onClick={() => setTab("usage")}>Daily usage</button>
+      <div className="mb-4 flex gap-1">
+        <button className={tab === "materials" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-stone-50"} onClick={() => setTab("materials")}>Materials</button>
+        <button className={tab === "usage" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-stone-50"} onClick={() => setTab("usage")}>Daily usage</button>
       </div>
 
       {tab === "materials" && (
@@ -109,7 +109,7 @@ export default function Supplies() {
       )}
       {tab === "usage" && usage.data && (
         <>
-          <p className="muted">{fmtDate(usage.data.date)} · opening + received − closing = used</p>
+          <p className="text-mute">{fmtDate(usage.data.date)} · opening + received − closing = used</p>
           <DataTable
             rows={usage.data.records}
             empty="No opening or closing counts logged for this day yet."
@@ -126,7 +126,7 @@ export default function Supplies() {
       )}
 
       <Modal open={modal === "register"} onClose={() => setModal(null)} title="Register a supply item" footer={footer("Save material & threshold")}>
-        <div className="form-grid">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name"><input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></Field>
           <Field label="Category"><input value={form.category ?? ""} onChange={(e) => set("category", e.target.value)} placeholder="Baking flour" /></Field>
           <Field label="Unit of measurement"><input value={form.unit ?? ""} onChange={(e) => set("unit", e.target.value)} placeholder="kg" maxLength={10} /></Field>
@@ -134,20 +134,20 @@ export default function Supplies() {
           <Field label="Low-stock threshold"><input type="number" min={0} step="0.01" value={form.threshold ?? ""} onChange={(e) => set("threshold", e.target.value)} /></Field>
           <Field label="Supplier / source"><input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>
         </div>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal open={modal === "stockin"} onClose={() => setModal(null)} title="Receive supply stock" footer={footer("Save stock-in")}>
         {select()}
-        <div className="form-grid">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label={`Quantity received${unitOf ? ` (${unitOf})` : ""}`}><input type="number" min={0} step="0.01" value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
           <Field label="Unit cost" hint="Blank = current material cost"><input type="number" min={0} step="0.01" value={form.unit_cost ?? ""} onChange={(e) => set("unit_cost", e.target.value)} /></Field>
           <Field label="Supplier / source"><input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>
           <Field label="Date received"><input type="date" value={form.received_on ?? ""} onChange={(e) => set("received_on", e.target.value)} /></Field>
           <Field label="Receipt reference" hint="Blank = next SUP- number"><input value={form.receipt_ref ?? ""} onChange={(e) => set("receipt_ref", e.target.value)} /></Field>
         </div>
-        <p className="muted">Saving adds the quantity to main hub supplies.</p>
-        {msg && <p className="error">{msg}</p>}
+        <p className="text-mute">Saving adds the quantity to main hub supplies.</p>
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal open={modal === "opening"} onClose={() => setModal(null)} title="Log shift opening inventory" footer={footer("Save opening inventory")}>
@@ -156,7 +156,7 @@ export default function Supplies() {
           <input type="number" min={0} step="0.01" value={form.opening_qty ?? ""} onChange={(e) => set("opening_qty", e.target.value)} />
         </Field>
         <Field label="Counted by"><input value={currentUser().full_name} readOnly /></Field>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal open={modal === "closing"} onClose={() => setModal(null)} title="Daily closing & usage" footer={footer("Record usage")}>
@@ -164,7 +164,7 @@ export default function Supplies() {
         <Field label={`Closing stock${unitOf ? ` (${unitOf})` : ""}`} hint="Used = opening + received − closing.">
           <input type="number" min={0} step="0.01" value={form.closing_qty ?? ""} onChange={(e) => set("closing_qty", e.target.value)} />
         </Field>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <ResultModal open={!!done} onClose={() => setDone(null)} title={done?.title ?? ""}>{done?.body}</ResultModal>

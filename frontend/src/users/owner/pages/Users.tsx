@@ -57,13 +57,13 @@ export default function Users() {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="The people behind the kitchen."
         subtitle="Account creation, permissions and deletion"
         actions={<button onClick={() => { setForm(blank); setMsg(""); setStep(1); }}>Create staff account</button>}
       />
-      {msg && step === 0 && !del && <p className="error">{msg}</p>}
+      {msg && step === 0 && !del && <p className="m-0 text-danger">{msg}</p>}
       <DataTable
         rows={users.data.users}
         cols={[
@@ -74,19 +74,19 @@ export default function Users() {
           { header: "Location", render: (u) => u.branch ?? "All branches" },
           { header: "Status", render: (u) => <Badge tone={u.account_status ? "ok" : "muted"}>{u.account_status ? "Active" : "Deactivated"}</Badge> },
           { header: "", render: (u) => u.user_id !== me && (
-              <div className="stack-sm">
-                <button className="secondary" onClick={() => toggle(u)}>{u.account_status ? "Deactivate" : "Activate"}</button>
-                <button className="link" onClick={() => { setMsg(""); setDel(u); }}>Delete</button>
+              <div className="flex flex-wrap gap-1.5">
+                <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => toggle(u)}>{u.account_status ? "Deactivate" : "Activate"}</button>
+                <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => { setMsg(""); setDel(u); }}>Delete</button>
               </div>) },
         ]}
       />
 
       <Modal
         open={step === 1} onClose={() => setStep(0)} title="Create a staff account"
-        footer={<><button className="secondary" onClick={() => setStep(0)}>Cancel</button><button disabled={!detailsOk} onClick={() => setStep(2)}>Continue to permissions</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setStep(0)}>Cancel</button><button disabled={!detailsOk} onClick={() => setStep(2)}>Continue to permissions</button></>}
       >
-        <p className="muted">Owner-managed access for kitchen and branch staff. Account ID: {nextId.data?.user_id ?? "..."}</p>
-        <div className="form-grid">
+        <p className="text-mute">Owner-managed access for kitchen and branch staff. Account ID: {nextId.data?.user_id ?? "..."}</p>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="First name"><input value={form.first} onChange={(e) => set("first", e.target.value)} /></Field>
           <Field label="Surname"><input value={form.surname} onChange={(e) => set("surname", e.target.value)} /></Field>
           <Field label="Username" hint="Letters, numbers, dot, dash. At least 3."><input value={form.username} onChange={(e) => set("username", e.target.value)} /></Field>
@@ -107,22 +107,22 @@ export default function Users() {
 
       <Modal
         open={step === 2} onClose={() => setStep(0)} title="Account permissions"
-        footer={<><button className="secondary" onClick={() => setStep(1)}>Back to account details</button><button disabled={busy} onClick={create}>{busy ? "Saving..." : "Save account & permissions"}</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setStep(1)}>Back to account details</button><button disabled={busy} onClick={create}>{busy ? "Saving..." : "Save account & permissions"}</button></>}
       >
-        <p className="muted">Preset role permissions · {form.first} {form.surname} · {ROLE_LABEL[form.role]} · {location}</p>
+        <p className="text-mute">Preset role permissions · {form.first} {form.surname} · {ROLE_LABEL[form.role]} · {location}</p>
         {perms.data
-          ? <ul className="list">{perms.data.permissions.map((p) => <li key={p.capability}><span>{p.capability}</span><Badge tone={p.allowed ? "ok" : "muted"}>{p.allowed ? "Allowed" : "Owner only / not assigned"}</Badge></li>)}</ul>
-          : <p className="muted">Loading...</p>}
-        {msg && <p className="error">{msg}</p>}
+          ? <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-xl [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">{perms.data.permissions.map((p) => <li key={p.capability}><span>{p.capability}</span><Badge tone={p.allowed ? "ok" : "muted"}>{p.allowed ? "Allowed" : "Owner only / not assigned"}</Badge></li>)}</ul>
+          : <p className="text-mute">Loading...</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal
         open={!!del} onClose={() => setDel(null)} title="Delete this staff account?"
-        footer={<><button className="secondary" onClick={() => setDel(null)}>Cancel</button><button className="danger" disabled={busy} onClick={remove}>Delete account</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setDel(null)}>Cancel</button><button className="bg-danger hover:bg-danger/90" disabled={busy} onClick={remove}>Delete account</button></>}
       >
         {del && <><p><strong>{del.user_id} · {del.full_name}</strong> · {ROLE_LABEL[del.role]}</p>
-          <p className="muted">Check the account name and role before confirming deletion. Accounts with recorded activity cannot be deleted; deactivate them instead.</p></>}
-        {msg && <p className="error">{msg}</p>}
+          <p className="text-mute">Check the account name and role before confirming deletion. Accounts with recorded activity cannot be deleted; deactivate them instead.</p></>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <ResultModal open={!!done} onClose={() => setDone("")} title="Done">{done}</ResultModal>

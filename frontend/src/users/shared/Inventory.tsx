@@ -62,14 +62,14 @@ function InventoryList() {
   );
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title="Every batch, accounted for."
         subtitle="Central kitchen and branch ledgers"
         actions={<>
           <button onClick={() => open("production")}>Record production output</button>
-          {isOwner && <button className="secondary" onClick={() => open("register")}>Register product</button>}
-          <button className="secondary" onClick={() => open("baseline")}>Receive stock / set baseline</button>
+          {isOwner && <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("register")}>Register product</button>}
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("baseline")}>Receive stock / set baseline</button>
         </>}
       />
       <Stats>
@@ -86,30 +86,30 @@ function InventoryList() {
           { header: "Best before", render: (r) => fmtDate(r.best_before) },
           { header: "Threshold", render: (r) => r.threshold, align: "right" },
           { header: "Status", render: (r) => <Badge tone={statusTone(r.status)}>{r.status}</Badge> },
-          { header: "", render: (r) => <button className="link" onClick={() => go("inventory", r.product_code)}>View product &amp; ledger</button> },
+          { header: "", render: (r) => <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("inventory", r.product_code)}>View product &amp; ledger</button> },
         ]}
       />
 
       <Modal
         open={modal === "production"} onClose={() => setModal(null)} title="Record production output"
-        footer={<><button className="secondary" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>Save production output</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>Save production output</button></>}
       >
         {productSelect}
-        <div className="form-grid">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Batch number"><input value={form.batch_no ?? ""} onChange={(e) => set("batch_no", e.target.value)} placeholder="B-1109" /></Field>
           <Field label="Quantity produced"><input type="number" min={1} value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
           <Field label="Best before"><input type="date" value={form.best_before ?? ""} onChange={(e) => set("best_before", e.target.value)} /></Field>
         </div>
-        <p className="muted">Saving adds the units to the main hub and records the batch in the product ledger.</p>
-        {msg && <p className="error">{msg}</p>}
+        <p className="text-mute">Saving adds the units to the main hub and records the batch in the product ledger.</p>
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal
         open={modal === "baseline"} onClose={() => setModal(null)} title="Stock baseline & received stock"
-        footer={<><button className="secondary" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>Save stock movement</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>Save stock movement</button></>}
       >
         {productSelect}
-        <div className="form-grid">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Batch number"><input value={form.batch_no ?? ""} onChange={(e) => set("batch_no", e.target.value)} placeholder="B-1108" /></Field>
           <Field label="Location">
             <select value={form.branch_id ?? ""} onChange={(e) => set("branch_id", e.target.value)}>
@@ -120,21 +120,21 @@ function InventoryList() {
           <Field label="Quantity"><input type="number" min={1} value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
           <Field label="Reason / reference"><input value={form.reference ?? ""} onChange={(e) => set("reference", e.target.value)} placeholder="Opening stock baseline · BASE-1108" /></Field>
         </div>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal
         open={modal === "register"} onClose={() => setModal(null)} title="Register product"
-        footer={<><button className="secondary" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>Save product</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>Save product</button></>}
       >
-        <div className="form-grid">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name"><input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></Field>
           <Field label="Unit price"><input type="number" min={0} step="0.01" value={form.price ?? ""} onChange={(e) => set("price", e.target.value)} /></Field>
           <Field label="Unit cost"><input type="number" min={0} step="0.01" value={form.cost ?? ""} onChange={(e) => set("cost", e.target.value)} /></Field>
           <Field label="Low-stock threshold"><input type="number" min={0} value={form.threshold ?? ""} onChange={(e) => set("threshold", e.target.value)} /></Field>
-          <div className="wide"><Field label="Description"><textarea value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></Field></div>
+          <div className="col-span-full"><Field label="Description"><textarea value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></Field></div>
         </div>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <ResultModal open={!!done} onClose={() => setDone("")} title="Saved">{done}</ResultModal>
@@ -163,14 +163,14 @@ function ProductDetail({ code }: { code: string }) {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader
         title={p.name}
         subtitle={`${p.product_code}${data.batch ? ` · Supply batch ${data.batch.batch_no}` : ""}`}
         actions={<>
           <button onClick={() => { setForm({ name: p.name, description: p.description ?? "", price: String(p.price), threshold: String(p.threshold), best_before: data.batch?.best_before ?? "" }); setMsg(""); setEdit(true); }}>Edit product details</button>
-          <button className="secondary" onClick={() => go("dispatch")}>Create dispatch</button>
-          <button className="secondary" onClick={() => go("inventory")}>Back to inventory</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("dispatch")}>Create dispatch</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("inventory")}>Back to inventory</button>
         </>}
       />
       <Stats>
@@ -178,7 +178,7 @@ function ProductDetail({ code }: { code: string }) {
         <StatCard label="On hand" value={`${data.on_hand} units`} hint={`Threshold: ${p.threshold} units`} tone={data.on_hand <= p.threshold ? "warn" : undefined} />
         <StatCard label="Best before" value={fmtDate(data.batch?.best_before)} hint={data.batch ? `batch ${data.batch.batch_no}` : undefined} />
       </Stats>
-      <div className="card panel"><h2>Product information</h2><p>{p.description ?? "No description."} Quantity is tracked per product, batch and location.</p></div>
+      <div className="rounded-xl border border-line bg-white shadow-sm p-5 max-md:p-4"><h2>Product information</h2><p>{p.description ?? "No description."} Quantity is tracked per product, batch and location.</p></div>
       <div>
         <h2>Ledger movements</h2>
         <DataTable
@@ -194,15 +194,15 @@ function ProductDetail({ code }: { code: string }) {
         />
       </div>
 
-      <Modal open={edit} onClose={() => setEdit(false)} title="Product master" footer={<><button className="secondary" onClick={() => setEdit(false)}>Cancel</button><button onClick={save}>Save product</button></>}>
-        <div className="form-grid">
+      <Modal open={edit} onClose={() => setEdit(false)} title="Product master" footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setEdit(false)}>Cancel</button><button onClick={save}>Save product</button></>}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name"><input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></Field>
           <Field label="Unit price"><input type="number" step="0.01" value={form.price ?? ""} onChange={(e) => set("price", e.target.value)} /></Field>
           <Field label="Low-stock threshold"><input type="number" value={form.threshold ?? ""} onChange={(e) => set("threshold", e.target.value)} /></Field>
           <Field label="Best before (latest batch)"><input type="date" value={form.best_before ?? ""} onChange={(e) => set("best_before", e.target.value)} /></Field>
-          <div className="wide"><Field label="Description"><textarea value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></Field></div>
+          <div className="col-span-full"><Field label="Description"><textarea value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></Field></div>
         </div>
-        {msg && <p className="error">{msg}</p>}
+        {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
     </div>
   );

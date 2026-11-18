@@ -32,7 +32,7 @@ export default function Deliveries() {
   }
 
   return (
-    <div className="stack">
+    <div className="grid gap-5">
       <PageHeader title="Incoming deliveries" subtitle="Count the physical delivery before updating the branch ledger." />
       <DataTable
         rows={data.dispatches}
@@ -48,15 +48,15 @@ export default function Deliveries() {
 
       <Modal
         open={!!target} onClose={() => setTarget(null)} title={`Confirm branch receipt · ${target?.dispatch_code ?? ""}`}
-        footer={<><button className="secondary" onClick={() => setTarget(null)}>Cancel</button><button disabled={!valid || busy} onClick={confirm}>{busy ? "Saving..." : "Confirm actual receipt"}</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setTarget(null)}>Cancel</button><button disabled={!valid || busy} onClick={confirm}>{busy ? "Saving..." : "Confirm actual receipt"}</button></>}
       >
         {target && (
           <>
-            <dl className="kv"><dt>Product / batch</dt><dd>{target.product} · {target.batch_no}</dd><dt>Dispatched</dt><dd>{target.quantity_dispatched}</dd><dt>Received by</dt><dd>{currentUser().full_name}</dd></dl>
+            <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Product / batch</dt><dd>{target.product} · {target.batch_no}</dd><dt>Dispatched</dt><dd>{target.quantity_dispatched}</dd><dt>Received by</dt><dd>{currentUser().full_name}</dd></dl>
             <Field label="Actual received"><input type="number" min={0} max={target.quantity_dispatched} value={qty} onChange={(e) => setQty(e.target.value)} /></Field>
             <Field label="Delivery note"><textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Two units missing from sealed delivery." /></Field>
             {valid && n !== target.quantity_dispatched && <Notice tone="warn">{n} received versus {target.quantity_dispatched} dispatched: a delivery discrepancy of {n - target.quantity_dispatched} will be flagged. The branch receives the actual quantity.</Notice>}
-            {msg && <p className="error">{msg}</p>}
+            {msg && <p className="m-0 text-danger">{msg}</p>}
           </>
         )}
       </Modal>
@@ -65,7 +65,7 @@ export default function Deliveries() {
         {result && (
           <>
             <Notice tone={result.variance ? "warn" : "ok"}>{result.dispatch_code}: {result.received} units received.</Notice>
-            <p className="muted">Branch ledger +{result.received}. {result.variance ? `Delivery variance ${result.variance} units; owner alert ${result.discrepancy} created.` : "Matches the dispatch."} The hub was already deducted at dispatch.</p>
+            <p className="text-mute">Branch ledger +{result.received}. {result.variance ? `Delivery variance ${result.variance} units; owner alert ${result.discrepancy} created.` : "Matches the dispatch."} The hub was already deducted at dispatch.</p>
           </>
         )}
       </ResultModal>
