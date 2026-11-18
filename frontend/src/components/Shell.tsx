@@ -32,7 +32,10 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
       </header>
       {open && <div className="scrim" onClick={() => setOpen(false)} />}
       <aside className={open ? "sidebar open" : "sidebar"}>
-        <h2>{title}</h2>
+        <div className="sidebar-head">
+          <h2>{title}</h2>
+          <button className="close-btn secondary" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
+        </div>
         <nav>
           {items.map((i) => (
             <button
