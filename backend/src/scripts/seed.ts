@@ -65,6 +65,14 @@ for (const u of DEMO_USERS) {
 // SAMPLE WEEK (02-08 Nov 2026)
 // ---------------------------------------------------------------------------
 
+// `npm run seed:reset` wipes the operational data (sales, ledger, dispatches, closings, audits, supplies) and
+// re-inserts the sample week. Accounts, products and materials are kept.
+if (process.argv.includes("--reset")) {
+  await sql.query(`TRUNCATE material_usage, material_stock_in, weekly_audits, stock_adjustments, discrepancies,
+    closing_items, daily_closings, sales, dispatches, stock_ledger, product_batches RESTART IDENTITY`);
+  console.log("Operational data cleared");
+}
+
 const [already] = await sql`SELECT 1 FROM dispatches WHERE dispatch_code = 'DSP-0087'`;
 if (already) {
   console.log("Sample week already seeded; skipping transactional data");
@@ -162,7 +170,7 @@ try {
   for (const branch of ["Market Road", "Town Center"] as const) {
     const split = splitTotal(DAILY_SALES[branch][6]);
     for (const p of PRODUCT_NAMES) {
-      await ledger(p, branch, "opening_baseline", split[p] + 10, "BASE-1108", BRANCH_STAFF[branch], at(nov8, "08:00"));
+      await ledger(p, branch, "opening_baseline", split[p] + 45, "BASE-1108", BRANCH_STAFF[branch], at(nov8, "08:00"));
       const code = await sale(branch, p, split[p], nov8, "17:00");
       await ledger(p, branch, "sale", -split[p], code!, BRANCH_STAFF[branch], at(nov8, "17:00"));
     }
