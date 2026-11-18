@@ -12,7 +12,17 @@ export interface NavItem {
 // Shared layout for every role: sidebar + ?page=<key> content area.
 export default function Shell({ title, items }: { title: string; items: NavItem[] }) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // phone drawer
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem("sidebar-collapsed") === "1"; } catch { return false; }
+  });
+  function toggleSidebar() {
+    if (window.matchMedia("(max-width: 767px)").matches) return setOpen(true);
+    setCollapsed((c) => {
+      try { localStorage.setItem("sidebar-collapsed", c ? "0" : "1"); } catch { /* storage unavailable */ }
+      return !c;
+    });
+  }
   const [params, setParams] = useSearchParams();
   const current = items.find((i) => i.key === params.get("page")) ?? items[0];
   const user = JSON.parse(sessionStorage.getItem("user") ?? "{}");
@@ -28,15 +38,10 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
   const initials = String(user.full_name ?? "?").split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
-    <div className="grid min-h-screen grid-cols-[248px_minmax(0,1fr)] max-md:grid-cols-[minmax(0,1fr)]">
-      <header className="sticky top-0 z-30 hidden items-center gap-3 border-b border-line bg-white px-3 py-2 max-md:flex">
-        <button className="px-3 py-1.5 text-xl leading-none" aria-label="Menu" onClick={() => setOpen(true)}>☰</button>
-        <strong>{current.label}</strong>
-        <span className="ml-auto text-xs text-mute">{title}</span>
-      </header>
+    <div className="flex min-h-screen">
       {open && <div className="fixed inset-0 z-40 hidden bg-ink/45 max-md:block" onClick={() => setOpen(false)} />}
       <aside
-        className={`sticky top-0 flex h-screen flex-col gap-5 overflow-y-auto border-r border-line bg-white px-4 py-5 max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
+        className={`${collapsed ? "md:hidden" : "md:w-62"} sticky top-0 flex h-screen flex-none flex-col gap-5 overflow-y-auto border-r border-line bg-white px-4 py-5 max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
@@ -70,7 +75,14 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
           <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={logout}>Sign out</button>
         </div>
       </aside>
-      <section className="min-w-0 p-8 max-md:p-4">{current.element}</section>
+      <div className="min-w-0 flex-1">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-white/90 px-4 py-2 backdrop-blur md:px-8">
+          <button className="border border-line bg-white px-3 py-1.5 text-xl leading-none text-ink shadow-none hover:bg-stone-50" aria-label="Toggle menu" aria-expanded={!collapsed} onClick={toggleSidebar}>☰</button>
+          <strong>{current.label}</strong>
+          <span className="ml-auto text-xs text-mute">{title}</span>
+        </header>
+        <section className="p-8 max-md:p-4">{current.element}</section>
+      </div>
     </div>
   );
 }
