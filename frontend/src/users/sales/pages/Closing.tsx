@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../lib/axios";
-import {
-  Badge,
-  DataTable,
-  Field,
-  Loading,
-  Notice,
-  PageHeader,
-  ResultModal,
-  Steps,
-} from "../../../components/ui";
+import { Badge, Button, DataTable, Field, Input, Loading, Notice, PageHeader, ResultModal, Steps, Textarea } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { currentUser, errMsg, useApi } from "../../../lib/useApi";
 import { useLocalSales } from "../../../lib/useSalesWorkspace";
@@ -131,7 +122,7 @@ export default function Closing() {
           <p className="text-mute">Closing note: “{data.closing!.note}”</p>
         )}
         <div>
-          <button onClick={() => go("summary")}>View summary</button>
+          <Button onClick={() => go("summary")}>View summary</Button>
         </div>
       </div>
     );
@@ -151,7 +142,7 @@ export default function Closing() {
       {(local.rows.length > 0 || local.error) && (
         <Notice tone="warn">
           Synchronize this device’s pending sales before submitting the closing.{" "}
-          <button onClick={() => go("queue")}>Open offline queue</button>
+          <Button onClick={() => go("queue")}>Open offline queue</Button>
         </Notice>
       )}
       <Steps
@@ -161,13 +152,13 @@ export default function Closing() {
 
       {step === 2 && (
         <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-4">
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
             {rows.map((r) => (
               <Field
                 key={r.product_code}
                 label={`${r.name} · expected ${r.expected}`}
               >
-                <input
+                <Input
                   type="number"
                   min={0}
                   step={1}
@@ -180,7 +171,7 @@ export default function Closing() {
             ))}
           </div>
           <Field label="Counted by">
-            <input value={`${me.full_name} · Sales Staff`} readOnly />
+            <Input value={`${me.full_name} · Sales Staff`} readOnly />
           </Field>
           {allCounted && flagged.length > 0 && (
             <Notice tone="warn">
@@ -194,15 +185,14 @@ export default function Closing() {
             </Notice>
           )}
           <div className="flex flex-wrap gap-2">
-            <button disabled={!allCounted} onClick={() => setStep(3)}>
+            <Button disabled={!allCounted} onClick={() => setStep(3)}>
               Compare &amp; review closing
-            </button>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-stone-50"
+            </Button>
+            <Button variant="secondary"
               onClick={() => go("summary")}
             >
               Back to summary
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -213,12 +203,11 @@ export default function Closing() {
             <Badge tone={flagged.length ? "warn" : "ok"}>
               {flagged.length ? "Flagged" : "Matched"}
             </Badge>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-stone-50"
+            <Button variant="secondary"
               onClick={() => setStep(2)}
             >
               Edit count
-            </button>
+            </Button>
           </div>
           <DataTable
             rows={rows}
@@ -241,7 +230,7 @@ export default function Closing() {
                 : "Optional."
             }
           >
-            <textarea
+            <Textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="e.g. Two units damaged during display."
@@ -253,7 +242,7 @@ export default function Closing() {
           </Notice>
           {msg && <p className="m-0 text-danger">{msg}</p>}
           <div>
-            <button
+            <Button
               disabled={
                 busy ||
                 local.rows.length > 0 ||
@@ -263,7 +252,7 @@ export default function Closing() {
               onClick={submit}
             >
               {busy ? "Submitting..." : "Submit daily closing"}
-            </button>
+            </Button>
           </div>
         </div>
       )}

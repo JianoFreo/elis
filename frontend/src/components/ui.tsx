@@ -3,14 +3,36 @@ import { shortDay } from "../lib/format";
 
 const CARD = "rounded-md border border-line bg-white ";
 
+const SHAPE = "cursor-pointer rounded px-4 py-2.5 text-sm font-medium transition motion-reduce:transition-none active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink";
+const BUTTON = {
+  primary: `${SHAPE} bg-pink text-white hover:bg-pink-dark`,
+  secondary: `${SHAPE} border border-line bg-white text-ink hover:bg-canvas`,
+  danger: `${SHAPE} bg-danger text-white hover:bg-danger/90`,
+  ghost: "cursor-pointer rounded bg-transparent px-1.5 py-1 text-sm font-semibold text-pink-dark transition motion-reduce:transition-none hover:bg-pink-soft active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink",
+  bare: "cursor-pointer rounded text-sm max-md:min-h-11 transition motion-reduce:transition-none disabled:cursor-default disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink",
+};
+const FIELD = "w-full rounded border border-ink/50 bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base";
+const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(" ");
+
+export function Button({ variant = "primary", className, ...rest }: React.ComponentProps<"button"> & { variant?: keyof typeof BUTTON }) {
+  return <button {...rest} className={cx(BUTTON[variant], className)} />;
+}
+export const Input = ({ className, ...rest }: React.ComponentProps<"input">) => <input {...rest} className={cx(FIELD, className)} />;
+export const Select = ({ className, ...rest }: React.ComponentProps<"select">) => <select {...rest} className={cx(FIELD, className)} />;
+export const Textarea = ({ className, ...rest }: React.ComponentProps<"textarea">) => <textarea {...rest} className={cx(FIELD, "min-h-21 resize-y", className)} />;
+
+export const TH = "border-b border-line bg-canvas px-4 py-3 text-xs font-semibold uppercase tracking-wider text-mute tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5";
+export const TD = "border-b border-line px-4 py-3 tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5 max-md:text-sm";
+export const TBODY = "[&>tr:last-child>td]:border-b-0 [&>tr:hover>td]:bg-canvas";
+
 export type Tone = "ok" | "warn" | "bad" | "info" | "muted";
 
 const BADGE: Record<Tone, string> = {
-  ok: "bg-ok-bg text-ok", warn: "bg-warn-bg text-warn", bad: "bg-bad-bg text-danger", info: "bg-info-bg text-info", muted: "bg-stone-100 text-mute",
+  ok: "bg-ok-bg text-ok", warn: "bg-warn-bg text-warn", bad: "bg-bad-bg text-danger", info: "bg-info-bg text-info", muted: "bg-line/40 text-mute",
 };
 const NOTICE: Record<Tone, string> = {
-  ok: "border-green-200 bg-ok-bg text-ok", warn: "border-amber-200 bg-warn-bg text-warn", bad: "border-red-200 bg-bad-bg text-danger",
-  info: "border-blue-200 bg-info-bg text-info", muted: "border-line bg-stone-100 text-mute",
+  ok: "border-ok/25 bg-ok-bg text-ok", warn: "border-warn/25 bg-warn-bg text-warn", bad: "border-danger/25 bg-bad-bg text-danger",
+  info: "border-info/25 bg-info-bg text-info", muted: "border-line bg-line/40 text-mute",
 };
 const VALUE: Record<Tone, string> = { ok: "text-ok", warn: "text-warn", bad: "text-danger", info: "text-info", muted: "text-mute" };
 const BAR: Record<Tone, string> = { ok: "bg-ok", warn: "bg-warn", bad: "bg-danger", info: "bg-pink", muted: "bg-pink" };
@@ -19,7 +41,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
   return (
     <div className="mb-6 flex flex-wrap items-start justify-between gap-4 border-b border-line pb-4 max-md:flex-col [&_h1]:mb-1 [&_h1]:text-[1.6rem] max-md:[&_h1]:text-xl [&_p]:m-0">
       <div>
-        <h1>{title}</h1>
+        <h1 className="mb-4 text-2xl font-semibold tracking-tight max-md:text-xl">{title}</h1>
         {subtitle && <p className="text-mute">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2 max-md:w-full max-md:[&>button]:w-full">{actions}</div>}
@@ -49,7 +71,7 @@ export function Notice({ tone = "info", children }: { tone?: Tone; children: Rea
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label className="grid gap-1 text-sm [&>span]:font-medium [&>span]:text-stone-600">
+    <label className="grid gap-1 text-sm [&>span]:font-medium [&>span]:text-ink/80">
       <span>{label}</span>
       {children}
       {hint && <small className="text-mute">{hint}</small>}
@@ -70,7 +92,7 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/50 p-4" onMouseDown={onClose}>
       <div className={`${CARD} max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-md p-6 shadow-lg max-md:max-h-[96vh] max-md:p-4`} role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
-        <h2>{title}</h2>
+        <h2 className="mb-3 text-lg font-semibold">{title}</h2>
         <div className="mb-5 grid gap-4">{children}</div>
         {footer && <div className="flex flex-wrap justify-end gap-2 max-md:flex-col-reverse max-md:[&>button]:w-full">{footer}</div>}
       </div>
@@ -88,8 +110,8 @@ export function ResultModal({
       title={title}
       onClose={onClose}
       footer={<>
-        {action && <button onClick={() => { action.onClick(); onClose(); }}>{action.label}</button>}
-        <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={onClose}>Close</button>
+        {action && <Button onClick={() => { action.onClick(); onClose(); }}>{action.label}</Button>}
+        <Button variant="secondary" onClick={onClose}>Close</Button>
       </>}
     >
       {children}
@@ -104,14 +126,14 @@ export function Loading({ loading, error }: { loading: boolean; error: string })
 }
 
 export function Progress({ value, tone = "info" }: { value: number; tone?: Tone }) {
-  return <div className="h-2 overflow-hidden rounded-sm bg-stone-100"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
+  return <div className="h-2 overflow-hidden rounded-sm bg-line/40"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
 export function Steps({ current, steps }: { current: number; steps: string[] }) {
   return (
     <ol className="m-0 flex list-none gap-2 overflow-x-auto p-0 md:flex-wrap">
       {steps.map((s, i) => (
-        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-stone-100 text-mute"}`}>
+        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-line/40 text-mute"}`}>
           <span className="grid size-5.5 place-items-center rounded-sm bg-white text-xs font-bold">{i + 1}</span> {s}
         </li>
       ))}
@@ -119,10 +141,10 @@ export function Steps({ current, steps }: { current: number; steps: string[] }) 
   );
 }
 
-export function BarChart({ data }: { data: { day: string; total: number }[] }) {
+export function BarChart({ data, label = "Sales this week" }: { data: { day: string; total: number }[]; label?: string }) {
   const max = Math.max(1, ...data.map((d) => d.total));
   return (
-    <div className="flex h-50 items-end gap-2.5 pt-5 max-md:gap-1" role="img" aria-label="Sales this week">
+    <div className="flex h-50 items-end gap-2.5 pt-5 max-md:gap-1" role="img" aria-label={label}>
       {data.map((d, i) => (
         <div key={d.day} className="group flex h-full flex-1 flex-col items-center justify-end gap-1 text-xs">
           <span className="text-[.7rem] text-mute">{Math.round(d.total).toLocaleString()}</span>
@@ -139,11 +161,11 @@ export interface Col<T> { header: string; render: (r: T) => React.ReactNode; ali
 export function DataTable<T>({ rows, cols, empty = "No records yet." }: { rows: T[]; cols: Col<T>[]; empty?: string }) {
   return (
     <div className={`overflow-x-auto ${CARD}`}>
-      <table>
-        <thead><tr>{cols.map((c) => <th key={c.header} className={c.align && "text-right"}>{c.header}</th>)}</tr></thead>
-        <tbody>
-          {rows.length === 0 && <tr><td colSpan={cols.length} className="text-mute">{empty}</td></tr>}
-          {rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.header} className={c.align && "text-right"}>{c.render(r)}</td>)}</tr>)}
+      <table className="w-full border-collapse">
+        <thead><tr>{cols.map((c) => <th key={c.header} className={`${TH} ${c.align ? "text-right" : "text-left"}`}>{c.header}</th>)}</tr></thead>
+        <tbody className={TBODY}>
+          {rows.length === 0 && <tr><td colSpan={cols.length} className={`${TD} text-left text-mute`}>{empty}</td></tr>}
+          {rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.header} className={`${TD} ${c.align ? "text-right" : "text-left"}`}>{c.render(r)}</td>)}</tr>)}
         </tbody>
       </table>
     </div>

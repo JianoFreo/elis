@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import { DataTable, Field, Loading, Modal, Notice, PageHeader, ResultModal } from "../../../components/ui";
+import { Button, DataTable, Field, Input, Loading, Modal, Notice, PageHeader, ResultModal, Textarea } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { currentUser, errMsg, useApi } from "../../../lib/useApi";
 import { fmtDateTime } from "../../../lib/format";
@@ -42,19 +42,19 @@ export default function Deliveries() {
           { header: "Product / batch", render: (d) => `${d.product} · ${d.batch_no ?? "-"}` },
           { header: "Dispatched", render: (d) => d.quantity_dispatched, align: "right" },
           { header: "Sent", render: (d) => fmtDateTime(d.dispatched_at) },
-          { header: "", render: (d) => <button onClick={() => { setTarget(d); setQty(String(d.quantity_dispatched)); setNote(""); setMsg(""); }}>Confirm receipt</button> },
+          { header: "", render: (d) => <Button onClick={() => { setTarget(d); setQty(String(d.quantity_dispatched)); setNote(""); setMsg(""); }}>Confirm receipt</Button> },
         ]}
       />
 
       <Modal
         open={!!target} onClose={() => setTarget(null)} title={`Confirm branch receipt · ${target?.dispatch_code ?? ""}`}
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setTarget(null)}>Cancel</button><button disabled={!valid || busy} onClick={confirm}>{busy ? "Saving..." : "Confirm actual receipt"}</button></>}
+        footer={<><Button variant="secondary" onClick={() => setTarget(null)}>Cancel</Button><Button disabled={!valid || busy} onClick={confirm}>{busy ? "Saving..." : "Confirm actual receipt"}</Button></>}
       >
         {target && (
           <>
             <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Product / batch</dt><dd>{target.product} · {target.batch_no}</dd><dt>Dispatched</dt><dd>{target.quantity_dispatched}</dd><dt>Received by</dt><dd>{currentUser().full_name}</dd></dl>
-            <Field label="Actual received"><input type="number" min={0} max={target.quantity_dispatched} value={qty} onChange={(e) => setQty(e.target.value)} /></Field>
-            <Field label="Delivery note"><textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Two units missing from sealed delivery." /></Field>
+            <Field label="Actual received"><Input type="number" min={0} max={target.quantity_dispatched} value={qty} onChange={(e) => setQty(e.target.value)} /></Field>
+            <Field label="Delivery note"><Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Two units missing from sealed delivery." /></Field>
             {valid && n !== target.quantity_dispatched && <Notice tone="warn">{n} received versus {target.quantity_dispatched} dispatched: a delivery discrepancy of {n - target.quantity_dispatched} will be flagged. The branch receives the actual quantity.</Notice>}
             {msg && <p className="m-0 text-danger">{msg}</p>}
           </>
