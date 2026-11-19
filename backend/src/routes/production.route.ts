@@ -12,6 +12,7 @@ router.use(authMiddleware, productionOnly);
 const head = requireRole("production-head", "owner");
 
 // inventory & products
+router.post("/products", head, inv.registerProduct);
 router.get("/inventory", head, inv.inventory);
 router.get("/inventory/:code", head, inv.productLedger);
 router.post("/production-output", head, inv.recordProduction);

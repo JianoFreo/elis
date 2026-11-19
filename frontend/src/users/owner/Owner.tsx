@@ -17,9 +17,9 @@ export default function Owner() {
       title="Owner"
       items={[
         { key: "overview", label: "Overview", element: <Overview /> },
-        { key: "inventory", label: "Inventory", element: <Inventory /> },
+        { key: "inventory", label: "Product", element: <Inventory /> },
         { key: "dispatch", label: "Dispatch", element: <Dispatch /> },
-        { key: "supplies", label: "Supplies", element: <Supplies /> },
+        { key: "supplies", label: "Materials", element: <Supplies /> },
         { key: "discrepancies", label: "Discrepancies", element: <Discrepancies /> },
         { key: "audits", label: "Weekly audits", element: <Audits /> },
         { key: "reports", label: "Reports", element: <Reports /> },

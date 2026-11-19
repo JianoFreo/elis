@@ -22,7 +22,7 @@ type TableDefinition = {
 };
 
 // Readable business IDs come from the database, never from app code.
-const SEQUENCES = [
+export const SEQUENCES = [
   "user_id_seq",
   "product_code_seq",
   "material_code_seq",
@@ -32,7 +32,7 @@ const SEQUENCES = [
 ];
 
 // Indexes for the queries that scan the ledger, sales and usage history.
-const INDEXES = [
+export const INDEXES = [
   "CREATE INDEX IF NOT EXISTS idx_stock_ledger_loc_product ON stock_ledger (branch_id, product_id)",
   "CREATE INDEX IF NOT EXISTS idx_stock_ledger_ref ON stock_ledger (reference)",
   "CREATE INDEX IF NOT EXISTS idx_sales_branch_sold ON sales (branch_id, sold_at)",
@@ -42,10 +42,12 @@ const INDEXES = [
   "CREATE INDEX IF NOT EXISTS idx_discrepancies_status ON discrepancies (status)",
   "CREATE INDEX IF NOT EXISTS idx_discrepancies_source ON discrepancies (source_ref)",
   "CREATE INDEX IF NOT EXISTS idx_usage_date ON material_usage (usage_date, material_id)",
+  "CREATE UNIQUE INDEX IF NOT EXISTS uq_closing_branch_day ON daily_closings (branch_id, closing_date)",
+  "CREATE UNIQUE INDEX IF NOT EXISTS uq_closing_product ON closing_items (closing_id, product_id)",
   "CREATE INDEX IF NOT EXISTS idx_batches_product ON product_batches (product_id, id)",
 ];
 
-const TABLES: TableDefinition[] = [
+export const TABLES: TableDefinition[] = [
   {
     // 'hub' = central kitchen (Main hub), 'branch' = selling branch
     table: "branches",
@@ -140,8 +142,21 @@ const TABLES: TableDefinition[] = [
   },
 
   // ---------------------------------------------------------------
+  // PRINCESS: Products, production, stock requests and sales/closing tables
   // INVENTORY & PRODUCTION (production head)
   // ---------------------------------------------------------------
+
+  {
+    // Princess: idempotent production / external receipt requests. No destructive migration.
+    table: "product_stock_requests",
+    columns: {
+      operation_key: "VARCHAR(100) PRIMARY KEY",
+      user_id: "VARCHAR(255) NOT NULL REFERENCES users(user_id)",
+      payload: "JSONB NOT NULL",
+      response: "JSONB NOT NULL",
+      created_at: "TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    },
+  },
 
   {
     // One row per production run: batch number + best-before date per product.

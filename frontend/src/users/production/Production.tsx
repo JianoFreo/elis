@@ -8,14 +8,14 @@ import Alerts from "../shared/Alerts";
 export default function Production() {
   const role = sessionStorage.getItem("role");
   const alerts = { key: "alerts", label: "Alerts", element: <Alerts url="/api/production/supplies/alerts" /> };
-  const supplies = { key: "supplies", label: "Supplies & usage", element: <Supplies /> };
+  const supplies = { key: "supplies", label: "Materials", element: <Supplies /> };
 
   if (role === "production-staff") return <Shell title="Production" items={[supplies, alerts]} />;
   return (
     <Shell
       title="Production"
       items={[
-        { key: "inventory", label: "Inventory & products", element: <Inventory /> },
+        { key: "inventory", label: "Product", element: <Inventory /> },
         { key: "dispatch", label: "Dispatch & receipts", element: <Dispatch /> },
         supplies,
         alerts,
