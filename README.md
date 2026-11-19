@@ -30,7 +30,7 @@ Each developer owns their modules and files so we avoid merge conflicts.
 | Developer | Owns | Backend files | Frontend screens | Branches |
 | --- | --- | --- | --- | --- |
 | **Jm (John Michael Litana)** | Foundation (setup, schema, login and roles), Accounts and permissions, Reports and CSV, Deployment and final integration | `backend/src/app.ts`, `routes/auth.route.ts`, `routes/owner.route.ts`, `config/db.ts` (base tables) | login, shift, accounts, permissions, reports | `feature/auth`, `feature/accounts`, `feature/reports` |
-| **Princess Ann Delos Reyes** | Products, production, stock baseline, Sales and daily closing (with offline sync) | `backend/src/routes/sales.route.ts`, `controllers/sales/`, sales tables in `config/db.ts` | overview, sales, record-sale, offline, count, closing, inventory, product, production, stock-in, next-opening | `feature/products`, `feature/sales` |
+| **Princess Ann Delos Reyes** | Products, production, stock baseline, Sales and daily closing (with offline sync) | `backend/src/routes/sales.route.ts`, `controllers/sales/`, `controllers/production/inventory.controller.ts`, sales tables in `config/db.ts` | overview, sales, record-sale, offline, count, closing, inventory, product, production, stock-in, next-opening | `feature/products`, `feature/sales` |
 | **Jiano Magtangob** | Dispatch and receipts, Materials and usage, Discrepancies and weekly audits | `backend/src/routes/production.route.ts`, `controllers/production/`, dispatch tables in `config/db.ts` | dispatches, receive, supplies, usage, discrepancies, review, adjust, audits | `feature/dispatch`, `feature/materials`, `feature/discrepancies` |
 
 ### Rules to avoid conflicts
@@ -44,7 +44,7 @@ Each developer owns their modules and files so we avoid merge conflicts.
 ## Running the system
 1. Backend: copy `backend/.env.example` to `backend/.env`, set `DATABASE_URL` and `JWT_SECRET`, then in `backend/` run `npm install`, `npm run dev` (port 5000; tables are created on boot), then `npm run seed` and `ADMIN_USERNAME=owner ADMIN_PASSWORD='<strong>' npm run admin:create`.
 2. Frontend: in `frontend/` run `npm install` and `npm run dev` (proxies `/api` to localhost:5000).
-3. Production build: from the repo root, `npm run build` then `npm start` (one service serves API and frontend). `render.yaml` is included.
+3. Production build: from the repo root, `npm run build` then `npm start` (one service serves API and frontend). Deployment configuration remains Jm’s integration task.
 
 Roles: `owner`, `sales-staff`, `production-head`, `production-staff`. See `backend/README.md`.
 ## Git workflow (all members)
@@ -56,3 +56,12 @@ Roles: `owner`, `sales-staff`, `production-head`, `production-staff`. See `backe
 
 ## Commit message format
 `<type>: <what changed>` where type is one of `feat`, `fix`, `docs`, `test`, `chore`.
+
+## Princess Ann Delos Reyes — completed implementation
+See [SETUP_WINDOWS.md](SETUP_WINDOWS.md) for Windows / VS Code setup and [management/PRINCESS_COMPLETION.md](management/PRINCESS_COMPLETION.md) for changes, test evidence and remaining team review.
+
+Princess’s product, production, stock-entry, sales, device-offline queue and closing pages now use the existing React/API architecture. No standalone `app.js` is used in this repository. The professor’s sidebar wording is **Product** and **Materials**.
+
+From the repository root, run `npm --prefix backend run test:princess` for the isolated API and storage regression suite. Follow the [Windows setup guide](SETUP_WINDOWS.md#6-verify-the-code) for the Playwright browser checks, which also use the isolated database.
+
+The shared Product Owner backlog, acceptance criteria and review checklist are in `docs/product-owner/`. Final approval by Princess / Clark and the team’s final release sign-off remain pending; no stakeholder approval is implied by automated tests.
