@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { sql } from "../../config/db.js";
 import { bizDate } from "../../utils/http.js";
-import { supplyAlerts } from "../production/supplies.controller.js";
+import { supplyAlerts } from "../production/getRequests.controller.js";
 
 export async function overview(_req: Request, res: Response) {
   const date = bizDate();
