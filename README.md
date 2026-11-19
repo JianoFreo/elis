@@ -19,10 +19,10 @@ A web-based system that tracks sales, product stock, dispatches to branches, raw
 | --- | --- |
 | Project Manager | John Michael Litana |
 | Product Owner | Princess Ann Delos Reyes, Clark Jerzon Herrera |
-| Scrum Master | Hazel Baniqued, Clark Jerzon Herrera |
+| Scrum Master | Hazel Baniqued, Ericka Nucos |
 | Developer | Jiano Magtangob, John Michael Litana, Princess Ann Delos Reyes |
 | Tester / QA | Ericka Nucos, Hazel Baniqued, Jiano Magtangob |
-| Documentation Specialist | Ericka Nucos |
+| Documentation Specialist | Clark Jerzon Herrera |
 
 ## Development split (3 developers)
 Each developer owns their modules and files so we avoid merge conflicts.
