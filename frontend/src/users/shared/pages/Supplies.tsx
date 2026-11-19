@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { api } from "../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, Progress, ResultModal, StatCard, Stats, statusTone } from "../../components/ui";
-import { currentUser, errMsg, useApi } from "../../lib/useApi";
-import { fmtDate, num, peso } from "../../lib/format";
+import { api } from "../../../lib/axios";
+import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, Progress, ResultModal, StatCard, Stats, statusTone } from "../../../components/ui";
+import { currentUser, errMsg, useApi } from "../../../lib/useApi";
+import { fmtDate, num, peso } from "../../../lib/format";
 
 interface Material { material_code: string; name: string; category: string | null; unit: string; cost: number; threshold: number; supplier: string | null; on_hand: number; status: string }
 interface Supplies { registered: number; low_stock: number; received_today: number; materials: Material[] }

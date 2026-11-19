@@ -15,3 +15,8 @@ Backend/node_modules/
 Thumbs.db
 .vscode/
 *.log
+# Generated output (included in delivery ZIP, regenerated for Git builds)
+backend/dist/
+frontend/dist/
+frontend/*.tsbuildinfo
+tests/princess/results/

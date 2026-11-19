@@ -34,9 +34,9 @@ Copy each task into GitHub Issues / Projects with the same ID, owner, and label.
 ### Princess: Products, Sales, Closing (`dev-sales`)
 | # | Task | Owner | Status | Target |
 | --- | --- | --- | --- | --- |
-| DEV-4 | API: products, batches, production output, stock baseline | Princess | [ ] | Nov 20 |
-| DEV-5 | API: sales and daily closing (stock validation, offline sync, duplicate reference check) | Princess | [ ] | Nov 20 |
-| DEV-4b | Connect product and sales screens to the API in `app.js` | Princess | [ ] | Nov 21 |
+| DEV-4 | API: products, batches, production output, stock baseline | Princess | [x] | Nov 20 |
+| DEV-5 | API: sales and daily closing (stock validation, offline sync, duplicate reference check) | Princess | [x] | Nov 20 |
+| DEV-4b | Connect product and sales React screens to the API (current app has no standalone `app.js`) | Princess | [x] | Nov 21 |
 
 ### Jiano: Dispatch, Materials, Discrepancies (`dev-dispatch`)
 | # | Task | Owner | Status | Target |
@@ -49,8 +49,8 @@ Copy each task into GitHub Issues / Projects with the same ID, owner, and label.
 ## Product Owner (Princess, Clark) (`product-owner`)
 | # | Task | Owner | Status | Target |
 | --- | --- | --- | --- | --- |
-| PO-1 | Finalize product backlog and user stories mapped to the 53 screens | Princess, Clark | [ ] | Nov 18 |
-| PO-2 | Write acceptance criteria per module | Princess, Clark | [ ] | Nov 19 |
+| PO-1 | Finalize product backlog and user stories mapped to the 53 screens | Princess, Clark | [~] | Nov 18 |
+| PO-2 | Write acceptance criteria per module | Princess, Clark | [~] | Nov 19 |
 | PO-3 | Review completed features and give sign-off | Princess, Clark | [ ] | Nov 22 |
 
 ## Scrum Master (Hazel, Clark) (`scrum`)
@@ -81,3 +81,8 @@ Note: Jiano is a developer on the heaviest module set, so Ericka and Hazel carry
 
 ## Cut order if time runs out
 Build in this order and cut from the bottom: (1) login and roles, (2) products, sales, closing, (3) dispatch and receipts, (4) materials, (5) discrepancies and audits, (6) accounts, then reports. Document in the final paper which modules are complete.
+
+## Princess update — 19 Nov 2026
+DEV-4, DEV-5 and DEV-4b implementation is complete in the current React/API architecture. Builds and scoped regression checks are recorded in `tests/princess/RESULTS.md`. Browser/live-Neon integration remains a QA/release check, not an assertion implied by these code-completion marks.
+
+PO-1 and PO-2 documents are prepared in `docs/product-owner/` for Princess and Clark’s joint review. PO-3 stays pending: no human approval, future meeting or full-system sign-off has been fabricated. Other members’ task statuses have not been changed.
