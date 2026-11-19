@@ -6,10 +6,10 @@ import Materials from "./pages/Materials";
 import Discrepancies from "./pages/Discrepancies";
 import Audits from "./pages/Audits";
 import Reports from "./pages/Reports";
-import Inventory from "../shared/Inventory";
-import Dispatch from "../shared/Dispatch";
-import Supplies from "../shared/Supplies";
-import Alerts from "../shared/Alerts";
+import Inventory from "../shared/pages/Inventory";
+import Dispatch from "../shared/pages/Dispatch";
+import Supplies from "../shared/pages/Supplies";
+import Alerts from "../shared/pages/Alerts";
 
 export default function Owner() {
   return (

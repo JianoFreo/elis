@@ -1,8 +1,8 @@
 import Shell from "../../components/Shell";
-import Inventory from "../shared/Inventory";
-import Dispatch from "../shared/Dispatch";
-import Supplies from "../shared/Supplies";
-import Alerts from "../shared/Alerts";
+import Inventory from "../shared/pages/Inventory";
+import Dispatch from "../shared/pages/Dispatch";
+import Supplies from "../shared/pages/Supplies";
+import Alerts from "../shared/pages/Alerts";
 
 // Production head: inventory, dispatch, supplies. Production staff: supplies logging only.
 export default function Production() {
