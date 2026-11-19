@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import {
-  Field,
-  Loading,
-  Notice,
-  PageHeader,
-  ResultModal,
-} from "../../../components/ui";
+import { Button, Field, Input, Loading, Notice, PageHeader, ResultModal, Select } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { errMsg } from "../../../lib/useApi";
 import { peso } from "../../../lib/format";
@@ -137,9 +131,9 @@ export default function RecordSale() {
             confirm();
           }}
         >
-          <h2>Sale details</h2>
+          <h2 className="mb-3 text-lg font-semibold">Sale details</h2>
           <Field label="Product">
-            <select
+            <Select
               value={p?.product_code ?? ""}
               onChange={(e) => setCode(e.target.value)}
             >
@@ -148,13 +142,13 @@ export default function RecordSale() {
                   {x.name} · {x.product_code}
                 </option>
               ))}
-            </select>
+            </Select>
           </Field>
           <Field
             label="Quantity"
             hint={`${available} available after this device's pending sales`}
           >
-            <input
+            <Input
               type="number"
               min={1}
               step={1}
@@ -164,10 +158,10 @@ export default function RecordSale() {
             />
           </Field>
           <Field label="Unit price">
-            <input readOnly value={p?.price.toFixed(2) ?? ""} />
+            <Input readOnly value={p?.price.toFixed(2) ?? ""} />
           </Field>
           <label className="flex items-center gap-2">
-            <input
+            <Input
               type="checkbox"
               style={{ width: "auto" }}
               checked={offline}
@@ -182,23 +176,22 @@ export default function RecordSale() {
           )}
           {msg && <Notice tone="warn">{msg}</Notice>}
           <div className="flex flex-wrap gap-2">
-            <button
+            <Button
               disabled={!valid || tooMany || busy || closed || !!outbox.error}
               type="submit"
             >
               {busy ? "Saving…" : offline ? "Queue sale" : "Confirm sale"}
-            </button>
-            <button
+            </Button>
+            <Button variant="secondary"
               type="button"
-              className="border border-line bg-white text-ink shadow-none"
               onClick={() => go("workspace")}
             >
               Back to sales
-            </button>
+            </Button>
           </div>
         </form>
         <section className="rounded-md border border-line bg-white p-5 grid content-start gap-5">
-          <h2>Transaction preview</h2>
+          <h2 className="mb-3 text-lg font-semibold">Transaction preview</h2>
           <p>{p?.name ?? "No active products"}</p>
           <strong className="text-2xl">
             {valid ? peso(n * p!.price) : "n/a"}

@@ -1,15 +1,4 @@
-import {
-  Badge,
-  DataTable,
-  Loading,
-  Notice,
-  PageHeader,
-  Progress,
-  StatCard,
-  Stats,
-  Steps,
-  statusTone,
-} from "../../../components/ui";
+import { Badge, Button, DataTable, Loading, Notice, PageHeader, Progress, StatCard, Stats, Steps, statusTone } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import {
   useLocalSales,
@@ -51,19 +40,17 @@ export default function Workspace() {
         subtitle={`${data.branch} · ${data.shift} · ${fmtDate(data.date)}`}
         actions={
           <>
-            <button onClick={() => go("record")}>Record a sale</button>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            <Button onClick={() => go("record")}>Record a sale</Button>
+            <Button variant="secondary"
               onClick={() => go("queue")}
             >
               Offline queue
-            </button>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            </Button>
+            <Button variant="secondary"
               onClick={() => go("summary")}
             >
               Daily summary
-            </button>
+            </Button>
           </>
         }
       />
@@ -103,7 +90,7 @@ export default function Workspace() {
 
       <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2>Shift closing checklist</h2>
+          <h2 className="mb-3 text-lg font-semibold">Shift closing checklist</h2>
           <Badge tone={data.step === 3 ? "ok" : "info"}>
             {data.step === 3 && data.closing
               ? `Closing ${data.closing.status}`
@@ -119,16 +106,16 @@ export default function Workspace() {
           tone={data.step === 3 ? "ok" : "info"}
         />
         <div>
-          <button onClick={() => go("closing")}>
+          <Button onClick={() => go("closing")}>
             {data.closing && data.closing.status !== "open"
               ? "View closing"
               : "Continue to stock count"}
-          </button>
+          </Button>
         </div>
       </div>
 
       <div>
-        <h2>Recent transactions</h2>
+        <h2 className="mb-3 text-lg font-semibold">Recent transactions</h2>
         <DataTable
           rows={data.recent}
           empty="No sales recorded yet today."

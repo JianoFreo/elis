@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../../lib/axios";
-import { DataTable, Field, Loading, Modal, PageHeader, StatCard, Stats } from "../../../../components/ui";
+import { Button, DataTable, Field, Input, Loading, Modal, PageHeader, StatCard, Stats, Textarea } from "../../../../components/ui";
 import { useGo } from "../../../../lib/nav";
 import { errMsg, useApi } from "../../../../lib/useApi";
 import { MOVEMENT_LABEL, fmtDate, fmtDateTime, peso, signed } from "../../../../lib/format";
@@ -43,7 +43,7 @@ export default function ProductDetail({ code }: { code: string }) {
         subtitle={`${p.product_code}${data.batch ? ` · Supply batch ${data.batch.batch_no}` : ""}`}
         actions={
           <>
-            <button
+            <Button
               onClick={() => {
                 setForm({
                   name: p.name,
@@ -58,19 +58,17 @@ export default function ProductDetail({ code }: { code: string }) {
               }}
             >
               Edit product details
-            </button>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            </Button>
+            <Button variant="secondary"
               onClick={() => go("dispatch")}
             >
               Create dispatch
-            </button>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            </Button>
+            <Button variant="secondary"
               onClick={() => go("inventory")}
             >
               Back to product
-            </button>
+            </Button>
           </>
         }
       />
@@ -89,14 +87,14 @@ export default function ProductDetail({ code }: { code: string }) {
         />
       </Stats>
       <div className="rounded-md border border-line bg-white  p-5 max-md:p-4">
-        <h2>Product information</h2>
+        <h2 className="mb-3 text-lg font-semibold">Product information</h2>
         <p>
           {p.description ?? "No description."} Quantity is tracked per product,
           batch and location.
         </p>
       </div>
       <div>
-        <h2>Ledger movements</h2>
+        <h2 className="mb-3 text-lg font-semibold">Ledger movements</h2>
         <DataTable
           rows={data.movements}
           cols={[
@@ -123,25 +121,24 @@ export default function ProductDetail({ code }: { code: string }) {
         title="Product master"
         footer={
           <>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            <Button variant="secondary"
               onClick={() => setEdit(false)}
             >
               Cancel
-            </button>
-            <button onClick={save}>Save product</button>
+            </Button>
+            <Button onClick={save}>Save product</Button>
           </>
         }
       >
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name">
-            <input
+            <Input
               value={form.name ?? ""}
               onChange={(e) => set("name", e.target.value)}
             />
           </Field>
           <Field label="Unit price">
-            <input
+            <Input
               type="number"
               step="0.01"
               value={form.price ?? ""}
@@ -149,7 +146,7 @@ export default function ProductDetail({ code }: { code: string }) {
             />
           </Field>
           <Field label="Unit cost">
-            <input
+            <Input
               type="number"
               min={0}
               step="0.01"
@@ -158,7 +155,7 @@ export default function ProductDetail({ code }: { code: string }) {
             />
           </Field>
           <Field label="Low-stock threshold">
-            <input
+            <Input
               type="number"
               min={0}
               step={1}
@@ -167,7 +164,7 @@ export default function ProductDetail({ code }: { code: string }) {
             />
           </Field>
           <Field label="Best before (latest batch)">
-            <input
+            <Input
               type="date"
               value={form.best_before ?? ""}
               onChange={(e) => set("best_before", e.target.value)}
@@ -175,7 +172,7 @@ export default function ProductDetail({ code }: { code: string }) {
           </Field>
           <div className="col-span-full">
             <Field label="Description">
-              <textarea
+              <Textarea
                 value={form.description ?? ""}
                 onChange={(e) => set("description", e.target.value)}
               />

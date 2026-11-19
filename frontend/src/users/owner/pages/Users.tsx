@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, ResultModal } from "../../../components/ui";
+import { Badge, Button, DataTable, Field, Input, Loading, Modal, Notice, PageHeader, ResultModal, Select } from "../../../components/ui";
 import { ROLE_LABEL } from "../../../lib/roles";
 import { ownerService } from "../../../services/owner.service";
 import { currentUser, errMsg, useApi } from "../../../lib/useApi";
@@ -61,7 +61,7 @@ export default function Users() {
       <PageHeader
         title="The people behind the kitchen."
         subtitle="Account creation, permissions and deletion"
-        actions={<button onClick={() => { setForm(blank); setMsg(""); setStep(1); }}>Create staff account</button>}
+        actions={<Button onClick={() => { setForm(blank); setMsg(""); setStep(1); }}>Create staff account</Button>}
       />
       {msg && step === 0 && !del && <p className="m-0 text-danger">{msg}</p>}
       <DataTable
@@ -75,30 +75,30 @@ export default function Users() {
           { header: "Status", render: (u) => <Badge tone={u.account_status ? "ok" : "muted"}>{u.account_status ? "Active" : "Deactivated"}</Badge> },
           { header: "", render: (u) => u.user_id !== me && (
               <div className="flex flex-wrap gap-1.5">
-                <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => toggle(u)}>{u.account_status ? "Deactivate" : "Activate"}</button>
-                <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => { setMsg(""); setDel(u); }}>Delete</button>
+                <Button variant="secondary" onClick={() => toggle(u)}>{u.account_status ? "Deactivate" : "Activate"}</Button>
+                <Button variant="ghost" onClick={() => { setMsg(""); setDel(u); }}>Delete</Button>
               </div>) },
         ]}
       />
 
       <Modal
         open={step === 1} onClose={() => setStep(0)} title="Create a staff account"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setStep(0)}>Cancel</button><button disabled={!detailsOk} onClick={() => setStep(2)}>Continue to permissions</button></>}
+        footer={<><Button variant="secondary" onClick={() => setStep(0)}>Cancel</Button><Button disabled={!detailsOk} onClick={() => setStep(2)}>Continue to permissions</Button></>}
       >
         <p className="text-mute">Owner-managed access for kitchen and branch staff. Account ID: {nextId.data?.user_id ?? "..."}</p>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
-          <Field label="First name"><input value={form.first} onChange={(e) => set("first", e.target.value)} /></Field>
-          <Field label="Surname"><input value={form.surname} onChange={(e) => set("surname", e.target.value)} /></Field>
-          <Field label="Username" hint="Letters, numbers, dot, dash. At least 3."><input value={form.username} onChange={(e) => set("username", e.target.value)} /></Field>
-          <Field label="Temporary password" hint="At least 8 characters."><input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} /></Field>
+          <Field label="First name"><Input value={form.first} onChange={(e) => set("first", e.target.value)} /></Field>
+          <Field label="Surname"><Input value={form.surname} onChange={(e) => set("surname", e.target.value)} /></Field>
+          <Field label="Username" hint="Letters, numbers, dot, dash. At least 3."><Input value={form.username} onChange={(e) => set("username", e.target.value)} /></Field>
+          <Field label="Temporary password" hint="At least 8 characters."><Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} /></Field>
           <Field label="Role">
-            <select value={form.role} onChange={(e) => set("role", e.target.value)}>{ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}</select>
+            <Select value={form.role} onChange={(e) => set("role", e.target.value)}>{ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}</Select>
           </Field>
           {needsBranch && (
             <Field label="Branch / location">
-              <select value={form.branch_id} onChange={(e) => set("branch_id", e.target.value)}>
+              <Select value={form.branch_id} onChange={(e) => set("branch_id", e.target.value)}>
                 <option value="">Choose a branch</option>{selling.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
+              </Select>
             </Field>
           )}
         </div>
@@ -107,7 +107,7 @@ export default function Users() {
 
       <Modal
         open={step === 2} onClose={() => setStep(0)} title="Account permissions"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setStep(1)}>Back to account details</button><button disabled={busy} onClick={create}>{busy ? "Saving..." : "Save account & permissions"}</button></>}
+        footer={<><Button variant="secondary" onClick={() => setStep(1)}>Back to account details</Button><Button disabled={busy} onClick={create}>{busy ? "Saving..." : "Save account & permissions"}</Button></>}
       >
         <p className="text-mute">Preset role permissions · {form.first} {form.surname} · {ROLE_LABEL[form.role]} · {location}</p>
         {perms.data
@@ -118,7 +118,7 @@ export default function Users() {
 
       <Modal
         open={!!del} onClose={() => setDel(null)} title="Delete this staff account?"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setDel(null)}>Cancel</button><button className="bg-danger hover:bg-danger/90" disabled={busy} onClick={remove}>Delete account</button></>}
+        footer={<><Button variant="secondary" onClick={() => setDel(null)}>Cancel</Button><Button variant="danger" disabled={busy} onClick={remove}>Delete account</Button></>}
       >
         {del && <><p><strong>{del.user_id} · {del.full_name}</strong> · {ROLE_LABEL[del.role]}</p>
           <p className="text-mute">Check the account name and role before confirming deletion. Accounts with recorded activity cannot be deleted; deactivate them instead.</p></>}

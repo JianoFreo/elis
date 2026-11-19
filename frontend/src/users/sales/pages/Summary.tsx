@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  Badge,
-  DataTable,
-  Loading,
-  PageHeader,
-  StatCard,
-  Stats,
-  statusTone,
-} from "../../../components/ui";
+import { Badge, Button, DataTable, Input, Loading, PageHeader, StatCard, Stats, statusTone } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { useApi } from "../../../lib/useApi";
 import { fmtDate, peso, signed } from "../../../lib/format";
@@ -50,15 +42,15 @@ export default function Summary() {
         subtitle={`${fmtDate(data.date)} · ${data.branch}`}
         actions={
           <>
-            <button onClick={() => go("closing")}>
+            <Button onClick={() => go("closing")}>
               {data.closing ? "Review closing" : "Enter physical count"}
-            </button>
+            </Button>
           </>
         }
       />
       <label className="grid max-w-xs gap-1">
         Report date
-        <input
+        <Input
           type="date"
           value={date || data.date}
           onChange={(e) => setDate(e.target.value)}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, ResultModal, StatCard, Stats, statusTone } from "../../../../components/ui";
+import { Badge, Button, DataTable, Field, Input, Loading, Modal, Notice, PageHeader, ResultModal, Select, StatCard, Stats, statusTone } from "../../../../components/ui";
 import { useGo } from "../../../../lib/nav";
 import { errMsg, useApi } from "../../../../lib/useApi";
 import { DISPATCH_STATUS } from "../../../../lib/format";
@@ -33,7 +33,7 @@ export default function DispatchList() {
       <PageHeader
         title="From our kitchen to every branch."
         subtitle="Track dispatch details, in-transit stock, receipts and delivery discrepancies."
-        actions={<button onClick={() => { setForm({ product_code: products.data?.products[0]?.product_code ?? "", branch_id: String(dest[0]?.id ?? "") }); setMsg(""); setOpen(true); }}>Create dispatch</button>}
+        actions={<Button onClick={() => { setForm({ product_code: products.data?.products[0]?.product_code ?? "", branch_id: String(dest[0]?.id ?? "") }); setMsg(""); setOpen(true); }}>Create dispatch</Button>}
       />
       <Stats>
         <StatCard label="In transit" value={list.data.in_transit} hint="Awaiting branch receipt" />
@@ -49,25 +49,25 @@ export default function DispatchList() {
           { header: "Units", render: (r) => r.sent, align: "right" },
           { header: "Received", render: (r) => r.received ?? "-", align: "right" },
           { header: "Status", render: (r) => <Badge tone={statusTone(r.status)}>{DISPATCH_STATUS[r.status] ?? r.status}</Badge> },
-          { header: "", render: (r) => <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("dispatch", r.dispatch_code)}>View {r.dispatch_code}</button> },
+          { header: "", render: (r) => <Button variant="ghost" onClick={() => go("dispatch", r.dispatch_code)}>View {r.dispatch_code}</Button> },
         ]}
       />
 
       <Modal open={open} onClose={() => setOpen(false)} title="Create a dispatch"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setOpen(false)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : "Save & dispatch"}</button></>}>
+        footer={<><Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button><Button disabled={busy} onClick={save}>{busy ? "Saving..." : "Save & dispatch"}</Button></>}>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Product">
-            <select value={form.product_code ?? ""} onChange={(e) => set("product_code", e.target.value)}>
+            <Select value={form.product_code ?? ""} onChange={(e) => set("product_code", e.target.value)}>
               {products.data?.products.map((p) => <option key={p.product_code} value={p.product_code}>{p.name}</option>)}
-            </select>
+            </Select>
           </Field>
           <Field label="Destination branch">
-            <select value={form.branch_id ?? ""} onChange={(e) => set("branch_id", e.target.value)}>
+            <Select value={form.branch_id ?? ""} onChange={(e) => set("branch_id", e.target.value)}>
               {dest.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-            </select>
+            </Select>
           </Field>
-          <Field label="Batch number" hint="Leave blank to use the latest batch"><input value={form.batch_no ?? ""} onChange={(e) => set("batch_no", e.target.value)} placeholder="B-1108" /></Field>
-          <Field label="Quantity dispatched"><input type="number" min={1} value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
+          <Field label="Batch number" hint="Leave blank to use the latest batch"><Input value={form.batch_no ?? ""} onChange={(e) => set("batch_no", e.target.value)} placeholder="B-1108" /></Field>
+          <Field label="Quantity dispatched"><Input type="number" min={1} value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
         </div>
         <Notice tone="info">Saving records the dispatch and deducts the main hub quantity. Branch stock updates only after receipt confirmation.</Notice>
         {msg && <p className="m-0 text-danger">{msg}</p>}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { newReference } from "../../../../lib/offlineSales";
 import { api } from "../../../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, PageHeader, ResultModal, StatCard, Stats, statusTone } from "../../../../components/ui";
+import { Badge, Button, DataTable, Field, Input, Loading, Modal, PageHeader, ResultModal, Select, StatCard, Stats, Textarea, statusTone } from "../../../../components/ui";
 import { useGo } from "../../../../lib/nav";
 import { currentUser, errMsg, useApi } from "../../../../lib/useApi";
 import { fmtDate } from "../../../../lib/format";
@@ -97,7 +97,7 @@ export default function InventoryList() {
 
   const productSelect = (
     <Field label="Product">
-      <select
+      <Select
         value={form.product_code ?? ""}
         onChange={(e) => set("product_code", e.target.value)}
       >
@@ -106,7 +106,7 @@ export default function InventoryList() {
             {p.name} · {p.product_code}
           </option>
         ))}
-      </select>
+      </Select>
     </Field>
   );
 
@@ -117,23 +117,21 @@ export default function InventoryList() {
         subtitle="Central kitchen and branch ledgers"
         actions={
           <>
-            <button onClick={() => open("production")}>
+            <Button onClick={() => open("production")}>
               Record production output
-            </button>
+            </Button>
             {(isOwner || currentUser().role === "production-head") && (
-              <button
-                className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+              <Button variant="secondary"
                 onClick={() => open("register")}
               >
                 Register product
-              </button>
+              </Button>
             )}
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            <Button variant="secondary"
               onClick={() => open("baseline")}
             >
               Receive stock / set baseline
-            </button>
+            </Button>
           </>
         }
       />
@@ -175,12 +173,11 @@ export default function InventoryList() {
           {
             header: "",
             render: (r) => (
-              <button
-                className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft"
+              <Button variant="ghost"
                 onClick={() => go("inventory", r.product_code)}
               >
                 View product &amp; ledger
-              </button>
+              </Button>
             ),
           },
         ]}
@@ -192,29 +189,28 @@ export default function InventoryList() {
         title="Record production output"
         footer={
           <>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            <Button variant="secondary"
               onClick={() => setModal(null)}
             >
               Cancel
-            </button>
-            <button disabled={busy} onClick={save}>
+            </Button>
+            <Button disabled={busy} onClick={save}>
               Save production output
-            </button>
+            </Button>
           </>
         }
       >
         {productSelect}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Batch number">
-            <input
+            <Input
               value={form.batch_no ?? ""}
               onChange={(e) => set("batch_no", e.target.value)}
               placeholder="B-1109"
             />
           </Field>
           <Field label="Quantity produced">
-            <input
+            <Input
               type="number"
               min={1}
               step={1}
@@ -223,7 +219,7 @@ export default function InventoryList() {
             />
           </Field>
           <Field label="Best before">
-            <input
+            <Input
               type="date"
               value={form.best_before ?? ""}
               onChange={(e) => set("best_before", e.target.value)}
@@ -243,20 +239,19 @@ export default function InventoryList() {
         title="Stock baseline & received stock"
         footer={
           <>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            <Button variant="secondary"
               onClick={() => setModal(null)}
             >
               Cancel
-            </button>
-            <button disabled={busy} onClick={save}>
+            </Button>
+            <Button disabled={busy} onClick={save}>
               Save stock movement
-            </button>
+            </Button>
           </>
         }
       >
         <Field label="Entry type">
-          <select
+          <Select
             value={form.entry_type ?? "received"}
             onChange={(e) => set("entry_type", e.target.value)}
           >
@@ -264,7 +259,7 @@ export default function InventoryList() {
             <option value="opening">
               Initial opening baseline (empty ledger only)
             </option>
-          </select>
+          </Select>
         </Field>
         <p className="text-mute">
           For deliveries from the main hub, use Confirm branch receipt instead.
@@ -273,14 +268,14 @@ export default function InventoryList() {
         {productSelect}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Batch number">
-            <input
+            <Input
               value={form.batch_no ?? ""}
               onChange={(e) => set("batch_no", e.target.value)}
               placeholder="B-1108"
             />
           </Field>
           <Field label="Location">
-            <select
+            <Select
               aria-label="Location"
               value={form.branch_id ?? ""}
               onChange={(e) => set("branch_id", e.target.value)}
@@ -291,10 +286,10 @@ export default function InventoryList() {
                   {b.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </Field>
           <Field label="Quantity">
-            <input
+            <Input
               type="number"
               min={1}
               step={1}
@@ -303,7 +298,7 @@ export default function InventoryList() {
             />
           </Field>
           <Field label="Reason / reference">
-            <input
+            <Input
               value={form.reference ?? ""}
               onChange={(e) => set("reference", e.target.value)}
               placeholder="Opening stock baseline · BASE-1108"
@@ -319,27 +314,26 @@ export default function InventoryList() {
         title="Register product"
         footer={
           <>
-            <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
+            <Button variant="secondary"
               onClick={() => setModal(null)}
             >
               Cancel
-            </button>
-            <button disabled={busy} onClick={save}>
+            </Button>
+            <Button disabled={busy} onClick={save}>
               Save product
-            </button>
+            </Button>
           </>
         }
       >
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name">
-            <input
+            <Input
               value={form.name ?? ""}
               onChange={(e) => set("name", e.target.value)}
             />
           </Field>
           <Field label="Unit price">
-            <input
+            <Input
               type="number"
               min={0}
               step="0.01"
@@ -348,7 +342,7 @@ export default function InventoryList() {
             />
           </Field>
           <Field label="Unit cost">
-            <input
+            <Input
               type="number"
               min={0}
               step="0.01"
@@ -357,7 +351,7 @@ export default function InventoryList() {
             />
           </Field>
           <Field label="Low-stock threshold">
-            <input
+            <Input
               type="number"
               min={0}
               value={form.threshold ?? ""}
@@ -366,7 +360,7 @@ export default function InventoryList() {
           </Field>
           <div className="col-span-full">
             <Field label="Description">
-              <textarea
+              <Textarea
                 value={form.description ?? ""}
                 onChange={(e) => set("description", e.target.value)}
               />

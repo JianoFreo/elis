@@ -1,4 +1,4 @@
-import { BarChart, Loading, Notice, PageHeader, Badge } from "../../../components/ui";
+import { Badge, BarChart, Button, Loading, Notice, PageHeader } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { currentUser, useApi } from "../../../lib/useApi";
 import { fmtDate, peso } from "../../../lib/format";
@@ -10,7 +10,6 @@ interface Overview {
 }
 
 const CARD = "rounded-md border border-line bg-white p-5 max-md:p-4";
-const LINK = "bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft";
 
 /** Today against yesterday, stated in words as well as a sign so colour is never the only cue. */
 function trend(today: number, prev: number | undefined): string {
@@ -36,8 +35,8 @@ export default function Overview() {
         title={`Welcome back, ${first}`}
         subtitle={`${fmtDate(data.date)} · All branches`}
         actions={<>
-          <button onClick={() => go("discrepancies")}>Review discrepancies</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("alerts")}>Review alerts</button>
+          <Button onClick={() => go("discrepancies")}>Review discrepancies</Button>
+          <Button variant="secondary" onClick={() => go("alerts")}>Review alerts</Button>
         </>}
       />
 
@@ -73,7 +72,7 @@ export default function Overview() {
 
         {/* Band 2: what needs a decision */}
         <section className={`${CARD} grid content-start gap-4 lg:col-span-5`} aria-labelledby="ov-attn">
-          <h2 id="ov-attn" className="m-0">Needs your attention</h2>
+          <h2 id="ov-attn" className="m-0 text-lg font-semibold">Needs your attention</h2>
           <div className="flex items-center gap-3">
             <strong className={`text-3xl font-semibold tabular-nums ${attention ? "text-warn" : "text-ok"}`}>{attention}</strong>
             <Badge tone={attention ? "warn" : "ok"}>{attention ? "Action needed" : "All clear"}</Badge>
@@ -85,13 +84,13 @@ export default function Overview() {
         </section>
 
         <section className={`${CARD} grid content-start gap-4 lg:col-span-7`} aria-labelledby="ov-prio">
-          <h2 id="ov-prio" className="m-0">Today's priorities</h2>
+          <h2 id="ov-prio" className="m-0 text-lg font-semibold">Today's priorities</h2>
           {data.priorities.length === 0 && <Notice tone="ok">All clear. No open flags or low supplies.</Notice>}
           <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-md [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">
             {data.priorities.map((p) => (
               <li key={p.ref}>
                 <span>{p.text}</span>
-                <button className={LINK} onClick={() => (p.kind === "flag" ? go("discrepancies", p.ref) : go("alerts"))}>{p.kind === "flag" ? "Review" : "View"}</button>
+                <Button variant="ghost" onClick={() => (p.kind === "flag" ? go("discrepancies", p.ref) : go("alerts"))}>{p.kind === "flag" ? "Review" : "View"}</Button>
               </li>
             ))}
           </ul>

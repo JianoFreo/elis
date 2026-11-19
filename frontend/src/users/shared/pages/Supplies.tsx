@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, Progress, ResultModal, StatCard, Stats, statusTone } from "../../../components/ui";
+import { Badge, Button, DataTable, Field, Input, Loading, Modal, Notice, PageHeader, Progress, ResultModal, Select, StatCard, Stats, statusTone } from "../../../components/ui";
 import { currentUser, errMsg, useApi } from "../../../lib/useApi";
 import { fmtDate, num, peso } from "../../../lib/format";
 
@@ -63,13 +63,13 @@ export default function Supplies() {
 
   const select = (onChange?: (code: string) => void) => (
     <Field label="Material">
-      <select value={form.material_code ?? ""} onChange={(e) => { set("material_code", e.target.value); onChange?.(e.target.value); }}>
+      <Select value={form.material_code ?? ""} onChange={(e) => { set("material_code", e.target.value); onChange?.(e.target.value); }}>
         {sup.data!.materials.map((m) => <option key={m.material_code} value={m.material_code}>{m.name} · {m.material_code}</option>)}
-      </select>
+      </Select>
     </Field>
   );
   const unitOf = sup.data.materials.find((m) => m.material_code === form.material_code)?.unit ?? "";
-  const footer = (label: string) => <><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : label}</button></>;
+  const footer = (label: string) => <><Button variant="secondary" onClick={() => setModal(null)}>Cancel</Button><Button disabled={busy} onClick={save}>{busy ? "Saving..." : label}</Button></>;
 
   return (
     <div className="grid gap-5">
@@ -77,10 +77,10 @@ export default function Supplies() {
         title="The ingredients behind it all."
         subtitle="Materials, supplier sources, stock-in and daily usage."
         actions={<>
-          {canRegister && <button onClick={() => open("register")}>Register material</button>}
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => open("stockin")}>Receive stock-in</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => open("opening")}>Log shift opening</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => open("closing")}>Log closing &amp; usage</button>
+          {canRegister && <Button onClick={() => open("register")}>Register material</Button>}
+          <Button variant="secondary" onClick={() => open("stockin")}>Receive stock-in</Button>
+          <Button variant="secondary" onClick={() => open("opening")}>Log shift opening</Button>
+          <Button variant="secondary" onClick={() => open("closing")}>Log closing &amp; usage</Button>
         </>}
       />
       <Stats>
@@ -89,8 +89,8 @@ export default function Supplies() {
         <StatCard label="Stock received today" value={sup.data.received_today} hint="Supplier deliveries" />
       </Stats>
       <div className="mb-4 flex gap-1">
-        <button className={tab === "materials" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-canvas"} onClick={() => setTab("materials")}>Materials</button>
-        <button className={tab === "usage" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-canvas"} onClick={() => setTab("usage")}>Daily usage</button>
+        <Button variant={tab === "materials" ? "primary" : "secondary"} className={tab === "materials" ? "border border-pink" : undefined} onClick={() => setTab("materials")}>Materials</Button>
+        <Button variant={tab === "usage" ? "primary" : "secondary"} className={tab === "usage" ? "border border-pink" : undefined} onClick={() => setTab("usage")}>Daily usage</Button>
       </div>
 
       {tab === "materials" && (
@@ -127,12 +127,12 @@ export default function Supplies() {
 
       <Modal open={modal === "register"} onClose={() => setModal(null)} title="Register a supply item" footer={footer("Save material & threshold")}>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
-          <Field label="Name"><input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></Field>
-          <Field label="Category"><input value={form.category ?? ""} onChange={(e) => set("category", e.target.value)} placeholder="Baking flour" /></Field>
-          <Field label="Unit of measurement"><input value={form.unit ?? ""} onChange={(e) => set("unit", e.target.value)} placeholder="kg" maxLength={10} /></Field>
-          <Field label="Unit cost"><input type="number" min={0} step="0.01" value={form.cost ?? ""} onChange={(e) => set("cost", e.target.value)} /></Field>
-          <Field label="Low-stock threshold"><input type="number" min={0} step="0.01" value={form.threshold ?? ""} onChange={(e) => set("threshold", e.target.value)} /></Field>
-          <Field label="Supplier / source"><input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>
+          <Field label="Name"><Input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></Field>
+          <Field label="Category"><Input value={form.category ?? ""} onChange={(e) => set("category", e.target.value)} placeholder="Baking flour" /></Field>
+          <Field label="Unit of measurement"><Input value={form.unit ?? ""} onChange={(e) => set("unit", e.target.value)} placeholder="kg" maxLength={10} /></Field>
+          <Field label="Unit cost"><Input type="number" min={0} step="0.01" value={form.cost ?? ""} onChange={(e) => set("cost", e.target.value)} /></Field>
+          <Field label="Low-stock threshold"><Input type="number" min={0} step="0.01" value={form.threshold ?? ""} onChange={(e) => set("threshold", e.target.value)} /></Field>
+          <Field label="Supplier / source"><Input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>
         </div>
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
@@ -140,11 +140,11 @@ export default function Supplies() {
       <Modal open={modal === "stockin"} onClose={() => setModal(null)} title="Receive supply stock" footer={footer("Save stock-in")}>
         {select()}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
-          <Field label={`Quantity received${unitOf ? ` (${unitOf})` : ""}`}><input type="number" min={0} step="0.01" value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
-          <Field label="Unit cost" hint="Blank = current material cost"><input type="number" min={0} step="0.01" value={form.unit_cost ?? ""} onChange={(e) => set("unit_cost", e.target.value)} /></Field>
-          <Field label="Supplier / source"><input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>
-          <Field label="Date received"><input type="date" value={form.received_on ?? ""} onChange={(e) => set("received_on", e.target.value)} /></Field>
-          <Field label="Receipt reference" hint="Blank = next SUP- number"><input value={form.receipt_ref ?? ""} onChange={(e) => set("receipt_ref", e.target.value)} /></Field>
+          <Field label={`Quantity received${unitOf ? ` (${unitOf})` : ""}`}><Input type="number" min={0} step="0.01" value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
+          <Field label="Unit cost" hint="Blank = current material cost"><Input type="number" min={0} step="0.01" value={form.unit_cost ?? ""} onChange={(e) => set("unit_cost", e.target.value)} /></Field>
+          <Field label="Supplier / source"><Input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>
+          <Field label="Date received"><Input type="date" value={form.received_on ?? ""} onChange={(e) => set("received_on", e.target.value)} /></Field>
+          <Field label="Receipt reference" hint="Blank = next SUP- number"><Input value={form.receipt_ref ?? ""} onChange={(e) => set("receipt_ref", e.target.value)} /></Field>
         </div>
         <p className="text-mute">Saving adds the quantity to main hub supplies.</p>
         {msg && <p className="m-0 text-danger">{msg}</p>}
@@ -153,16 +153,16 @@ export default function Supplies() {
       <Modal open={modal === "opening"} onClose={() => setModal(null)} title="Log shift opening inventory" footer={footer("Save opening inventory")}>
         {select(prefill)}
         <Field label={`Opening quantity${unitOf ? ` (${unitOf})` : ""}`} hint="Previous verified closing is prefilled. Check physical stock before saving.">
-          <input type="number" min={0} step="0.01" value={form.opening_qty ?? ""} onChange={(e) => set("opening_qty", e.target.value)} />
+          <Input type="number" min={0} step="0.01" value={form.opening_qty ?? ""} onChange={(e) => set("opening_qty", e.target.value)} />
         </Field>
-        <Field label="Counted by"><input value={currentUser().full_name} readOnly /></Field>
+        <Field label="Counted by"><Input value={currentUser().full_name} readOnly /></Field>
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal open={modal === "closing"} onClose={() => setModal(null)} title="Daily closing & usage" footer={footer("Record usage")}>
         {select()}
         <Field label={`Closing stock${unitOf ? ` (${unitOf})` : ""}`} hint="Used = opening + received − closing.">
-          <input type="number" min={0} step="0.01" value={form.closing_qty ?? ""} onChange={(e) => set("closing_qty", e.target.value)} />
+          <Input type="number" min={0} step="0.01" value={form.closing_qty ?? ""} onChange={(e) => set("closing_qty", e.target.value)} />
         </Field>
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>

@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import {
-  DataTable,
-  Notice,
-  PageHeader,
-  ResultModal,
-} from "../../../components/ui";
+import { Button, DataTable, Notice, PageHeader, ResultModal } from "../../../components/ui";
 import { errMsg, useApi } from "../../../lib/useApi";
 import {
   failLocalSale,
@@ -109,12 +104,12 @@ export default function Queue() {
         title="Offline transaction queue"
         subtitle="Pending device records remain separate until the server confirms each unique reference."
         actions={
-          <button
+          <Button
             disabled={busy || !!local.error || (!rows.length && !server.error)}
             onClick={sync}
           >
             {busy ? "Syncing…" : "Sync queued transactions"}
-          </button>
+          </Button>
         }
       />
       {local.error && <Notice tone="bad">{local.error}</Notice>}
