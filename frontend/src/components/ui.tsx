@@ -119,10 +119,10 @@ export function Steps({ current, steps }: { current: number; steps: string[] }) 
   );
 }
 
-export function BarChart({ data }: { data: { day: string; total: number }[] }) {
+export function BarChart({ data, label = "Sales this week" }: { data: { day: string; total: number }[]; label?: string }) {
   const max = Math.max(1, ...data.map((d) => d.total));
   return (
-    <div className="flex h-50 items-end gap-2.5 pt-5 max-md:gap-1" role="img" aria-label="Sales this week">
+    <div className="flex h-50 items-end gap-2.5 pt-5 max-md:gap-1" role="img" aria-label={label}>
       {data.map((d, i) => (
         <div key={d.day} className="group flex h-full flex-1 flex-col items-center justify-end gap-1 text-xs">
           <span className="text-[.7rem] text-mute">{Math.round(d.total).toLocaleString()}</span>
