@@ -18,7 +18,7 @@ export default function Alerts({ url }: { url: string }) {
       <PageHeader title="A little attention goes a long way." subtitle="Low-stock notifications and supply usage warnings." actions={<button onClick={() => go("supplies")}>Go to supplies</button>} />
       {data.low.length === 0 && data.near.length === 0 && <Notice tone="ok">Nothing needs attention right now.</Notice>}
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-field),1fr))] gap-5 max-md:grid-cols-1">
         {data.low.map((m) => {
           const pct = m.threshold ? Math.min(100, (m.on_hand / (m.threshold * 4)) * 100) : 0;
           return (

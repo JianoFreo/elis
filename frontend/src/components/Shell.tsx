@@ -18,7 +18,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
   const user = JSON.parse(sessionStorage.getItem("user") ?? "{}");
 
   function toggleSidebar() {
-    if (window.matchMedia("(max-width: 767px)").matches) return setOpen(true);
+    if (window.matchMedia("(max-width: 47.99rem)").matches) return setOpen(true);
     setCollapsed((c) => {
       try { localStorage.setItem("sidebar-collapsed", c ? "0" : "1"); } catch { /* storage unavailable */ }
       return !c;

@@ -69,7 +69,7 @@ export default function Supplies() {
     </Field>
   );
   const unitOf = sup.data.materials.find((m) => m.material_code === form.material_code)?.unit ?? "";
-  const footer = (label: string) => <><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : label}</button></>;
+  const footer = (label: string) => <><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setModal(null)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : label}</button></>;
 
   return (
     <div className="grid gap-5">
@@ -78,9 +78,9 @@ export default function Supplies() {
         subtitle="Materials, supplier sources, stock-in and daily usage."
         actions={<>
           {canRegister && <button onClick={() => open("register")}>Register material</button>}
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("stockin")}>Receive stock-in</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("opening")}>Log shift opening</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => open("closing")}>Log closing &amp; usage</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => open("stockin")}>Receive stock-in</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => open("opening")}>Log shift opening</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => open("closing")}>Log closing &amp; usage</button>
         </>}
       />
       <Stats>
@@ -89,8 +89,8 @@ export default function Supplies() {
         <StatCard label="Stock received today" value={sup.data.received_today} hint="Supplier deliveries" />
       </Stats>
       <div className="mb-4 flex gap-1">
-        <button className={tab === "materials" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-stone-50"} onClick={() => setTab("materials")}>Materials</button>
-        <button className={tab === "usage" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-stone-50"} onClick={() => setTab("usage")}>Daily usage</button>
+        <button className={tab === "materials" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-surface-alt"} onClick={() => setTab("materials")}>Materials</button>
+        <button className={tab === "usage" ? "border-pink bg-pink text-white" : "border border-line bg-white text-ink shadow-none hover:bg-surface-alt"} onClick={() => setTab("usage")}>Daily usage</button>
       </div>
 
       {tab === "materials" && (
@@ -126,7 +126,7 @@ export default function Supplies() {
       )}
 
       <Modal open={modal === "register"} onClose={() => setModal(null)} title="Register a supply item" footer={footer("Save material & threshold")}>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name"><input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></Field>
           <Field label="Category"><input value={form.category ?? ""} onChange={(e) => set("category", e.target.value)} placeholder="Baking flour" /></Field>
           <Field label="Unit of measurement"><input value={form.unit ?? ""} onChange={(e) => set("unit", e.target.value)} placeholder="kg" maxLength={10} /></Field>
@@ -139,7 +139,7 @@ export default function Supplies() {
 
       <Modal open={modal === "stockin"} onClose={() => setModal(null)} title="Receive supply stock" footer={footer("Save stock-in")}>
         {select()}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
           <Field label={`Quantity received${unitOf ? ` (${unitOf})` : ""}`}><input type="number" min={0} step="0.01" value={form.quantity ?? ""} onChange={(e) => set("quantity", e.target.value)} /></Field>
           <Field label="Unit cost" hint="Blank = current material cost"><input type="number" min={0} step="0.01" value={form.unit_cost ?? ""} onChange={(e) => set("unit_cost", e.target.value)} /></Field>
           <Field label="Supplier / source"><input value={form.supplier ?? ""} onChange={(e) => set("supplier", e.target.value)} /></Field>

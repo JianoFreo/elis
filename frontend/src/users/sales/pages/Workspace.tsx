@@ -53,13 +53,13 @@ export default function Workspace() {
           <>
             <button onClick={() => go("record")}>Record a sale</button>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-stone-50"
+              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
               onClick={() => go("queue")}
             >
               Offline queue
             </button>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-stone-50"
+              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
               onClick={() => go("summary")}
             >
               Daily summary

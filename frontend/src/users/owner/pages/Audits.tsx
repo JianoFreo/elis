@@ -16,7 +16,7 @@ interface Detail {
 }
 interface Baseline { branch: string; products: { product_code: string; product: string; qty: number }[] }
 
-const week = (a: { week_start: string; week_end: string }) => `${fmtDate(a.week_start)} – ${fmtDate(a.week_end)}`;
+const week = (a: { week_start: string; week_end: string }) => `${fmtDate(a.week_start)} to ${fmtDate(a.week_end)}`;
 
 export default function Audits() {
   const { id } = useGo();
@@ -94,7 +94,7 @@ function AuditDetail({ code }: { code: string }) {
           {signedOff
             ? <button onClick={() => { setBranchId(String(data.branches[0]?.branch_id ?? "")); setMsg(""); setBaseOpen(true); }}>Set next opening baseline</button>
             : <button disabled={!summary.ready || busy} onClick={signOff}>{busy ? "Signing..." : "Sign off week"}</button>}
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("audits")}>All audits</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => go("audits")}>All audits</button>
         </>}
       />
       <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
@@ -141,14 +141,14 @@ function AuditDetail({ code }: { code: string }) {
       )}
 
       <Modal open={baseOpen} onClose={() => setBaseOpen(false)} title="Next opening stock baseline"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => setBaseOpen(false)}>Back to audit</button><button disabled={busy || !base.data} onClick={confirmBaseline}>Confirm next opening</button></>}>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setBaseOpen(false)}>Back to audit</button><button disabled={busy || !base.data} onClick={confirmBaseline}>Confirm next opening</button></>}>
         <p className="text-mute">Use verified branch closing stock from the signed week. This is a new-day opening snapshot, not a second physical stock receipt.</p>
         <Field label="Branch">
           <select value={branchId} onChange={(e) => setBranchId(e.target.value)}>{data.branches.map((b) => <option key={b.branch_id} value={b.branch_id}>{b.branch}</option>)}</select>
         </Field>
         {base.error && <Notice tone="bad">{base.error}</Notice>}
         {base.data && <DataTable rows={base.data.products} cols={[{ header: "Product", render: (p) => p.product }, { header: "Verified closing", render: (p) => p.qty, align: "right" }, { header: "Next opening", render: (p) => p.qty, align: "right" }]} />}
-        <p className="text-mute">Reference: signed week {audit.week_start.slice(5)} – {audit.week_end.slice(5)} · {audit.audit_code}</p>
+        <p className="text-mute">Reference: signed week {audit.week_start.slice(5)} to {audit.week_end.slice(5)} · {audit.audit_code}</p>
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 

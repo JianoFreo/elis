@@ -19,7 +19,7 @@ interface SideBarProps {
   onLogout: () => void;
 }
 
-const navBtn = "relative rounded bg-transparent px-3 py-2.5 text-left font-medium text-stone-600 shadow-none hover:bg-stone-50 hover:text-ink";
+const navBtn = "relative rounded bg-transparent px-3 py-2.5 text-left font-medium text-body shadow-none hover:bg-surface-alt hover:text-ink";
 const navOn = "bg-pink-soft font-semibold text-pink-dark hover:bg-pink-soft before:absolute before:inset-y-[20%] before:-left-4 before:w-0.75 before:rounded-r-sm before:bg-pink before:content-['']";
 
 export default function SideBar({ title, items, currentKey, open, collapsed, user, onSelect, onClose, onLogout }: SideBarProps) {
@@ -56,7 +56,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
               <span className="text-xs text-mute">{ROLE_LABEL[user.role ?? ""] ?? user.role}{user.branch ? ` · ${user.branch}` : ""}</span>
             </div>
           </div>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={onLogout}>Sign out</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={onLogout}>Sign out</button>
         </div>
       </aside>
     </>

@@ -6,11 +6,11 @@ const CARD = "rounded-md border border-line bg-white ";
 export type Tone = "ok" | "warn" | "bad" | "info" | "muted";
 
 const BADGE: Record<Tone, string> = {
-  ok: "bg-ok-bg text-ok", warn: "bg-warn-bg text-warn", bad: "bg-bad-bg text-danger", info: "bg-info-bg text-info", muted: "bg-stone-100 text-mute",
+  ok: "bg-ok-bg text-ok", warn: "bg-warn-bg text-warn", bad: "bg-bad-bg text-danger", info: "bg-info-bg text-info", muted: "bg-sunken text-mute",
 };
 const NOTICE: Record<Tone, string> = {
-  ok: "border-green-200 bg-ok-bg text-ok", warn: "border-amber-200 bg-warn-bg text-warn", bad: "border-red-200 bg-bad-bg text-danger",
-  info: "border-blue-200 bg-info-bg text-info", muted: "border-line bg-stone-100 text-mute",
+  ok: "border-ok-line bg-ok-bg text-ok", warn: "border-warn-line bg-warn-bg text-warn", bad: "border-bad-line bg-bad-bg text-danger",
+  info: "border-info-line bg-info-bg text-info", muted: "border-line bg-sunken text-mute",
 };
 const VALUE: Record<Tone, string> = { ok: "text-ok", warn: "text-warn", bad: "text-danger", info: "text-info", muted: "text-mute" };
 const BAR: Record<Tone, string> = { ok: "bg-ok", warn: "bg-warn", bad: "bg-danger", info: "bg-pink", muted: "bg-pink" };
@@ -49,7 +49,7 @@ export function Notice({ tone = "info", children }: { tone?: Tone; children: Rea
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label className="grid gap-1 text-sm [&>span]:font-medium [&>span]:text-stone-600">
+    <label className="grid gap-1 text-sm [&>span]:font-medium [&>span]:text-body">
       <span>{label}</span>
       {children}
       {hint && <small className="text-mute">{hint}</small>}
@@ -89,7 +89,7 @@ export function ResultModal({
       onClose={onClose}
       footer={<>
         {action && <button onClick={() => { action.onClick(); onClose(); }}>{action.label}</button>}
-        <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={onClose}>Close</button>
+        <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={onClose}>Close</button>
       </>}
     >
       {children}
@@ -104,14 +104,14 @@ export function Loading({ loading, error }: { loading: boolean; error: string })
 }
 
 export function Progress({ value, tone = "info" }: { value: number; tone?: Tone }) {
-  return <div className="h-2 overflow-hidden rounded-sm bg-stone-100"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
+  return <div className="h-2 overflow-hidden rounded-sm bg-sunken"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
 export function Steps({ current, steps }: { current: number; steps: string[] }) {
   return (
     <ol className="m-0 flex list-none gap-2 overflow-x-auto p-0 md:flex-wrap">
       {steps.map((s, i) => (
-        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-stone-100 text-mute"}`}>
+        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-sunken text-mute"}`}>
           <span className="grid size-5.5 place-items-center rounded-sm bg-white text-xs font-bold">{i + 1}</span> {s}
         </li>
       ))}

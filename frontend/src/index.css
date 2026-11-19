@@ -2,7 +2,7 @@
 
 @theme {
   --font-sans: Inter, system-ui, sans-serif;
-  --color-pink: #d63a73;
+  --color-pink: #cf3570;
   --color-pink-dark: #b92b61;
   --color-pink-soft: #fdeef4;
   --color-canvas: #f6f4f5;
@@ -10,27 +10,41 @@
   --color-ink: #241d21;
   --color-mute: #6f6368;
   --color-danger: #c0262d;
-  --color-ok: #1f8a4c;
-  --color-warn: #b7791f;
+  --color-ok: #17703c;
+  --color-warn: #8a5a0b;
   --color-info: #2563a8;
   --color-ok-bg: #e6f5ec;
   --color-warn-bg: #fdf3dd;
   --color-bad-bg: #fde8e9;
   --color-info-bg: #e8f0fb;
+  --color-ok-line: #bfe3cd;
+  --color-warn-line: #ecd9a6;
+  --color-bad-line: #f1c0c3;
+  --color-info-line: #bcd2ef;
+  --color-surface-alt: #faf8f9;
+  --color-sunken: #f3f0f1;
+  --color-body: #4f454a;
+  --color-line-strong: #8c8186;
+  --spacing-col: 210px;
+  --spacing-field: 300px;
 }
 
 /* Defaults for bare HTML elements only; all layout and component styling is inline Tailwind in the TSX. */
 @layer base {
-  body { @apply bg-canvas font-sans text-[15px] text-ink antialiased; }
+  body { @apply bg-canvas font-sans text-base text-ink antialiased; }
   h1 { @apply mb-4 text-2xl font-semibold tracking-tight max-md:text-xl; }
   h2 { @apply mb-3 text-lg font-semibold; }
   h3 { @apply mb-2 text-base font-semibold; }
-  button { @apply cursor-pointer rounded bg-pink px-4 py-2.5 text-sm font-medium text-white  transition hover:bg-pink-dark active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11; }
-  input, select, textarea { @apply w-full rounded border border-line bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base; }
+  button { @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink cursor-pointer rounded bg-pink px-4 py-2.5 text-sm font-medium text-white  transition hover:bg-pink-dark active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11; }
+  input, select, textarea { @apply w-full rounded border border-line-strong bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base; }
   textarea { @apply min-h-21 resize-y; }
   table { @apply w-full border-collapse; }
   th, td { @apply border-b border-line px-4 py-3 text-left tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5 max-md:text-sm; }
-  th { @apply bg-stone-50 text-xs font-semibold uppercase tracking-wider text-mute; }
+  th { @apply bg-surface-alt text-xs font-semibold uppercase tracking-wider text-mute; }
   tbody tr:last-child td { @apply border-b-0; }
-  tbody tr:hover td { @apply bg-stone-50/70; }
+  tbody tr:hover td { @apply bg-surface-alt; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }

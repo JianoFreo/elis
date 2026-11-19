@@ -25,7 +25,7 @@ export default function Overview() {
         </div>
         <div className="flex flex-wrap gap-2">
           <button onClick={() => go("discrepancies")}>Review discrepancies</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-stone-50" onClick={() => go("alerts")}>Review alerts</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => go("alerts")}>Review alerts</button>
         </div>
       </div>
 
@@ -36,7 +36,7 @@ export default function Overview() {
         <StatCard label="Needs your attention" value={data.open_flags + data.low_supplies} tone={data.open_flags + data.low_supplies ? "warn" : "ok"} hint={`${data.open_flags} stock flags · ${data.low_supplies} low supplies`} />
       </Stats>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-field),1fr))] gap-5 max-md:grid-cols-1">
         <div className="rounded-md border border-line bg-white  p-5 max-md:p-4">
           <div className="flex flex-wrap items-center justify-between gap-4"><h2>Sales this week</h2><span className="text-mute">{peso(weekTotal)}</span></div>
           <BarChart data={data.week} />

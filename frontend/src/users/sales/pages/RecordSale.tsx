@@ -129,7 +129,7 @@ export default function RecordSale() {
         </Notice>
       )}
       {outbox.error && <Notice tone="bad">{outbox.error}</Notice>}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 max-md:grid-cols-1">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-field),1fr))] gap-5 max-md:grid-cols-1">
         <form
           className="rounded-md border border-line bg-white p-5 grid gap-4"
           onSubmit={(e) => {
@@ -201,7 +201,7 @@ export default function RecordSale() {
           <h2>Transaction preview</h2>
           <p>{p?.name ?? "No active products"}</p>
           <strong className="text-2xl">
-            {valid ? peso(n * p!.price) : "—"}
+            {valid ? peso(n * p!.price) : "n/a"}
           </strong>
           <p className="text-mute">
             {offline || stale
