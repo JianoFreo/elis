@@ -146,6 +146,7 @@ function AuditDetail({ code }: { code: string }) {
         <Field label="Branch">
           <select value={branchId} onChange={(e) => setBranchId(e.target.value)}>{data.branches.map((b) => <option key={b.branch_id} value={b.branch_id}>{b.branch}</option>)}</select>
         </Field>
+        {base.error && <Notice tone="bad">{base.error}</Notice>}
         {base.data && <DataTable rows={base.data.products} cols={[{ header: "Product", render: (p) => p.product }, { header: "Verified closing", render: (p) => p.qty, align: "right" }, { header: "Next opening", render: (p) => p.qty, align: "right" }]} />}
         <p className="text-mute">Reference: signed week {audit.week_start.slice(5)} – {audit.week_end.slice(5)} · {audit.audit_code}</p>
         {msg && <p className="m-0 text-danger">{msg}</p>}
