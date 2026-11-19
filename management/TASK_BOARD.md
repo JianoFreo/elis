@@ -41,10 +41,10 @@ Copy each task into GitHub Issues / Projects with the same ID, owner, and label.
 ### Jiano: Dispatch, Materials, Discrepancies (`dev-dispatch`)
 | # | Task | Owner | Status | Target |
 | --- | --- | --- | --- | --- |
-| DEV-6 | API: dispatches and branch receipts (no double stock credit) | Jiano | [ ] | Nov 20 |
-| DEV-7 | API: materials, shift opening/closing, daily usage | Jiano | [ ] | Nov 21 |
-| DEV-8 | API: discrepancies, owner adjustments, weekly audits and sign-off (build last, depends on sales and dispatch) | Jiano | [ ] | Nov 21 |
-| DEV-8b | Connect dispatch, materials, and discrepancy screens to the API in `app.js` | Jiano | [ ] | Nov 21 |
+| DEV-6 | API: dispatches and branch receipts (no double stock credit) | Jiano | [x] | Nov 20 |
+| DEV-7 | API: materials, shift opening/closing, daily usage | Jiano | [x] | Nov 21 |
+| DEV-8 | API: discrepancies, owner adjustments, weekly audits and sign-off (build last, depends on sales and dispatch) | Jiano | [x] | Nov 21 |
+| DEV-8b | Connect dispatch, materials, and discrepancy screens to the API in `app.js` | Jiano | [x] | Nov 21 |
 
 ## Product Owner (Princess, Clark) (`product-owner`)
 | # | Task | Owner | Status | Target |
