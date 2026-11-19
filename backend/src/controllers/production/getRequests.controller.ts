@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { sql } from "../../config/db.js";
 import { notFound, dateParam, bizDate } from "../../utils/http.js";
-import { text } from "../../utils/domain.js";
 import type { ListDispatches, DispatchDetail, Inventory, ProductLedger, ListSupplies, ListUsage, Alerts, OpeningPrefill } from "./dto/get.dto.js";
 
 export async function dispatchRows(date: string | null = null, limit = 5000) {

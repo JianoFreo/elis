@@ -30,7 +30,7 @@ Each developer owns their modules and files so we avoid merge conflicts.
 | Developer | Owns | Backend files | Frontend screens | Branches |
 | --- | --- | --- | --- | --- |
 | **Jm (John Michael Litana)** | Foundation (setup, schema, login and roles), Accounts and permissions, Reports and CSV, Deployment and final integration | `backend/src/app.ts`, `routes/auth.route.ts`, `routes/owner.route.ts`, `config/db.ts` (base tables) | login, shift, accounts, permissions, reports | `feature/auth`, `feature/accounts`, `feature/reports` |
-| **Princess Ann Delos Reyes** | Products, production, stock baseline, Sales and daily closing (with offline sync) | `backend/src/routes/sales.route.ts`, `controllers/sales/`, `controllers/production/inventory.controller.ts`, sales tables in `config/db.ts` | overview, sales, record-sale, offline, count, closing, inventory, product, production, stock-in, next-opening | `feature/products`, `feature/sales` |
+| **Princess Ann Delos Reyes** | Products, production, stock baseline, Sales and daily closing (with offline sync) | `backend/src/routes/sales.route.ts`, `controllers/sales/`, `controllers/production/{get,post,update}Requests.controller.ts` (inventory), sales tables in `config/db.ts` | overview, sales, record-sale, offline, count, closing, inventory, product, production, stock-in, next-opening | `feature/products`, `feature/sales` |
 | **Jiano Magtangob** | Dispatch and receipts, Materials and usage, Discrepancies and weekly audits | `backend/src/routes/production.route.ts`, `controllers/production/`, dispatch tables in `config/db.ts` | dispatches, receive, supplies, usage, discrepancies, review, adjust, audits | `feature/dispatch`, `feature/materials`, `feature/discrepancies` |
 
 ### Rules to avoid conflicts

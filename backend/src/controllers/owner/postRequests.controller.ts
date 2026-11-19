@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import { registerProduct } from "../production/inventory.controller.js";
+import { registerProduct } from "../production/postRequests.controller.js";
 import { sql } from "../../config/db.js";
 import { logActivity } from "../../utils/activityLogger.js";
 import type { AddProduct as P, AddUser as U } from "./dto/post.dto.js";

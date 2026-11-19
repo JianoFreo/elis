@@ -27,7 +27,7 @@ src/
   routes/              auth, owner, sales, production  (guards always on)
   controllers/<role>/  getRequests / postRequests / updateRequests / deleteRequests + dto/*.dto.ts
   scripts/             seed.ts (+ seedPlan.ts builds the history, seedOperations.ts inserts it), createOwner.ts
-  utils/               activityLogger.ts
+  utils/               activityLogger.ts, domain.ts (validation + stock rules), positions.ts (per-branch stock position)
   types/express.d.ts   req.user typing
 ```
 

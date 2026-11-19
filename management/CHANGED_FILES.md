@@ -13,11 +13,10 @@ Compared with the supplied `SAD_GRP3-main(1).zip`. Generated build output and in
 | `backend/src/controllers/owner/audits.controller.ts` | Modified |
 | `backend/src/controllers/owner/postRequests.controller.ts` | Modified |
 | `backend/src/controllers/owner/updateRequests.controller.ts` | Modified |
-| `backend/src/controllers/production/inventory.controller.ts` | Modified |
-| `backend/src/controllers/sales/domain.ts` | Added |
-| `backend/src/controllers/sales/nextOpening.controller.ts` | Added |
-| `backend/src/controllers/sales/positions.ts` | Added |
-| `backend/src/controllers/sales/sales.controller.ts` | Modified |
+| `backend/src/controllers/production/{get,post,update}Requests.controller.ts` | Added |
+| `backend/src/controllers/sales/{get,post}Requests.controller.ts` | Added |
+| `backend/src/controllers/owner/nextOpening.controller.ts` | Added |
+| `backend/src/utils/domain.ts`, `backend/src/utils/positions.ts` | Added |
 | `backend/src/routes/production.route.ts` | Modified |
 | `backend/src/scripts/seed.ts` | Modified |
 | `docs/PRINCESS_API.md` | Added |
@@ -37,7 +36,7 @@ Compared with the supplied `SAD_GRP3-main(1).zip`. Generated build output and in
 | `frontend/src/users/sales/pages/RecordSale.tsx` | Modified |
 | `frontend/src/users/sales/pages/Summary.tsx` | Modified |
 | `frontend/src/users/sales/pages/Workspace.tsx` | Modified |
-| `frontend/src/users/shared/Inventory.tsx` | Modified |
+| `frontend/src/users/shared/pages/Inventory.tsx` | Modified |
 | `management/PRINCESS_COMPLETION.md` | Added |
 | `management/PROGRESS_REPORT.md` | Modified |
 | `management/TASK_BOARD.md` | Modified |

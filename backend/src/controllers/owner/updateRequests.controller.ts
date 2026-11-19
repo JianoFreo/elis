@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { updateProductMaster } from "../production/inventory.controller.js";
+import { updateProductMaster } from "../production/updateRequests.controller.js";
 import { sql } from "../../config/db.js";
 import { logActivity } from "../../utils/activityLogger.js";
 import type {
