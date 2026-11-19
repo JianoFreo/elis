@@ -19,10 +19,10 @@ A web-based system that tracks sales, product stock, dispatches to branches, raw
 | --- | --- |
 | Project Manager | John Michael Litana |
 | Product Owner | Princess Ann Delos Reyes, Clark Jerzon Herrera |
-| Scrum Master | Hazel Baniqued, Clark Jerzon Herrera |
+| Scrum Master | Hazel Baniqued, Ericka Nucos |
 | Developer | Jiano Magtangob, John Michael Litana, Princess Ann Delos Reyes |
 | Tester / QA | Ericka Nucos, Hazel Baniqued, Jiano Magtangob |
-| Documentation Specialist | Ericka Nucos |
+| Documentation Specialist | Clark Jerzon Herrera |
 
 ## Development split (3 developers)
 Each developer owns their modules and files so we avoid merge conflicts.
@@ -56,12 +56,3 @@ Roles: `owner`, `sales-staff`, `production-head`, `production-staff`. See `backe
 
 ## Commit message format
 `<type>: <what changed>` where type is one of `feat`, `fix`, `docs`, `test`, `chore`.
-
-## Princess Ann Delos Reyes — completed implementation
-See [SETUP_WINDOWS.md](SETUP_WINDOWS.md) for Windows / VS Code setup and [management/PRINCESS_COMPLETION.md](management/PRINCESS_COMPLETION.md) for changes, test evidence and remaining team review.
-
-Princess’s product, production, stock-entry, sales, device-offline queue and closing pages now use the existing React/API architecture. No standalone `app.js` is used in this repository. The professor’s sidebar wording is **Product** and **Materials**.
-
-From the repository root, run `npm --prefix backend run test:princess` for the isolated API and storage regression suite. Follow the [Windows setup guide](SETUP_WINDOWS.md#6-verify-the-code) for the Playwright browser checks, which also use the isolated database.
-
-The shared Product Owner backlog, acceptance criteria and review checklist are in `docs/product-owner/`. Final approval by Princess / Clark and the team’s final release sign-off remain pending; no stakeholder approval is implied by automated tests.
