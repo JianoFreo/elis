@@ -1,7 +1,7 @@
-import { Badge, Loading, Notice, PageHeader, Progress } from "../../components/ui";
-import { useGo } from "../../lib/nav";
-import { useApi } from "../../lib/useApi";
-import { num } from "../../lib/format";
+import { Badge, Loading, Notice, PageHeader, Progress } from "../../../components/ui";
+import { useGo } from "../../../lib/nav";
+import { useApi } from "../../../lib/useApi";
+import { num } from "../../../lib/format";
 
 interface Alerts {
   low: { material_code: string; name: string; unit: string; on_hand: number; threshold: number; supplier: string | null }[];

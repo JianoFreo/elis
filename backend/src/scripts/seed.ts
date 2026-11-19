@@ -67,7 +67,7 @@ for (const u of DEMO_USERS) {
 // ---------------------------------------------------------------------------
 
 if (process.argv.includes("--reset")) {
-  await sql.query(`TRUNCATE material_usage, material_stock_in, weekly_audits, stock_adjustments, discrepancies,
+  await sql.query(`TRUNCATE product_stock_requests, material_usage, material_stock_in, weekly_audits, stock_adjustments, discrepancies,
     closing_items, daily_closings, sales, dispatches, stock_ledger, product_batches RESTART IDENTITY`);
   await sql.query(`DELETE FROM activity_logs WHERE target_type IN ('sale','dispatch','closing','discrepancy','audit','material','batch','product')`);
   console.log("Operating data cleared");

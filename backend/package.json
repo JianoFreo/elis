@@ -10,7 +10,9 @@
     "start": "node dist/server.js",
     "seed": "tsx src/scripts/seed.ts",
     "seed:reset": "tsx src/scripts/seed.ts --reset",
-    "admin:create": "tsx src/scripts/createOwner.ts"
+    "admin:create": "tsx src/scripts/createOwner.ts",
+    "test:princess": "npm run build && node --experimental-test-module-mocks --import tsx --test-force-exit --test ../tests/princess/*.test.mjs",
+    "test:princess:serve": "node --experimental-test-module-mocks ../tests/princess/serve.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.1",
@@ -22,6 +24,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",

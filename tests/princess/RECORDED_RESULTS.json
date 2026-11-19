@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-19",
+  "runtime": "Node.js 24.22.3",
+  "frontend_build": "passed",
+  "backend_build": "passed",
+  "tests": {
+    "passed": 28,
+    "failed": 0,
+    "database": "isolated PostgreSQL WASM (PGlite)",
+    "checks": [
+      {
+        "name": "authentication and role guards protect Princess APIs",
+        "status": "passed"
+      },
+      {
+        "name": "product registration validates money and supports production-head creation",
+        "status": "passed"
+      },
+      {
+        "name": "product master rejects negative values and clears description and latest batch date atomically",
+        "status": "passed"
+      },
+      {
+        "name": "production retries reuse one ledger credit and generated reference",
+        "status": "passed"
+      },
+      {
+        "name": "baseline is initial-only; external receipts and retries have distinct safe semantics",
+        "status": "passed"
+      },
+      {
+        "name": "stock and numeric validation rejects overselling without partial rows",
+        "status": "passed"
+      },
+      {
+        "name": "sales consume the branch batches earliest-best-before first",
+        "status": "passed"
+      },
+      {
+        "name": "online retries return the same sale and conflicting references are rejected",
+        "status": "passed"
+      },
+      {
+        "name": "server queued sales do not affect stock; partial sync retains failed records",
+        "status": "passed"
+      },
+      {
+        "name": "the same queued reference promotes to a confirmed sale exactly once",
+        "status": "passed"
+      },
+      {
+        "name": "closing rejects duplicate products, missing products and blank physical counts",
+        "status": "passed"
+      },
+      {
+        "name": "pending sales block closing; submitting does not adjust stock",
+        "status": "passed"
+      },
+      {
+        "name": "historical summary ignores later stock movements",
+        "status": "passed"
+      },
+      {
+        "name": "submitted expected and variance remain frozen after owner adjustments",
+        "status": "passed"
+      },
+      {
+        "name": "business date override aligns new sale, ledger and daily summary",
+        "status": "passed"
+      },
+      {
+        "name": "staff cannot switch branches; owner queries require explicit branch selection",
+        "status": "passed"
+      },
+      {
+        "name": "signed next opening uses final confirmed closing, never the current live ledger",
+        "status": "passed"
+      },
+      {
+        "name": "sales belonging to a signed week cannot post or synchronize",
+        "status": "passed"
+      },
+      {
+        "name": "activity failure rolls back the sale and its stock movements together",
+        "status": "passed"
+      },
+      {
+        "name": "fully sold stock remains visible as a zero-stock alert",
+        "status": "passed"
+      },
+      {
+        "name": "legacy owner product URLs share the same validation without changing account actions",
+        "status": "passed"
+      },
+      {
+        "name": "offline entries survive new reads and stay isolated by user and branch",
+        "status": "passed"
+      },
+      {
+        "name": "queue references fit the server limit and are unique",
+        "status": "passed"
+      },
+      {
+        "name": "enqueue retry is idempotent; conflicting contents are rejected",
+        "status": "passed"
+      },
+      {
+        "name": "failure retains exact sale and original timestamp for a safe replay",
+        "status": "passed"
+      },
+      {
+        "name": "unavailable device storage never reports that the sale was queued",
+        "status": "passed"
+      },
+      {
+        "name": "corrupt data is reported and never silently erased",
+        "status": "passed"
+      },
+      {
+        "name": "invalid local quantities are rejected before writing",
+        "status": "passed"
+      }
+    ]
+  },
+  "browser_workflow": "passed: 14 Playwright checks in headless Microsoft Edge with isolated PostgreSQL fixtures",
+  "live_neon": "not run",
+  "human_signoff": "pending"
+}

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import * as l from "../controllers/shared/lookup.controller.js";
+import * as l from "../controllers/shared/getRequests.controller.js";
 
 // Read-only lookups any signed-in role needs for dropdowns.
 const router = Router();

@@ -2,10 +2,10 @@ import type { Request, Response } from "express";
 import { sql } from "../../config/db.js";
 import { dateParam, bad } from "../../utils/http.js";
 import { sendCsv } from "../../utils/csv.js";
-import { productPosition } from "../sales/sales.controller.js";
-import { stockRows } from "../production/inventory.controller.js";
-import { dispatchRows } from "../production/dispatch.controller.js";
-import { supplyAlerts, usageRecords, materialRows } from "../production/supplies.controller.js";
+import { productPosition } from "../../utils/positions.js";
+import { stockRows } from "../production/getRequests.controller.js";
+import { dispatchRows } from "../production/getRequests.controller.js";
+import { supplyAlerts, usageRecords, materialRows } from "../production/getRequests.controller.js";
 
 // Each report returns { title, date, summary, rows }. Add ?format=csv to download the rows.
 function out(req: Request, res: Response, file: string, body: { title: string; date: string; summary: Record<string, unknown>; rows: Record<string, unknown>[] }) {
