@@ -60,13 +60,13 @@ export default function ProductDetail({ code }: { code: string }) {
               Edit product details
             </button>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => go("dispatch")}
             >
               Create dispatch
             </button>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => go("inventory")}
             >
               Back to product
@@ -124,7 +124,7 @@ export default function ProductDetail({ code }: { code: string }) {
         footer={
           <>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => setEdit(false)}
             >
               Cancel
@@ -133,7 +133,7 @@ export default function ProductDetail({ code }: { code: string }) {
           </>
         }
       >
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name">
             <input
               value={form.name ?? ""}

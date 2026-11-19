@@ -75,7 +75,7 @@ export default function Users() {
           { header: "Status", render: (u) => <Badge tone={u.account_status ? "ok" : "muted"}>{u.account_status ? "Active" : "Deactivated"}</Badge> },
           { header: "", render: (u) => u.user_id !== me && (
               <div className="flex flex-wrap gap-1.5">
-                <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => toggle(u)}>{u.account_status ? "Deactivate" : "Activate"}</button>
+                <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => toggle(u)}>{u.account_status ? "Deactivate" : "Activate"}</button>
                 <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => { setMsg(""); setDel(u); }}>Delete</button>
               </div>) },
         ]}
@@ -83,10 +83,10 @@ export default function Users() {
 
       <Modal
         open={step === 1} onClose={() => setStep(0)} title="Create a staff account"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setStep(0)}>Cancel</button><button disabled={!detailsOk} onClick={() => setStep(2)}>Continue to permissions</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setStep(0)}>Cancel</button><button disabled={!detailsOk} onClick={() => setStep(2)}>Continue to permissions</button></>}
       >
         <p className="text-mute">Owner-managed access for kitchen and branch staff. Account ID: {nextId.data?.user_id ?? "..."}</p>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="First name"><input value={form.first} onChange={(e) => set("first", e.target.value)} /></Field>
           <Field label="Surname"><input value={form.surname} onChange={(e) => set("surname", e.target.value)} /></Field>
           <Field label="Username" hint="Letters, numbers, dot, dash. At least 3."><input value={form.username} onChange={(e) => set("username", e.target.value)} /></Field>
@@ -107,7 +107,7 @@ export default function Users() {
 
       <Modal
         open={step === 2} onClose={() => setStep(0)} title="Account permissions"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setStep(1)}>Back to account details</button><button disabled={busy} onClick={create}>{busy ? "Saving..." : "Save account & permissions"}</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setStep(1)}>Back to account details</button><button disabled={busy} onClick={create}>{busy ? "Saving..." : "Save account & permissions"}</button></>}
       >
         <p className="text-mute">Preset role permissions · {form.first} {form.surname} · {ROLE_LABEL[form.role]} · {location}</p>
         {perms.data
@@ -118,7 +118,7 @@ export default function Users() {
 
       <Modal
         open={!!del} onClose={() => setDel(null)} title="Delete this staff account?"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setDel(null)}>Cancel</button><button className="bg-danger hover:bg-danger/90" disabled={busy} onClick={remove}>Delete account</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setDel(null)}>Cancel</button><button className="bg-danger hover:bg-danger/90" disabled={busy} onClick={remove}>Delete account</button></>}
       >
         {del && <><p><strong>{del.user_id} · {del.full_name}</strong> · {ROLE_LABEL[del.role]}</p>
           <p className="text-mute">Check the account name and role before confirming deletion. Accounts with recorded activity cannot be deleted; deactivate them instead.</p></>}

@@ -161,7 +161,7 @@ export default function Closing() {
 
       {step === 2 && (
         <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-4">
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
             {rows.map((r) => (
               <Field
                 key={r.product_code}
@@ -198,7 +198,7 @@ export default function Closing() {
               Compare &amp; review closing
             </button>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => go("summary")}
             >
               Back to summary
@@ -214,7 +214,7 @@ export default function Closing() {
               {flagged.length ? "Flagged" : "Matched"}
             </Badge>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => setStep(2)}
             >
               Edit count

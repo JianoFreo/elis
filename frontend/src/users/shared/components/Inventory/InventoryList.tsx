@@ -122,14 +122,14 @@ export default function InventoryList() {
             </button>
             {(isOwner || currentUser().role === "production-head") && (
               <button
-                className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+                className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
                 onClick={() => open("register")}
               >
                 Register product
               </button>
             )}
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => open("baseline")}
             >
               Receive stock / set baseline
@@ -193,7 +193,7 @@ export default function InventoryList() {
         footer={
           <>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => setModal(null)}
             >
               Cancel
@@ -205,7 +205,7 @@ export default function InventoryList() {
         }
       >
         {productSelect}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Batch number">
             <input
               value={form.batch_no ?? ""}
@@ -244,7 +244,7 @@ export default function InventoryList() {
         footer={
           <>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => setModal(null)}
             >
               Cancel
@@ -271,7 +271,7 @@ export default function InventoryList() {
           Reusing this reference safely retries the same entry.
         </p>
         {productSelect}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Batch number">
             <input
               value={form.batch_no ?? ""}
@@ -320,7 +320,7 @@ export default function InventoryList() {
         footer={
           <>
             <button
-              className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt"
+              className="border border-line bg-white text-ink shadow-none hover:bg-canvas"
               onClick={() => setModal(null)}
             >
               Cancel
@@ -331,7 +331,7 @@ export default function InventoryList() {
           </>
         }
       >
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Name">
             <input
               value={form.name ?? ""}

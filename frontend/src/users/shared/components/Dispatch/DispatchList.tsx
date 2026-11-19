@@ -54,8 +54,8 @@ export default function DispatchList() {
       />
 
       <Modal open={open} onClose={() => setOpen(false)} title="Create a dispatch"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setOpen(false)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : "Save & dispatch"}</button></>}>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-col),1fr))] gap-4 max-md:grid-cols-1">
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setOpen(false)}>Cancel</button><button disabled={busy} onClick={save}>{busy ? "Saving..." : "Save & dispatch"}</button></>}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
           <Field label="Product">
             <select value={form.product_code ?? ""} onChange={(e) => set("product_code", e.target.value)}>
               {products.data?.products.map((p) => <option key={p.product_code} value={p.product_code}>{p.name}</option>)}

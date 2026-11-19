@@ -48,7 +48,7 @@ export default function Deliveries() {
 
       <Modal
         open={!!target} onClose={() => setTarget(null)} title={`Confirm branch receipt · ${target?.dispatch_code ?? ""}`}
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setTarget(null)}>Cancel</button><button disabled={!valid || busy} onClick={confirm}>{busy ? "Saving..." : "Confirm actual receipt"}</button></>}
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setTarget(null)}>Cancel</button><button disabled={!valid || busy} onClick={confirm}>{busy ? "Saving..." : "Confirm actual receipt"}</button></>}
       >
         {target && (
           <>

@@ -79,7 +79,7 @@ function DiscrepancyDetail({ code }: { code: string }) {
       <PageHeader
         title={isCount ? `Discrepancy ${d.disc_code}` : `Delivery discrepancy · ${d.disc_code}`}
         subtitle={`${d.branch} · ${d.product} · ${fmtDateTime(d.created_at)}`}
-        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => go("discrepancies")}>Back to flags</button>}
+        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("discrepancies")}>Back to flags</button>}
       />
       <Stats>
         <StatCard label="Status" value={<Badge tone={statusTone(statusLabel(d.status))}>{statusLabel(d.status)}</Badge>} />
@@ -107,14 +107,14 @@ function DiscrepancyDetail({ code }: { code: string }) {
             {isCount
               ? <button onClick={() => { setReason(d.note ?? ""); setMsg(""); setModal("adjust"); }}>Review stock adjustment</button>
               : <button onClick={() => { setReason(""); setMsg(""); setModal("resolve"); }}>Review delivery resolution</button>}
-            {d.status === "open" && <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => run("recount", undefined, () => "Recount requested. The ledger is unchanged.")}>{isCount ? "Request recount" : "Recount delivery"}</button>}
+            {d.status === "open" && <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => run("recount", undefined, () => "Recount requested. The ledger is unchanged.")}>{isCount ? "Request recount" : "Recount delivery"}</button>}
           </div>
         )}
       </div>
 
       <Modal
         open={modal === "adjust"} onClose={() => setModal(null)} title="Approve stock adjustment?"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setModal(null)}>Cancel</button>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setModal(null)}>Cancel</button>
           <button disabled={busy || !reason.trim()} onClick={() => run("approve-adjustment", { reason }, (r) => <>Ledger adjusted by {signed(r.adjustment)} units; {d.product} at {d.branch} is now {r.stock_after}. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Approve adjustment</button></>}
       >
         <p>Only the Business Owner approves a reconciled ledger adjustment.</p>
@@ -125,7 +125,7 @@ function DiscrepancyDetail({ code }: { code: string }) {
 
       <Modal
         open={modal === "resolve"} onClose={() => setModal(null)} title="Resolve delivery discrepancy?"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setModal(null)}>Cancel</button>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setModal(null)}>Cancel</button>
           <button disabled={busy || !reason.trim()} onClick={() => run("resolve-delivery", { reason }, () => <>{d.disc_code} resolved. Branch credit remains +{d.actual_qty} units; hub deduction remains -{d.expected_qty} units. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Confirm delivery resolution</button></>}
       >
         <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Source</dt><dd>{d.disc_code} · {d.source_ref}</dd><dt>Verified received</dt><dd>{d.actual_qty} units</dd></dl>

@@ -15,7 +15,7 @@ export default function DispatchDetail({ code }: { code: string }) {
   return (
     <div className="grid gap-5">
       <PageHeader title={`Dispatch ${d.dispatch_code}`} subtitle={`Main hub → ${d.branch} · ${fmtDateTime(d.dispatched_at)} · Batch ${d.batch_no ?? "-"}`}
-        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => go("dispatch")}>All dispatches</button>} />
+        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("dispatch")}>All dispatches</button>} />
       <Stats>
         <StatCard label="Status" value={<Badge tone={statusTone(d.status)}>{DISPATCH_STATUS[d.status]}</Badge>} />
         <StatCard label="Dispatched" value={`${d.quantity_dispatched} units`} hint={d.product} />

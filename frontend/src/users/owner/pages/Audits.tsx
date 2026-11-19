@@ -94,7 +94,7 @@ function AuditDetail({ code }: { code: string }) {
           {signedOff
             ? <button onClick={() => { setBranchId(String(data.branches[0]?.branch_id ?? "")); setMsg(""); setBaseOpen(true); }}>Set next opening baseline</button>
             : <button disabled={!summary.ready || busy} onClick={signOff}>{busy ? "Signing..." : "Sign off week"}</button>}
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => go("audits")}>All audits</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("audits")}>All audits</button>
         </>}
       />
       <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
@@ -141,7 +141,7 @@ function AuditDetail({ code }: { code: string }) {
       )}
 
       <Modal open={baseOpen} onClose={() => setBaseOpen(false)} title="Next opening stock baseline"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setBaseOpen(false)}>Back to audit</button><button disabled={busy || !base.data} onClick={confirmBaseline}>Confirm next opening</button></>}>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setBaseOpen(false)}>Back to audit</button><button disabled={busy || !base.data} onClick={confirmBaseline}>Confirm next opening</button></>}>
         <p className="text-mute">Use verified branch closing stock from the signed week. This is a new-day opening snapshot, not a second physical stock receipt.</p>
         <Field label="Branch">
           <select value={branchId} onChange={(e) => setBranchId(e.target.value)}>{data.branches.map((b) => <option key={b.branch_id} value={b.branch_id}>{b.branch}</option>)}</select>

@@ -30,7 +30,7 @@ export default function Reports() {
   return (
     <div className="grid gap-5">
       <PageHeader title="Reports, with the full picture." subtitle="Owner reporting workspace" />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-field),1fr))] gap-5 max-md:grid-cols-1">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(19rem,1fr))] gap-5 max-md:grid-cols-1">
         {CARDS.map((c) => (
           <div key={c.kind} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
             <h2>{c.title}</h2>
@@ -47,7 +47,7 @@ export default function Reports() {
 
       <Modal
         open={!!open} onClose={() => setOpen(null)} title="Choose report scope"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => setOpen(null)}>Cancel</button>
+        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setOpen(null)}>Cancel</button>
           <button disabled={!date || (open === "daily" && !branch)} onClick={() => { setScope({ kind: open!, date, branch_id: branch }); setOpen(null); }}>View report</button></>}
       >
         <p className="text-mute">Select the daily view for the report you want to inspect.</p>
@@ -64,7 +64,7 @@ function ReportView({ scope, back }: { scope: { kind: Kind; date: string; branch
   const params = { date: scope.date, branch_id: scope.kind === "daily" ? scope.branch_id : undefined };
   const { data, error, loading } = useApi<Report>(`/api/owner/reports/${scope.kind}`, params);
   const [busy, setBusy] = useState(false);
-  if (!data) return <div className="grid gap-5"><button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={back}>Back to reports</button><Loading loading={loading} error={error} /></div>;
+  if (!data) return <div className="grid gap-5"><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={back}>Back to reports</button><Loading loading={loading} error={error} /></div>;
   const cols = data.rows[0] ? Object.keys(data.rows[0]) : [];
 
   return (
@@ -74,7 +74,7 @@ function ReportView({ scope, back }: { scope: { kind: Kind; date: string; branch
         subtitle={fmtDate(data.date)}
         actions={<>
           <button disabled={busy} onClick={async () => { setBusy(true); try { await downloadCsv(`/api/owner/reports/${scope.kind}`, params, `${scope.kind}-${data.date}`); } finally { setBusy(false); } }}>Export CSV</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={back}>Back to reports</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={back}>Back to reports</button>
         </>}
       />
       <Stats>

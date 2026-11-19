@@ -37,7 +37,7 @@ export default function Overview() {
         subtitle={`${fmtDate(data.date)} · All branches`}
         actions={<>
           <button onClick={() => go("discrepancies")}>Review discrepancies</button>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-surface-alt" onClick={() => go("alerts")}>Review alerts</button>
+          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("alerts")}>Review alerts</button>
         </>}
       />
 
@@ -48,7 +48,7 @@ export default function Overview() {
             <div className="grid gap-1">
               <h2 id="ov-sales" className="m-0 text-xs font-semibold uppercase tracking-wider text-mute">Today's sales</h2>
               <strong className="text-5xl font-semibold leading-none tracking-tight tabular-nums max-md:text-4xl">{peso(data.sales_today)}</strong>
-              <span className="text-sm text-body">{trend(data.sales_today, prev)}</span>
+              <span className="text-sm text-ink/80">{trend(data.sales_today, prev)}</span>
             </div>
             <div className="grid gap-1 text-right text-sm text-mute max-md:text-left">
               <span>{data.items_today} items sold today</span>
@@ -79,8 +79,8 @@ export default function Overview() {
             <Badge tone={attention ? "warn" : "ok"}>{attention ? "Action needed" : "All clear"}</Badge>
           </div>
           <dl className="m-0 grid gap-2 text-sm">
-            <div className="flex justify-between gap-4 border-t border-line pt-2"><dt className="text-body">Stock flags</dt><dd className="m-0 font-semibold tabular-nums">{data.open_flags}</dd></div>
-            <div className="flex justify-between gap-4 border-t border-line pt-2"><dt className="text-body">Low supplies</dt><dd className="m-0 font-semibold tabular-nums">{data.low_supplies}</dd></div>
+            <div className="flex justify-between gap-4 border-t border-line pt-2"><dt className="text-ink/80">Stock flags</dt><dd className="m-0 font-semibold tabular-nums">{data.open_flags}</dd></div>
+            <div className="flex justify-between gap-4 border-t border-line pt-2"><dt className="text-ink/80">Low supplies</dt><dd className="m-0 font-semibold tabular-nums">{data.low_supplies}</dd></div>
           </dl>
         </section>
 

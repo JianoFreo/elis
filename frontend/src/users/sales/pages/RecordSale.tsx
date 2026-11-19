@@ -129,7 +129,7 @@ export default function RecordSale() {
         </Notice>
       )}
       {outbox.error && <Notice tone="bad">{outbox.error}</Notice>}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(var(--spacing-field),1fr))] gap-5 max-md:grid-cols-1">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(19rem,1fr))] gap-5 max-md:grid-cols-1">
         <form
           className="rounded-md border border-line bg-white p-5 grid gap-4"
           onSubmit={(e) => {
