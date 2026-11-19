@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, ResultModal, StatCard, Stats, statusTone } from "../../../components/ui";
+import { Badge, Button, DataTable, Field, Loading, Modal, Notice, PageHeader, ResultModal, StatCard, Stats, Textarea, statusTone } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { currentUser, errMsg, useApi } from "../../../lib/useApi";
 import { fmtDateTime, signed } from "../../../lib/format";
@@ -44,7 +44,7 @@ function DiscrepancyList() {
           { header: "Actual", render: (d) => d.actual_qty, align: "right" },
           { header: "Variance", render: (d) => <strong>{signed(d.variance)}</strong>, align: "right" },
           { header: "Status", render: (d) => <Badge tone={statusTone(statusLabel(d.status))}>{statusLabel(d.status)}</Badge> },
-          { header: "", render: (d) => <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("discrepancies", d.disc_code)}>Review {d.disc_code}</button> },
+          { header: "", render: (d) => <Button variant="ghost" onClick={() => go("discrepancies", d.disc_code)}>Review {d.disc_code}</Button> },
         ]}
       />
     </div>
@@ -79,7 +79,7 @@ function DiscrepancyDetail({ code }: { code: string }) {
       <PageHeader
         title={isCount ? `Discrepancy ${d.disc_code}` : `Delivery discrepancy · ${d.disc_code}`}
         subtitle={`${d.branch} · ${d.product} · ${fmtDateTime(d.created_at)}`}
-        actions={<button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("discrepancies")}>Back to flags</button>}
+        actions={<Button variant="secondary" onClick={() => go("discrepancies")}>Back to flags</Button>}
       />
       <Stats>
         <StatCard label="Status" value={<Badge tone={statusTone(statusLabel(d.status))}>{statusLabel(d.status)}</Badge>} />
@@ -89,7 +89,7 @@ function DiscrepancyDetail({ code }: { code: string }) {
       </Stats>
 
       <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
-        <h2>Evidence &amp; notes</h2>
+        <h2 className="mb-3 text-lg font-semibold">Evidence &amp; notes</h2>
         {d.note && <p>{isCount ? "Closing note" : "Delivery note"}: “{d.note}”</p>}
         {isCount && <p className="text-mute">Source record: daily closing {d.source_ref}</p>}
         {data.dispatch && (
@@ -105,31 +105,31 @@ function DiscrepancyDetail({ code }: { code: string }) {
         {!resolved && (
           <div className="flex flex-wrap gap-2">
             {isCount
-              ? <button onClick={() => { setReason(d.note ?? ""); setMsg(""); setModal("adjust"); }}>Review stock adjustment</button>
-              : <button onClick={() => { setReason(""); setMsg(""); setModal("resolve"); }}>Review delivery resolution</button>}
-            {d.status === "open" && <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => run("recount", undefined, () => "Recount requested. The ledger is unchanged.")}>{isCount ? "Request recount" : "Recount delivery"}</button>}
+              ? <Button onClick={() => { setReason(d.note ?? ""); setMsg(""); setModal("adjust"); }}>Review stock adjustment</Button>
+              : <Button onClick={() => { setReason(""); setMsg(""); setModal("resolve"); }}>Review delivery resolution</Button>}
+            {d.status === "open" && <Button variant="secondary" onClick={() => run("recount", undefined, () => "Recount requested. The ledger is unchanged.")}>{isCount ? "Request recount" : "Recount delivery"}</Button>}
           </div>
         )}
       </div>
 
       <Modal
         open={modal === "adjust"} onClose={() => setModal(null)} title="Approve stock adjustment?"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setModal(null)}>Cancel</button>
-          <button disabled={busy || !reason.trim()} onClick={() => run("approve-adjustment", { reason }, (r) => <>Ledger adjusted by {signed(r.adjustment)} units; {d.product} at {d.branch} is now {r.stock_after}. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Approve adjustment</button></>}
+        footer={<><Button variant="secondary" onClick={() => setModal(null)}>Cancel</Button>
+          <Button disabled={busy || !reason.trim()} onClick={() => run("approve-adjustment", { reason }, (r) => <>Ledger adjusted by {signed(r.adjustment)} units; {d.product} at {d.branch} is now {r.stock_after}. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Approve adjustment</Button></>}
       >
         <p>Only the Business Owner approves a reconciled ledger adjustment.</p>
         <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Adjustment</dt><dd>{signed(d.variance)} units · {d.product}</dd><dt>Approved by</dt><dd>{currentUser().full_name} · Business Owner</dd></dl>
-        <Field label="Reason"><textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Verified damaged goods" /></Field>
+        <Field label="Reason"><Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Verified damaged goods" /></Field>
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>
 
       <Modal
         open={modal === "resolve"} onClose={() => setModal(null)} title="Resolve delivery discrepancy?"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setModal(null)}>Cancel</button>
-          <button disabled={busy || !reason.trim()} onClick={() => run("resolve-delivery", { reason }, () => <>{d.disc_code} resolved. Branch credit remains +{d.actual_qty} units; hub deduction remains -{d.expected_qty} units. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Confirm delivery resolution</button></>}
+        footer={<><Button variant="secondary" onClick={() => setModal(null)}>Cancel</Button>
+          <Button disabled={busy || !reason.trim()} onClick={() => run("resolve-delivery", { reason }, () => <>{d.disc_code} resolved. Branch credit remains +{d.actual_qty} units; hub deduction remains -{d.expected_qty} units. Audit trail: {currentUser().full_name} · “{reason}”.</>)}>Confirm delivery resolution</Button></>}
       >
         <dl className="m-0 grid grid-cols-[max-content_1fr] gap-x-5 gap-y-1.5 max-md:grid-cols-1 max-md:gap-y-0.5 [&_dt]:text-mute [&_dd]:m-0 [&_dd]:font-medium max-md:[&_dd]:mb-2"><dt>Source</dt><dd>{d.disc_code} · {d.source_ref}</dd><dt>Verified received</dt><dd>{d.actual_qty} units</dd></dl>
-        <Field label="Resolution reason"><textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Verified 2-unit shortage; actual receipt retained" /></Field>
+        <Field label="Resolution reason"><Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Verified 2-unit shortage; actual receipt retained" /></Field>
         <p className="text-mute">Resolving keeps the branch credit at {d.actual_qty}. It records the reason and owner decision; it does not add the missing units.</p>
         {msg && <p className="m-0 text-danger">{msg}</p>}
       </Modal>

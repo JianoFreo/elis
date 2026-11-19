@@ -3,6 +3,28 @@ import { shortDay } from "../lib/format";
 
 const CARD = "rounded-md border border-line bg-white ";
 
+const SHAPE = "cursor-pointer rounded px-4 py-2.5 text-sm font-medium transition motion-reduce:transition-none active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink";
+const BUTTON = {
+  primary: `${SHAPE} bg-pink text-white hover:bg-pink-dark`,
+  secondary: `${SHAPE} border border-line bg-white text-ink hover:bg-canvas`,
+  danger: `${SHAPE} bg-danger text-white hover:bg-danger/90`,
+  ghost: "cursor-pointer rounded bg-transparent px-1.5 py-1 text-sm font-semibold text-pink-dark transition motion-reduce:transition-none hover:bg-pink-soft active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink",
+  bare: "cursor-pointer rounded text-sm max-md:min-h-11 transition motion-reduce:transition-none disabled:cursor-default disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink",
+};
+const FIELD = "w-full rounded border border-ink/50 bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base";
+const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(" ");
+
+export function Button({ variant = "primary", className, ...rest }: React.ComponentProps<"button"> & { variant?: keyof typeof BUTTON }) {
+  return <button {...rest} className={cx(BUTTON[variant], className)} />;
+}
+export const Input = ({ className, ...rest }: React.ComponentProps<"input">) => <input {...rest} className={cx(FIELD, className)} />;
+export const Select = ({ className, ...rest }: React.ComponentProps<"select">) => <select {...rest} className={cx(FIELD, className)} />;
+export const Textarea = ({ className, ...rest }: React.ComponentProps<"textarea">) => <textarea {...rest} className={cx(FIELD, "min-h-21 resize-y", className)} />;
+
+export const TH = "border-b border-line bg-canvas px-4 py-3 text-xs font-semibold uppercase tracking-wider text-mute tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5";
+export const TD = "border-b border-line px-4 py-3 tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5 max-md:text-sm";
+export const TBODY = "[&>tr:last-child>td]:border-b-0 [&>tr:hover>td]:bg-canvas";
+
 export type Tone = "ok" | "warn" | "bad" | "info" | "muted";
 
 const BADGE: Record<Tone, string> = {
@@ -19,7 +41,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
   return (
     <div className="mb-6 flex flex-wrap items-start justify-between gap-4 border-b border-line pb-4 max-md:flex-col [&_h1]:mb-1 [&_h1]:text-[1.6rem] max-md:[&_h1]:text-xl [&_p]:m-0">
       <div>
-        <h1>{title}</h1>
+        <h1 className="mb-4 text-2xl font-semibold tracking-tight max-md:text-xl">{title}</h1>
         {subtitle && <p className="text-mute">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2 max-md:w-full max-md:[&>button]:w-full">{actions}</div>}
@@ -70,7 +92,7 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/50 p-4" onMouseDown={onClose}>
       <div className={`${CARD} max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-md p-6 shadow-lg max-md:max-h-[96vh] max-md:p-4`} role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
-        <h2>{title}</h2>
+        <h2 className="mb-3 text-lg font-semibold">{title}</h2>
         <div className="mb-5 grid gap-4">{children}</div>
         {footer && <div className="flex flex-wrap justify-end gap-2 max-md:flex-col-reverse max-md:[&>button]:w-full">{footer}</div>}
       </div>
@@ -88,8 +110,8 @@ export function ResultModal({
       title={title}
       onClose={onClose}
       footer={<>
-        {action && <button onClick={() => { action.onClick(); onClose(); }}>{action.label}</button>}
-        <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={onClose}>Close</button>
+        {action && <Button onClick={() => { action.onClick(); onClose(); }}>{action.label}</Button>}
+        <Button variant="secondary" onClick={onClose}>Close</Button>
       </>}
     >
       {children}
@@ -139,11 +161,11 @@ export interface Col<T> { header: string; render: (r: T) => React.ReactNode; ali
 export function DataTable<T>({ rows, cols, empty = "No records yet." }: { rows: T[]; cols: Col<T>[]; empty?: string }) {
   return (
     <div className={`overflow-x-auto ${CARD}`}>
-      <table>
-        <thead><tr>{cols.map((c) => <th key={c.header} className={c.align && "text-right"}>{c.header}</th>)}</tr></thead>
-        <tbody>
-          {rows.length === 0 && <tr><td colSpan={cols.length} className="text-mute">{empty}</td></tr>}
-          {rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.header} className={c.align && "text-right"}>{c.render(r)}</td>)}</tr>)}
+      <table className="w-full border-collapse">
+        <thead><tr>{cols.map((c) => <th key={c.header} className={`${TH} ${c.align ? "text-right" : "text-left"}`}>{c.header}</th>)}</tr></thead>
+        <tbody className={TBODY}>
+          {rows.length === 0 && <tr><td colSpan={cols.length} className={`${TD} text-left text-mute`}>{empty}</td></tr>}
+          {rows.map((r, i) => <tr key={i}>{cols.map((c) => <td key={c.header} className={`${TD} ${c.align ? "text-right" : "text-left"}`}>{c.render(r)}</td>)}</tr>)}
         </tbody>
       </table>
     </div>

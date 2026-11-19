@@ -1,5 +1,6 @@
 import { ROLE_LABEL } from "../lib/roles";
-import { Icon, CLOSE } from "./icons";
+import { Icon, CLOSE } from "./icons";
+import { Button } from "./ui";
 
 export interface NavItem {
   key: string;
@@ -35,17 +36,17 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
           <div className="flex min-w-0 items-center gap-3">
             <span className="grid size-9.5 flex-none place-items-center rounded-md bg-pink text-lg font-bold text-white">E</span>
             <div className="leading-tight">
-              <h2 className="m-0 text-[.95rem]">Eli&apos;s Yummy Kitchen</h2>
+              <h2 className="m-0 text-[.95rem] font-semibold">Eli&apos;s Yummy Kitchen</h2>
               <small className="text-xs text-mute">{title}</small>
             </div>
           </div>
-          <button className="hidden size-9 place-items-center bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink max-md:grid" aria-label="Close menu" onClick={onClose}><Icon d={CLOSE} /></button>
+          <Button variant="bare" className="hidden size-9 place-items-center bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink max-md:grid" aria-label="Close menu" onClick={onClose}><Icon d={CLOSE} /></Button>
         </div>
         <nav className="grid flex-1 content-start gap-0.5">
           {items.map((i) => (
-            <button key={i.key} className={`${navBtn} ${i.key === currentKey ? navOn : ""}`} onClick={() => onSelect(i.key)}>
+            <Button variant="bare" key={i.key} className={`${navBtn} ${i.key === currentKey ? navOn : ""}`} onClick={() => onSelect(i.key)}>
               {i.label}
-            </button>
+            </Button>
           ))}
         </nav>
         <div className="grid gap-3 border-t border-line pt-4 text-sm">
@@ -56,7 +57,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
               <span className="text-xs text-mute">{ROLE_LABEL[user.role ?? ""] ?? user.role}{user.branch ? ` · ${user.branch}` : ""}</span>
             </div>
           </div>
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={onLogout}>Sign out</button>
+          <Button variant="secondary" onClick={onLogout}>Sign out</Button>
         </div>
       </aside>
     </>

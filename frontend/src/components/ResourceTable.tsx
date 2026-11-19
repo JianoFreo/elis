@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/axios";
+import { TBODY, TD, TH } from "./ui";
 
 export interface Column<T> {
   header: string;
@@ -21,18 +22,18 @@ export default function ResourceTable<T>({
 
   return (
     <div>
-      <h1>{title}</h1>
+      <h1 className="mb-4 text-2xl font-semibold tracking-tight max-md:text-xl">{title}</h1>
       {error && <p className="m-0 text-danger">{error}</p>}
       {!rows && !error && <p className="text-mute">Loading...</p>}
       {rows && (
-        <div className="overflow-x-auto rounded-md border border-line bg-white "><table>
+        <div className="overflow-x-auto rounded-md border border-line bg-white "><table className="w-full border-collapse">
           <thead>
-            <tr>{columns.map((c) => <th key={c.header}>{c.header}</th>)}</tr>
+            <tr>{columns.map((c) => <th key={c.header} className={`${TH} text-left`}>{c.header}</th>)}</tr>
           </thead>
-          <tbody>
-            {rows.length === 0 && <tr><td colSpan={columns.length} className="text-mute">No records yet.</td></tr>}
+          <tbody className={TBODY}>
+            {rows.length === 0 && <tr><td colSpan={columns.length} className={`${TD} text-left text-mute`}>No records yet.</td></tr>}
             {rows.map((row, i) => (
-              <tr key={i}>{columns.map((c) => <td key={c.header}>{c.render(row)}</td>)}</tr>
+              <tr key={i}>{columns.map((c) => <td key={c.header} className={`${TD} text-left`}>{c.render(row)}</td>)}</tr>
             ))}
           </tbody>
         </table></div>

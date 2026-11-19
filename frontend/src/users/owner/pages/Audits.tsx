@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../../lib/axios";
-import { Badge, DataTable, Field, Loading, Modal, Notice, PageHeader, Progress, ResultModal, StatCard, Stats, statusTone } from "../../../components/ui";
+import { Badge, Button, DataTable, Field, Loading, Modal, Notice, PageHeader, Progress, ResultModal, Select, StatCard, Stats, Textarea, statusTone } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { errMsg, useApi } from "../../../lib/useApi";
 import { fmtDate, peso } from "../../../lib/format";
@@ -30,7 +30,7 @@ function AuditList() {
   const current = data.audits.find((a) => a.status !== "signed_off") ?? data.audits[0];
   return (
     <div className="grid gap-5">
-      <PageHeader title="A week, brought together." subtitle="Compile confirmed daily summaries, resolve exceptions and sign off." actions={current && <button onClick={() => go("audits", current.audit_code)}>Review current weekly audit</button>} />
+      <PageHeader title="A week, brought together." subtitle="Compile confirmed daily summaries, resolve exceptions and sign off." actions={current && <Button onClick={() => go("audits", current.audit_code)}>Review current weekly audit</Button>} />
       {current && (
         <Stats>
           <StatCard label="Weekly sales" value={peso(current.sales)} hint="All branches" />
@@ -47,7 +47,7 @@ function AuditList() {
           { header: "Sales", render: (a) => peso(a.sales), align: "right" },
           { header: "Flags", render: (a) => `${a.open_flags} open`, align: "right" },
           { header: "Audit status", render: (a) => <Badge tone={a.status === "signed_off" ? "ok" : "warn"}>{a.status === "signed_off" ? "Signed off" : "In review"}</Badge> },
-          { header: "", render: (a) => <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("audits", a.audit_code)}>Open</button> },
+          { header: "", render: (a) => <Button variant="ghost" onClick={() => go("audits", a.audit_code)}>Open</Button> },
         ]}
       />
     </div>
@@ -92,9 +92,9 @@ function AuditDetail({ code }: { code: string }) {
         subtitle="Confirmed daily records and stock statuses for all branches."
         actions={<>
           {signedOff
-            ? <button onClick={() => { setBranchId(String(data.branches[0]?.branch_id ?? "")); setMsg(""); setBaseOpen(true); }}>Set next opening baseline</button>
-            : <button disabled={!summary.ready || busy} onClick={signOff}>{busy ? "Signing..." : "Sign off week"}</button>}
-          <button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => go("audits")}>All audits</button>
+            ? <Button onClick={() => { setBranchId(String(data.branches[0]?.branch_id ?? "")); setMsg(""); setBaseOpen(true); }}>Set next opening baseline</Button>
+            : <Button disabled={!summary.ready || busy} onClick={signOff}>{busy ? "Signing..." : "Sign off week"}</Button>}
+          <Button variant="secondary" onClick={() => go("audits")}>All audits</Button>
         </>}
       />
       <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
@@ -106,7 +106,7 @@ function AuditDetail({ code }: { code: string }) {
             ? <Notice tone="ok">All daily closings are confirmed and open flags are resolved.</Notice>
             : <Notice tone="warn">{summary.total - summary.confirmed} closing(s) pending and {summary.open_flags} open flag(s). Resolve them before sign-off.</Notice>}
         {!signedOff && summary.ready && (
-          <Field label="Owner sign-off note"><textarea value={note} onChange={(e) => setNote(e.target.value)} /></Field>
+          <Field label="Owner sign-off note"><Textarea value={note} onChange={(e) => setNote(e.target.value)} /></Field>
         )}
       </div>
       {msg && <p className="m-0 text-danger">{msg}</p>}
@@ -124,7 +124,7 @@ function AuditDetail({ code }: { code: string }) {
 
       {data.pending_closings.length > 0 && (
         <div>
-          <h2>Closings awaiting review</h2>
+          <h2 className="mb-3 text-lg font-semibold">Closings awaiting review</h2>
           <DataTable
             rows={data.pending_closings}
             cols={[
@@ -133,18 +133,18 @@ function AuditDetail({ code }: { code: string }) {
               { header: "Branch", render: (c) => c.branch },
               { header: "Status", render: (c) => <Badge tone={statusTone(c.status)}>{c.status === "open" ? "Not submitted" : "Submitted"}</Badge> },
               { header: "", render: (c) => c.open_flags > 0
-                  ? <button className="bg-transparent px-1.5 py-1 font-semibold text-pink-dark shadow-none hover:bg-pink-soft" onClick={() => go("discrepancies")}>{c.open_flags} open flag(s): resolve</button>
-                  : c.status === "submitted" ? <button onClick={() => confirmClosing(c.close_code)}>Confirm closing</button> : <span className="text-mute">Waiting for branch</span> },
+                  ? <Button variant="ghost" onClick={() => go("discrepancies")}>{c.open_flags} open flag(s): resolve</Button>
+                  : c.status === "submitted" ? <Button onClick={() => confirmClosing(c.close_code)}>Confirm closing</Button> : <span className="text-mute">Waiting for branch</span> },
             ]}
           />
         </div>
       )}
 
       <Modal open={baseOpen} onClose={() => setBaseOpen(false)} title="Next opening stock baseline"
-        footer={<><button className="border border-line bg-white text-ink shadow-none hover:bg-canvas" onClick={() => setBaseOpen(false)}>Back to audit</button><button disabled={busy || !base.data} onClick={confirmBaseline}>Confirm next opening</button></>}>
+        footer={<><Button variant="secondary" onClick={() => setBaseOpen(false)}>Back to audit</Button><Button disabled={busy || !base.data} onClick={confirmBaseline}>Confirm next opening</Button></>}>
         <p className="text-mute">Use verified branch closing stock from the signed week. This is a new-day opening snapshot, not a second physical stock receipt.</p>
         <Field label="Branch">
-          <select value={branchId} onChange={(e) => setBranchId(e.target.value)}>{data.branches.map((b) => <option key={b.branch_id} value={b.branch_id}>{b.branch}</option>)}</select>
+          <Select value={branchId} onChange={(e) => setBranchId(e.target.value)}>{data.branches.map((b) => <option key={b.branch_id} value={b.branch_id}>{b.branch}</option>)}</Select>
         </Field>
         {base.error && <Notice tone="bad">{base.error}</Notice>}
         {base.data && <DataTable rows={base.data.products} cols={[{ header: "Product", render: (p) => p.product }, { header: "Verified closing", render: (p) => p.qty, align: "right" }, { header: "Next opening", render: (p) => p.qty, align: "right" }]} />}
