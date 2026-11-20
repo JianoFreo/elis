@@ -12,7 +12,9 @@
     "seed:reset": "tsx src/scripts/seed.ts --reset",
     "admin:create": "tsx src/scripts/createOwner.ts",
     "test:princess": "npm run build && node --experimental-test-module-mocks --import tsx --test-force-exit --test ../tests/princess/*.test.mjs",
-    "test:princess:serve": "node --experimental-test-module-mocks ../tests/princess/serve.mjs"
+    "test:princess:serve": "node --experimental-test-module-mocks ../tests/princess/serve.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.1",
@@ -33,6 +35,7 @@
     "@types/ws": "^8.5.13",
     "nodemon": "^3.1.9",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^5.1.1"
   }
 }
