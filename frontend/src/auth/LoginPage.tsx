@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { api } from "../lib/axios";
+import { applySavedAppearance } from "../lib/appearance";
 import { ROLE_HOME } from "../lib/roles";
 import { Button, Input } from "../components/ui";
 
@@ -34,6 +35,7 @@ export default function LoginPage() {
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("role", data.user.role);
       sessionStorage.setItem("user", JSON.stringify(data.user));
+      applySavedAppearance();
       navigate(ROLE_HOME[data.user.role] ?? "/login", { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message ?? "Unable to sign in");

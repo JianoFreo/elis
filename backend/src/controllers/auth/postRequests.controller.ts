@@ -10,7 +10,7 @@ export async function login(req: Request<{}, L.response | L.error, L.body>, res:
   if (!username || !password) return res.status(400).json({ message: "Username and password are required" });
 
   const [row] = await sql`
-    SELECT u.user_id, u.username, u.full_name, u.role, u.branch_id, u.password_hash, u.account_status,
+    SELECT u.user_id, u.username, u.full_name, u.role, u.branch_id, u.password_hash, u.account_status, u.theme, u.gradient,
            b.name AS branch
       FROM users u LEFT JOIN branches b ON b.id = u.branch_id
      WHERE u.username = ${username} OR u.email = ${username}`;

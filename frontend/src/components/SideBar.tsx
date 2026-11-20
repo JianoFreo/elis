@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { ROLE_LABEL } from "../lib/roles";
 import { Icon, CLOSE } from "./icons";
 
@@ -18,13 +19,25 @@ interface SideBarProps {
   user: { full_name?: string; role?: string; branch?: string | null };
   onSelect: (key: string) => void;
   onClose: () => void;
+  onSettings: () => void;
   onLogout: () => void;
 }
 
 const navBtn = "relative px-4 py-2.5 text-left font-medium text-ink/75 hover:bg-white/70 hover:text-ink";
 const navOn = "bg-ink font-semibold text-white hover:bg-ink hover:text-white";
 
-export default function SideBar({ title, items, currentKey, open, collapsed, user, onSelect, onClose, onLogout }: SideBarProps) {
+export default function SideBar({ title, items, currentKey, open, collapsed, user, onSelect, onClose, onSettings, onLogout }: SideBarProps) {
+  const [menu, setMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!menu) return;
+    const down = (e: MouseEvent) => { if (!menuRef.current?.contains(e.target as Node)) setMenu(false); };
+    const key = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
+    document.addEventListener("mousedown", down);
+    document.addEventListener("keydown", key);
+    return () => { document.removeEventListener("mousedown", down); document.removeEventListener("keydown", key); };
+  }, [menu]);
+
   const initials = String(user.full_name ?? "?").split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
@@ -50,15 +63,21 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
             </Button>
           ))}
         </nav>
-        <div className="grid flex-none gap-3 border-t border-ink/10 pt-4 text-sm">
-          <div className="flex min-w-0 items-center gap-2.5">
+        <div ref={menuRef} className="relative flex-none border-t border-ink/10 pt-4 text-sm">
+          {menu && (
+            <div role="menu" aria-label="Account" className="absolute bottom-full left-0 right-0 mb-2 grid gap-0.5 rounded-lg border border-white/70 bg-white p-1.5 shadow-float">
+              <Button variant="bare" role="menuitem" className="px-3 py-2.5 text-left font-medium hover:bg-pink-soft" onClick={() => { setMenu(false); onSettings(); }}>Settings</Button>
+              <Button variant="bare" role="menuitem" className="px-3 py-2.5 text-left font-medium text-danger hover:bg-bad-bg" onClick={() => { setMenu(false); onLogout(); }}>Log out</Button>
+            </div>
+          )}
+          <Button variant="bare" aria-haspopup="menu" aria-expanded={menu} className="flex w-full items-center gap-2.5 px-2 py-2 text-left hover:bg-white/70" onClick={() => setMenu((m) => !m)}>
             <span className="grid size-8.5 flex-none place-items-center rounded-md bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
-            <div className="grid min-w-0 leading-snug">
+            <span className="grid min-w-0 flex-1 leading-snug">
               <strong className="truncate">{user.full_name}</strong>
               <span className="text-xs text-mute">{ROLE_LABEL[user.role ?? ""] ?? user.role}{user.branch ? ` · ${user.branch}` : ""}</span>
-            </div>
-          </div>
-          <Button variant="secondary" onClick={onLogout}>Sign out</Button>
+            </span>
+            <Icon d={menu ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6"} />
+          </Button>
         </div>
       </aside>
     </>
