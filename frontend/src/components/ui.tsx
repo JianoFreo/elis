@@ -3,13 +3,13 @@ import { shortDay } from "../lib/format";
 
 const CARD = "rounded-lg border border-white/70 bg-white shadow-soft";
 
-const SHAPE = "cursor-pointer rounded-full px-5 py-2.5 text-sm font-medium transition motion-reduce:transition-none active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+const SHAPE = "cursor-pointer rounded-md px-5 py-2.5 text-sm font-medium transition motion-reduce:transition-none active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 const BUTTON = {
   primary: `${SHAPE} bg-pink text-ink shadow-soft hover:brightness-95 hover:shadow-float`,
   secondary: `${SHAPE} border border-line bg-white text-ink hover:bg-pink-soft`,
   danger: `${SHAPE} bg-danger text-white hover:bg-danger/90`,
-  ghost: "cursor-pointer rounded-full bg-transparent px-2.5 py-1 text-sm font-semibold text-pink-dark transition motion-reduce:transition-none hover:bg-pink-soft active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
-  bare: "cursor-pointer rounded-full text-sm max-md:min-h-11 transition motion-reduce:transition-none disabled:cursor-default disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
+  ghost: "cursor-pointer rounded-md bg-transparent px-2.5 py-1 text-sm font-semibold text-pink-dark transition motion-reduce:transition-none hover:bg-pink-soft active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
+  bare: "cursor-pointer rounded-md text-sm max-md:min-h-11 transition motion-reduce:transition-none disabled:cursor-default disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
 };
 const FIELD = "w-full border px-4 py-2.5 transition focus:outline-none focus:ring-3 max-md:min-h-11 max-md:text-base";
 const FIELD_LIGHT = "border-ink/50 bg-white focus:border-pink-dark focus:ring-pink/40";
@@ -19,8 +19,8 @@ const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(" ")
 export function Button({ variant = "primary", className, ...rest }: React.ComponentProps<"button"> & { variant?: keyof typeof BUTTON }) {
   return <button {...rest} className={cx(BUTTON[variant], className)} />;
 }
-export const Input = ({ className, dark, ...rest }: React.ComponentProps<"input"> & { dark?: boolean }) => <input {...rest} className={cx(FIELD, "rounded-full", dark ? FIELD_DARK : FIELD_LIGHT, className)} />;
-export const Select = ({ className, ...rest }: React.ComponentProps<"select">) => <select {...rest} className={cx(FIELD, "rounded-full", FIELD_LIGHT, className)} />;
+export const Input = ({ className, dark, ...rest }: React.ComponentProps<"input"> & { dark?: boolean }) => <input {...rest} className={cx(FIELD, "rounded-md", dark ? FIELD_DARK : FIELD_LIGHT, className)} />;
+export const Select = ({ className, ...rest }: React.ComponentProps<"select">) => <select {...rest} className={cx(FIELD, "rounded-md", FIELD_LIGHT, className)} />;
 export const Textarea = ({ className, ...rest }: React.ComponentProps<"textarea">) => <textarea {...rest} className={cx(FIELD, "rounded-md", FIELD_LIGHT, "min-h-21 resize-y", className)} />;
 
 export const TH = "border-b border-line bg-pink-soft/60 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-mute tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5";
@@ -64,7 +64,7 @@ export function StatCard({ label, value, hint, tone }: { label: string; value: R
 export const Stats = ({ children }: { children: React.ReactNode }) => <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4 max-md:grid-cols-2 max-md:gap-2.5">{children}</div>;
 
 export function Badge({ tone = "muted", children }: { tone?: Tone; children: React.ReactNode }) {
-  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-full before:bg-current before:opacity-80 before:content-[''] ${BADGE[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-md before:bg-current before:opacity-80 before:content-[''] ${BADGE[tone]}`}>{children}</span>;
 }
 
 export function Notice({ tone = "info", children }: { tone?: Tone; children: React.ReactNode }) {
@@ -128,15 +128,15 @@ export function Loading({ loading, error }: { loading: boolean; error: string })
 }
 
 export function Progress({ value, tone = "info" }: { value: number; tone?: Tone }) {
-  return <div className="h-2 overflow-hidden rounded-full bg-line/40"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
+  return <div className="h-2 overflow-hidden rounded-md bg-line/40"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
 export function Steps({ current, steps }: { current: number; steps: string[] }) {
   return (
     <ol className="m-0 flex list-none gap-2 overflow-x-auto p-0 md:flex-wrap">
       {steps.map((s, i) => (
-        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-line/40 text-mute"}`}>
-          <span className="grid size-5.5 place-items-center rounded-full bg-white text-xs font-bold">{i + 1}</span> {s}
+        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-line/40 text-mute"}`}>
+          <span className="grid size-5.5 place-items-center rounded-md bg-white text-xs font-bold">{i + 1}</span> {s}
         </li>
       ))}
     </ol>

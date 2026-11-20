@@ -46,7 +46,7 @@ export default function LoginPage() {
     <main className="grid min-h-screen place-items-center p-4 md:p-8">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-xl border border-white/50 bg-white/35 p-3 shadow-float backdrop-blur-2xl md:grid-cols-2 md:gap-3 md:p-4">
         <form className="grid content-center gap-5 p-5 md:p-10 [&_h1]:m-0 [&_p]:m-0 [&_label]:grid [&_label]:gap-1.5 [&_label]:text-sm [&_label]:font-medium" onSubmit={onSubmit}>
-          <span className="grid size-11 place-items-center rounded-full bg-ink text-lg font-bold text-white">E</span>
+          <span className="grid size-11 place-items-center rounded-md bg-ink text-lg font-bold text-white">E</span>
           <div className="grid gap-1">
             <h1 className="text-4xl font-bold tracking-tight">Welcome back</h1>
             <p className="text-ink/75">Sign in to Eli&apos;s Yummy Kitchen</p>
@@ -59,7 +59,7 @@ export default function LoginPage() {
             Password
             <Input dark type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoComplete="current-password" />
           </label>
-          {error && <p role="alert" className="rounded-full bg-bad-bg px-4 py-2 text-sm text-danger">{error}</p>}
+          {error && <p role="alert" className="rounded-md bg-bad-bg px-4 py-2 text-sm text-danger">{error}</p>}
           <Button type="submit" className="py-3.5 text-base" disabled={loading}>{loading ? "Signing in..." : "Sign in to dashboard"}</Button>
           {SHOW_DEMO && (
             <div className="grid gap-1.5">
@@ -85,8 +85,8 @@ export default function LoginPage() {
           <h2 className="relative m-0 max-w-[14ch] text-4xl font-bold leading-tight tracking-tight">Every batch, every branch, every sale.</h2>
           <p className="relative mt-4 max-w-[32ch] text-white/75">Production, dispatch and sales stay in one workspace, from the main hub to each branch counter.</p>
           <div className="relative mt-6 flex flex-wrap gap-2">
-            <span className="rounded-full bg-white/10 px-3 py-1 text-sm">Main hub + 3 branches</span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-sm">Works offline at the counter</span>
+            <span className="rounded-md bg-white/10 px-3 py-1 text-sm">Main hub + 3 branches</span>
+            <span className="rounded-md bg-white/10 px-3 py-1 text-sm">Works offline at the counter</span>
           </div>
           <div className="absolute bottom-8 left-8 right-8 rounded-lg bg-white p-5 text-ink shadow-float">
             <strong className="block text-lg leading-snug">Weekly audits, signed off with confidence.</strong>
