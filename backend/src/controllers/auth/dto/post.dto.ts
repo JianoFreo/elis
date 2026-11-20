@@ -5,7 +5,7 @@ export namespace Login {
     token: string;
     user: {
       user_id: string; username: string; full_name: string; role: string;
-      branch_id: number | null; branch: string | null;
+      branch_id: number | null; branch: string | null; theme: string; gradient: string;
     };
   }
   export interface error { message: string }

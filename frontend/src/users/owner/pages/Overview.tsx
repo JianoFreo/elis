@@ -9,7 +9,7 @@ interface Overview {
   priorities: { kind: string; ref: string; text: string }[];
 }
 
-const CARD = "rounded-md border border-line bg-white p-5 max-md:p-4";
+const CARD = "rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4";
 
 /** Today against yesterday, stated in words as well as a sign so colour is never the only cue. */
 function trend(today: number, prev: number | undefined): string {

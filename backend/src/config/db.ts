@@ -74,6 +74,8 @@ export const TABLES: TableDefinition[] = [
       last_login: "TIMESTAMPTZ",
       account_status: "BOOLEAN NOT NULL DEFAULT TRUE", // false = deactivated
       active: "BOOLEAN NOT NULL DEFAULT FALSE", // online flag
+      theme: "VARCHAR(30) NOT NULL DEFAULT 'peach'", // appearance: accent theme id (see utils/appearance.ts)
+      gradient: "VARCHAR(30) NOT NULL DEFAULT 'sunset'", // appearance: backdrop gradient id
       created_at: "TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP",
       updated_at: "TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP",
     },

@@ -88,7 +88,7 @@ export default function Workspace() {
         />
       </Stats>
 
-      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+      <div className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4 grid gap-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="mb-3 text-lg font-semibold">Shift closing checklist</h2>
           <Badge tone={data.step === 3 ? "ok" : "info"}>

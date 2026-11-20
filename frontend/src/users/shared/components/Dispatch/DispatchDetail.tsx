@@ -22,7 +22,7 @@ export default function DispatchDetail({ code }: { code: string }) {
         <StatCard label="Received" value={d.quantity_received ?? "Awaiting"} hint="Branch confirmation" />
         <StatCard label="Difference" value={diff === null ? "--" : diff} tone={diff ? "warn" : undefined} />
       </Stats>
-      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4">
+      <div className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4">
         <h2 className="mb-3 text-lg font-semibold">Dispatch timeline</h2>
         <ul className="m-0 grid list-none gap-2.5 p-0 [&>li]:flex [&>li]:items-center [&>li]:justify-between [&>li]:gap-4 [&>li]:rounded-md [&>li]:border [&>li]:border-line [&>li]:bg-white [&>li]:px-3.5 [&>li]:py-2.5 max-md:[&>li]:flex-wrap">
           <li><span>{fmtTime(d.dispatched_at)} · Created by {d.prepared_by ?? "-"}</span></li>

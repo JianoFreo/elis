@@ -1,5 +1,7 @@
+import { useEffect, useRef, useState } from "react";
 import { ROLE_LABEL } from "../lib/roles";
-import { Icon, CLOSE } from "./icons";
+import { Icon, CLOSE } from "./icons";
+
 import { Button } from "./ui";
 
 export interface NavItem {
@@ -17,47 +19,65 @@ interface SideBarProps {
   user: { full_name?: string; role?: string; branch?: string | null };
   onSelect: (key: string) => void;
   onClose: () => void;
+  onSettings: () => void;
   onLogout: () => void;
 }
 
-const navBtn = "relative rounded bg-transparent px-3 py-2.5 text-left font-medium text-ink/80 shadow-none hover:bg-canvas hover:text-ink";
-const navOn = "bg-pink-soft font-semibold text-pink-dark hover:bg-pink-soft before:absolute before:inset-y-[20%] before:-left-4 before:w-0.75 before:rounded-r-sm before:bg-pink before:content-['']";
+const navBtn = "relative px-4 py-2.5 text-left font-medium text-ink/75 hover:bg-white/70 hover:text-ink";
+const navOn = "bg-ink font-semibold text-white hover:bg-ink hover:text-white";
 
-export default function SideBar({ title, items, currentKey, open, collapsed, user, onSelect, onClose, onLogout }: SideBarProps) {
+export default function SideBar({ title, items, currentKey, open, collapsed, user, onSelect, onClose, onSettings, onLogout }: SideBarProps) {
+  const [menu, setMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!menu) return;
+    const down = (e: MouseEvent) => { if (!menuRef.current?.contains(e.target as Node)) setMenu(false); };
+    const key = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
+    document.addEventListener("mousedown", down);
+    document.addEventListener("keydown", key);
+    return () => { document.removeEventListener("mousedown", down); document.removeEventListener("keydown", key); };
+  }, [menu]);
+
   const initials = String(user.full_name ?? "?").split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
     <>
       {open && <div className="fixed inset-0 z-40 hidden bg-ink/45 max-md:block" onClick={onClose} />}
       <aside
-        className={`${collapsed ? "md:hidden" : "md:w-62"} sticky top-0 flex h-screen flex-none flex-col gap-5 overflow-y-auto border-r border-line bg-white px-4 py-5 max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
+        className={`${collapsed ? "md:hidden" : "md:w-64"} sticky top-4 flex h-[calc(100vh-2rem)] flex-none flex-col gap-5 overflow-hidden rounded-xl border border-white/60 bg-white/70 px-4 py-5 shadow-soft backdrop-blur-xl max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:rounded-l-none max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9.5 flex-none place-items-center rounded-md bg-pink text-lg font-bold text-white">E</span>
+            <span className="grid size-9.5 flex-none place-items-center rounded-md bg-pink text-lg font-bold text-ink shadow-soft">E</span>
             <div className="leading-tight">
               <h2 className="m-0 text-[.95rem] font-semibold">Eli&apos;s Yummy Kitchen</h2>
               <small className="text-xs text-mute">{title}</small>
             </div>
           </div>
-          <Button variant="bare" className="hidden size-9 place-items-center bg-transparent p-0 text-mute shadow-none hover:bg-black/5 hover:text-ink max-md:grid" aria-label="Close menu" onClick={onClose}><Icon d={CLOSE} /></Button>
+          <Button variant="bare" className="hidden size-9 place-items-center bg-transparent p-0 text-mute hover:bg-pink-soft hover:text-ink max-md:grid" aria-label="Close menu" onClick={onClose}><Icon d={CLOSE} /></Button>
         </div>
-        <nav className="grid flex-1 content-start gap-0.5">
+        <nav className="scroll-soft -mr-2 grid min-h-0 flex-1 content-start gap-0.5 overflow-y-auto pr-2">
           {items.map((i) => (
-            <Button variant="bare" key={i.key} className={`${navBtn} ${i.key === currentKey ? navOn : ""}`} onClick={() => onSelect(i.key)}>
+            <Button variant="bare" key={i.key} className={`${navBtn} ${i.key === currentKey ? navOn : "bg-transparent"}`} onClick={() => onSelect(i.key)}>
               {i.label}
             </Button>
           ))}
         </nav>
-        <div className="grid gap-3 border-t border-line pt-4 text-sm">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-8.5 flex-none place-items-center rounded-sm bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
-            <div className="grid min-w-0 leading-snug">
+        <div ref={menuRef} className="relative flex-none border-t border-ink/10 pt-4 text-sm">
+          {menu && (
+            <div role="menu" aria-label="Account" className="absolute bottom-full left-0 right-0 mb-2 grid gap-0.5 rounded-lg border border-white/70 bg-white p-1.5 shadow-float">
+              <Button variant="bare" role="menuitem" className="px-3 py-2.5 text-left font-medium hover:bg-pink-soft" onClick={() => { setMenu(false); onSettings(); }}>Settings</Button>
+              <Button variant="bare" role="menuitem" className="px-3 py-2.5 text-left font-medium text-danger hover:bg-bad-bg" onClick={() => { setMenu(false); onLogout(); }}>Log out</Button>
+            </div>
+          )}
+          <Button variant="bare" aria-haspopup="menu" aria-expanded={menu} className="flex w-full items-center gap-2.5 px-2 py-2 text-left hover:bg-white/70" onClick={() => setMenu((m) => !m)}>
+            <span className="grid size-8.5 flex-none place-items-center rounded-md bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
+            <span className="grid min-w-0 flex-1 leading-snug">
               <strong className="truncate">{user.full_name}</strong>
               <span className="text-xs text-mute">{ROLE_LABEL[user.role ?? ""] ?? user.role}{user.branch ? ` · ${user.branch}` : ""}</span>
-            </div>
-          </div>
-          <Button variant="secondary" onClick={onLogout}>Sign out</Button>
+            </span>
+            <Icon d={menu ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6"} />
+          </Button>
         </div>
       </aside>
     </>

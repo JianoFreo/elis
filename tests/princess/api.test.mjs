@@ -517,3 +517,39 @@ test("legacy owner product URLs share the same validation without changing accou
   );
   assert.equal((await post("/api/sales/sales", sale())).status, 409);
 });
+
+test("each user saves their own theme and gradient; only known ids are accepted", async () => {
+  const patch = (body, user) => api("/api/auth/preferences", { method: "PATCH", body, user });
+  const stored = async (username) =>
+    (await query("SELECT theme, gradient FROM users WHERE username=$1", [username])).rows[0];
+
+  const before = await stored("owner");
+  assert.deepEqual(before, { theme: "peach", gradient: "sunset" });
+
+  const saved = await patch({ theme: "lilac", gradient: "dusk" }, "owner");
+  assert.equal(saved.status, 200);
+  assert.deepEqual(await stored("owner"), { theme: "lilac", gradient: "dusk" });
+  assert.deepEqual(await stored("sales"), before, "another user is untouched");
+
+  assert.equal((await patch({ gradient: "ocean" }, "owner")).status, 200);
+  assert.deepEqual(await stored("owner"), { theme: "lilac", gradient: "ocean" }, "a partial update keeps the other value");
+
+  for (const bad of [{}, { theme: "neon" }, { gradient: "red; DROP TABLE users" }, { theme: 7 }])
+    assert.equal((await patch(bad, "owner")).status, 400);
+  assert.deepEqual(await stored("owner"), { theme: "lilac", gradient: "ocean" }, "rejected requests change nothing");
+
+  const me = await api("/api/auth/me", { user: "owner" });
+  assert.equal(me.body.user.theme, "lilac");
+
+  // custom colours from the wheel: exact shapes only
+  assert.equal((await patch({ theme: "custom:#3a7bd5", gradient: "custom:#ffc9a8,#6a5cff" }, "owner")).status, 200);
+  assert.deepEqual(await stored("owner"), { theme: "custom:#3a7bd5", gradient: "custom:#ffc9a8,#6a5cff" });
+  for (const bad of [
+    { theme: "custom:#3A7BD5" }, { theme: "custom:#3a7bd" }, { theme: "custom:3a7bd5" }, { theme: "custom:#3a7bd5;--" },
+    { theme: "custom:#3a7bd5,#6a5cff" }, { gradient: "custom:#ffc9a8" }, { gradient: "custom:#ffc9a8,#6a5cff,#000000" },
+    { gradient: "custom:red,blue" }, { gradient: `custom:#ffc9a8,#6a5cff${" ".repeat(20)}` },
+  ]) assert.equal((await patch(bad, "owner")).status, 400, JSON.stringify(bad));
+  assert.deepEqual(await stored("owner"), { theme: "custom:#3a7bd5", gradient: "custom:#ffc9a8,#6a5cff" }, "rejected requests change nothing");
+  assert.equal((await patch({ theme: "mint", gradient: "aurora" }, "owner")).status, 200, "presets still work after a custom choice");
+  assert.equal((await api("/api/auth/preferences", { method: "PATCH", body: { theme: "mint" }, user: "anonymous" })).status, 401, "needs a signed-in user");
+});

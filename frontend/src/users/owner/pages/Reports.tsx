@@ -32,13 +32,13 @@ export default function Reports() {
       <PageHeader title="Reports, with the full picture." subtitle="Owner reporting workspace" />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(19rem,1fr))] gap-5 max-md:grid-cols-1">
         {CARDS.map((c) => (
-          <div key={c.kind} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+          <div key={c.kind} className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4 grid gap-5">
             <h2 className="mb-3 text-lg font-semibold">{c.title}</h2>
             <p className="text-mute">{c.text}</p>
             <div><Button onClick={() => { setOpen(c.kind); setDate(today()); setBranch(String(selling[0]?.id ?? "")); }}>Open report</Button></div>
           </div>
         ))}
-        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+        <div className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4 grid gap-5">
           <h2 className="mb-3 text-lg font-semibold">Weekly audit</h2>
           <p className="text-mute">Confirmed summaries, branch stock status, exceptions and owner sign-off.</p>
           <div><Button onClick={() => go("audits")}>Open weekly audit</Button></div>

@@ -38,5 +38,5 @@ export async function downloadCsv(url: string, params: Record<string, string | n
 }
 
 export const currentUser = () => JSON.parse(sessionStorage.getItem("user") ?? "{}") as {
-  user_id: string; username: string; full_name: string; role: string; branch_id: number | null; branch: string | null;
+  user_id: string; username: string; full_name: string; role: string; branch_id: number | null; branch: string | null; theme?: string; gradient?: string;
 };

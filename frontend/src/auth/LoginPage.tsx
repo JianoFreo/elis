@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { api } from "../lib/axios";
-import { ROLE_HOME } from "../lib/roles";
+import { applySavedAppearance } from "../lib/appearance";
+import { ROLE_HOME } from "../lib/roles";
 import { Button, Input } from "../components/ui";
 
 // Optional: show quick-fill demo accounts (set VITE_DEMO_ACCOUNTS=true, and VITE_DEMO_PASSWORD to prefill the password).
@@ -34,6 +35,7 @@ export default function LoginPage() {
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("role", data.user.role);
       sessionStorage.setItem("user", JSON.stringify(data.user));
+      applySavedAppearance();
       navigate(ROLE_HOME[data.user.role] ?? "/login", { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message ?? "Unable to sign in");
@@ -43,44 +45,57 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-screen grid-cols-[1.1fr_1fr] max-lg:grid-cols-1">
-      <section className="flex flex-col justify-center gap-4 bg-pink p-12 text-white max-lg:p-6 [&_h1]:m-0 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:text-white [&_p]:m-0 [&_p]:max-w-[34ch]">
-        <span className="self-start rounded-sm bg-black/20 px-3 py-1 text-sm">Your workspace, beautifully connected</span>
-        <h1 className="mb-4 text-2xl font-semibold tracking-tight max-md:text-xl">Welcome back.</h1>
-        <p>Track every batch, every branch, and every sale in one thoughtfully organized workspace.</p>
-        <p>From production to weekly sign-off, keep the whole kitchen in view.</p>
-        <div className="flex flex-wrap gap-2">
-          <span className="rounded-sm bg-black/20 px-3 py-1 text-sm">Main hub + 3 branches</span>
-          <span className="rounded-sm bg-black/20 px-3 py-1 text-sm">Fresh, every day</span>
-          <span className="rounded-sm bg-black/20 px-3 py-1 text-sm">Prepared with care</span>
-        </div>
-      </section>
-      <section className="grid place-items-center p-4">
-        <form className="rounded-md border border-line bg-white  grid w-full max-w-sm gap-4 p-8 [&_h1]:m-0 [&_h1]:text-pink [&_p]:m-0 [&_label]:grid [&_label]:gap-1.5 [&_label]:text-sm" onSubmit={onSubmit}>
-          <h1 className="mb-4 text-2xl font-semibold tracking-tight max-md:text-xl">Eli's Yummy Kitchen</h1>
-          <p className="text-mute">Sign in to your workspace</p>
+    <main className="grid min-h-screen place-items-center p-4 md:p-8">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-xl border border-white/50 bg-white/35 p-3 shadow-float backdrop-blur-2xl md:grid-cols-2 md:gap-3 md:p-4">
+        <form className="grid content-center gap-5 p-5 md:p-10 [&_h1]:m-0 [&_p]:m-0 [&_label]:grid [&_label]:gap-1.5 [&_label]:text-sm [&_label]:font-medium" onSubmit={onSubmit}>
+          <span className="grid size-11 place-items-center rounded-md bg-ink text-lg font-bold text-white">E</span>
+          <div className="grid gap-1">
+            <h1 className="text-4xl font-bold tracking-tight">Welcome back</h1>
+            <p className="text-ink/75">Sign in to Eli&apos;s Yummy Kitchen</p>
+          </div>
           <label>
             Username
-            <Input value={username} onChange={(e) => setUsername(e.target.value)} autoFocus required autoComplete="username" />
+            <Input dark value={username} onChange={(e) => setUsername(e.target.value)} placeholder="your.username" autoFocus required autoComplete="username" />
           </label>
           <label>
             Password
-            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+            <Input dark type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoComplete="current-password" />
           </label>
-          {error && <p className="m-0 text-danger">{error}</p>}
-          <Button type="submit" disabled={loading}>{loading ? "Signing in..." : "Sign in to dashboard"}</Button>
+          {error && <p role="alert" className="rounded-md bg-bad-bg px-4 py-2 text-sm text-danger">{error}</p>}
+          <Button type="submit" className="py-3.5 text-base" disabled={loading}>{loading ? "Signing in..." : "Sign in to dashboard"}</Button>
           {SHOW_DEMO && (
-            <div className="grid gap-1.5 [&_button]:border [&_button]:border-line [&_button]:bg-white [&_button]:text-left [&_button]:text-sm [&_button]:text-ink [&_button]:shadow-none [&_button]:hover:bg-pink-soft">
-              <span className="text-mute">Demo accounts: choose a role</span>
+            <div className="grid gap-1.5">
+              <span className="text-sm text-ink/75">Demo accounts: choose a role</span>
               {DEMOS.map((d) => (
-                <Button key={d.username} type="button" onClick={() => { setUsername(d.username); setPassword(DEMO_PASSWORD); }}>
-                  {d.label} · {d.username}
+                <Button key={d.username} variant="secondary" type="button" className="text-left" onClick={() => { setUsername(d.username); setPassword(DEMO_PASSWORD); }}>
+                  {d.label} ({d.username})
                 </Button>
               ))}
             </div>
           )}
         </form>
-      </section>
+
+        <aside className="relative hidden overflow-hidden rounded-lg bg-panel p-10 text-white md:block" aria-label="About the workspace">
+          <svg className="pointer-events-none absolute -bottom-10 -right-10 size-80 text-violet/80" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+            {Array.from({ length: 24 }, (_, n) => {
+              const a = (n / 24) * Math.PI * 2;
+              const inner = n % 2 ? 26 : 18;
+              const outer = n % 2 ? 62 : 92;
+              return <line key={n} x1={100 + Math.cos(a) * inner} y1={100 + Math.sin(a) * inner} x2={100 + Math.cos(a) * outer} y2={100 + Math.sin(a) * outer} />;
+            })}
+          </svg>
+          <h2 className="relative m-0 max-w-[14ch] text-4xl font-bold leading-tight tracking-tight">Every batch, every branch, every sale.</h2>
+          <p className="relative mt-4 max-w-[32ch] text-white/75">Production, dispatch and sales stay in one workspace, from the main hub to each branch counter.</p>
+          <div className="relative mt-6 flex flex-wrap gap-2">
+            <span className="rounded-md bg-white/10 px-3 py-1 text-sm">Main hub + 3 branches</span>
+            <span className="rounded-md bg-white/10 px-3 py-1 text-sm">Works offline at the counter</span>
+          </div>
+          <div className="absolute bottom-8 left-8 right-8 rounded-lg bg-white p-5 text-ink shadow-float">
+            <strong className="block text-lg leading-snug">Weekly audits, signed off with confidence.</strong>
+            <span className="mt-1 block text-sm text-mute">Counts, deliveries and closings reconcile before the week ends.</span>
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }

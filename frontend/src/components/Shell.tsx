@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from "react-router";
 import { api } from "../lib/axios";
 import SideBar, { type NavItem } from "./SideBar";
 import Header from "./Header";
+import Settings from "../users/shared/pages/Settings";
+import { DEFAULT_APPEARANCE, applyAppearance } from "../lib/appearance";
 
 export type { NavItem };
 
@@ -15,6 +17,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
   });
   const [params, setParams] = useSearchParams();
   const current = items.find((i) => i.key === params.get("page")) ?? items[0];
+  const inSettings = params.get("page") === "settings";
   const user = JSON.parse(sessionStorage.getItem("user") ?? "{}");
 
   function toggleSidebar() {
@@ -28,25 +31,27 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
   async function logout() {
     try { await api.post("/api/auth/logout"); } catch { /* token may already be invalid */ }
     sessionStorage.clear();
+    applyAppearance(DEFAULT_APPEARANCE);
     navigate("/login", { replace: true });
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen gap-4 p-3 md:p-4">
       <SideBar
         title={title}
         items={items}
-        currentKey={current.key}
+        currentKey={inSettings ? "" : current.key}
         open={open}
         collapsed={collapsed}
         user={user}
         onSelect={(key) => { setParams({ page: key }); setOpen(false); }}
         onClose={() => setOpen(false)}
+        onSettings={() => { setParams({ page: "settings" }); setOpen(false); }}
         onLogout={logout}
       />
-      <div className="min-w-0 flex-1">
-        <Header label={current.label} title={title} collapsed={collapsed} onToggle={toggleSidebar} />
-        <section className="p-8 max-md:p-4">{current.element}</section>
+      <div className="min-w-0 flex-1 rounded-xl border border-white/60 bg-white/80 shadow-soft backdrop-blur-xl">
+        <Header label={inSettings ? "Settings" : current.label} title={title} collapsed={collapsed} onToggle={toggleSidebar} />
+        <section className="p-4 md:p-8">{inSettings ? <Settings /> : current.element}</section>
       </div>
     </div>
   );

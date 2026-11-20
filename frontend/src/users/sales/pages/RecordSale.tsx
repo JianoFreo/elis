@@ -125,7 +125,7 @@ export default function RecordSale() {
       {outbox.error && <Notice tone="bad">{outbox.error}</Notice>}
       <div className="grid grid-cols-[repeat(auto-fit,minmax(19rem,1fr))] gap-5 max-md:grid-cols-1">
         <form
-          className="rounded-md border border-line bg-white p-5 grid gap-4"
+          className="rounded-lg border border-white/70 bg-white shadow-soft p-5 grid gap-4"
           onSubmit={(e) => {
             e.preventDefault();
             confirm();
@@ -190,7 +190,7 @@ export default function RecordSale() {
             </Button>
           </div>
         </form>
-        <section className="rounded-md border border-line bg-white p-5 grid content-start gap-5">
+        <section className="rounded-lg border border-white/70 bg-white shadow-soft p-5 grid content-start gap-5">
           <h2 className="mb-3 text-lg font-semibold">Transaction preview</h2>
           <p>{p?.name ?? "No active products"}</p>
           <strong className="text-2xl">

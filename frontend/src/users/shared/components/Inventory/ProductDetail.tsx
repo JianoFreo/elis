@@ -86,7 +86,7 @@ export default function ProductDetail({ code }: { code: string }) {
           hint={data.batch ? `batch ${data.batch.batch_no}` : undefined}
         />
       </Stats>
-      <div className="rounded-md border border-line bg-white  p-5 max-md:p-4">
+      <div className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4">
         <h2 className="mb-3 text-lg font-semibold">Product information</h2>
         <p>
           {p.description ?? "No description."} Quantity is tracked per product,
