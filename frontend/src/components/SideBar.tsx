@@ -35,7 +35,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9.5 flex-none place-items-center rounded-full bg-pink text-lg font-bold text-ink shadow-soft">E</span>
+            <span className="grid size-9.5 flex-none place-items-center rounded-md bg-pink text-lg font-bold text-ink shadow-soft">E</span>
             <div className="leading-tight">
               <h2 className="m-0 text-[.95rem] font-semibold">Eli&apos;s Yummy Kitchen</h2>
               <small className="text-xs text-mute">{title}</small>
@@ -52,7 +52,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
         </nav>
         <div className="grid gap-3 border-t border-ink/10 pt-4 text-sm">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-8.5 flex-none place-items-center rounded-full bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
+            <span className="grid size-8.5 flex-none place-items-center rounded-md bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
             <div className="grid min-w-0 leading-snug">
               <strong className="truncate">{user.full_name}</strong>
               <span className="text-xs text-mute">{ROLE_LABEL[user.role ?? ""] ?? user.role}{user.branch ? ` · ${user.branch}` : ""}</span>
