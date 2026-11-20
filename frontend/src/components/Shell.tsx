@@ -32,7 +32,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen gap-4 p-3 md:p-4">
       <SideBar
         title={title}
         items={items}
@@ -44,9 +44,9 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
         onClose={() => setOpen(false)}
         onLogout={logout}
       />
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 rounded-xl border border-white/60 bg-white/80 shadow-soft backdrop-blur-xl">
         <Header label={current.label} title={title} collapsed={collapsed} onToggle={toggleSidebar} />
-        <section className="p-8 max-md:p-4">{current.element}</section>
+        <section className="p-4 md:p-8">{current.element}</section>
       </div>
     </div>
   );

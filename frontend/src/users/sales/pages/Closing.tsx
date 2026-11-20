@@ -151,7 +151,7 @@ export default function Closing() {
       />
 
       {step === 2 && (
-        <div className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-4">
+        <div className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4 grid gap-4">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4 max-md:grid-cols-1">
             {rows.map((r) => (
               <Field
