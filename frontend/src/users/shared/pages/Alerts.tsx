@@ -22,7 +22,7 @@ export default function Alerts({ url }: { url: string }) {
         {data.low.map((m) => {
           const pct = m.threshold ? Math.min(100, (m.on_hand / (m.threshold * 4)) * 100) : 0;
           return (
-            <div key={m.material_code} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+            <div key={m.material_code} className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4 grid gap-5">
               <div className="flex flex-wrap items-center justify-between gap-4"><h3 className="mb-2 text-base font-semibold">{m.name}</h3><Badge tone="warn">Below threshold</Badge></div>
               <strong style={{ fontSize: "1.4rem" }}>{num(m.on_hand)} {m.unit} remaining</strong>
               <Progress value={pct} tone="warn" />
@@ -31,7 +31,7 @@ export default function Alerts({ url }: { url: string }) {
           );
         })}
         {data.near.map((u) => (
-          <div key={u.material_code} className="rounded-md border border-line bg-white  p-5 max-md:p-4 grid gap-5">
+          <div key={u.material_code} className="rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4 grid gap-5">
             <div className="flex flex-wrap items-center justify-between gap-4"><h3 className="mb-2 text-base font-semibold">{u.material} · production supply</h3><Badge tone="bad">Near limit · {u.pct}%</Badge></div>
             <strong style={{ fontSize: "1.4rem" }}>{num(u.used)} / {num(u.opening + u.received)} {u.unit} used</strong>
             <Progress value={u.pct} tone="bad" />

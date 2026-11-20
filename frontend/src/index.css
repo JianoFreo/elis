@@ -1,14 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: Inter, system-ui, sans-serif;
-  --color-pink: #cf3570;
-  --color-pink-dark: #b92b61;
-  --color-pink-soft: #fdeef4;
-  --color-canvas: #f6f4f5;
-  --color-line: #e8e2e5;
-  --color-ink: #241d21;
-  --color-mute: #6f6368;
+  --font-sans: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  --color-pink: #ff9f86;
+  --color-pink-dark: #b8432c;
+  --color-pink-soft: #fff0ea;
+  --color-peach: #ffc9a8;
+  --color-rose: #ff8fb3;
+  --color-violet: #a98bff;
+  --color-indigo: #6a5cff;
+  --color-panel: #15101f;
+  --color-canvas: #f7f0fa;
+  --color-line: #eadfe8;
+  --color-ink: #1d1626;
+  --color-mute: #655a70;
   --color-danger: #c0262d;
   --color-ok: #17703c;
   --color-warn: #8a5a0b;
@@ -17,4 +22,25 @@
   --color-warn-bg: #fdf3dd;
   --color-bad-bg: #fde8e9;
   --color-info-bg: #e8f0fb;
+
+  /* Shape: soft and generous. Every rounded-* in the app resolves through these. */
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.75rem;
+  --radius-xl: 2.25rem;
+
+  /* Elevation: one soft layer for cards, one larger for floating surfaces. */
+  --shadow-soft: 0 1px 2px rgb(29 22 38 / 0.04), 0 10px 30px -12px rgb(29 22 38 / 0.18);
+  --shadow-float: 0 24px 60px -20px rgb(29 22 38 / 0.35);
+}
+
+:root {
+  --backdrop: linear-gradient(115deg, var(--color-peach) 0%, var(--color-rose) 38%, var(--color-violet) 78%, var(--color-indigo) 100%);
+}
+
+@layer base {
+  body { @apply bg-canvas font-sans text-[15px] text-ink antialiased; background: var(--backdrop) fixed; }
+  /* Grid items may shrink below their content, so wide tables scroll inside their card instead of stretching the page. */
+  .grid > * { min-width: 0; }
 }

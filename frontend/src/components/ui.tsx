@@ -1,29 +1,31 @@
 import { useEffect } from "react";
 import { shortDay } from "../lib/format";
 
-const CARD = "rounded-md border border-line bg-white ";
+const CARD = "rounded-lg border border-white/70 bg-white shadow-soft";
 
-const SHAPE = "cursor-pointer rounded px-4 py-2.5 text-sm font-medium transition motion-reduce:transition-none active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink";
+const SHAPE = "cursor-pointer rounded-full px-5 py-2.5 text-sm font-medium transition motion-reduce:transition-none active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 const BUTTON = {
-  primary: `${SHAPE} bg-pink text-white hover:bg-pink-dark`,
-  secondary: `${SHAPE} border border-line bg-white text-ink hover:bg-canvas`,
+  primary: `${SHAPE} bg-pink text-ink shadow-soft hover:brightness-95 hover:shadow-float`,
+  secondary: `${SHAPE} border border-line bg-white text-ink hover:bg-pink-soft`,
   danger: `${SHAPE} bg-danger text-white hover:bg-danger/90`,
-  ghost: "cursor-pointer rounded bg-transparent px-1.5 py-1 text-sm font-semibold text-pink-dark transition motion-reduce:transition-none hover:bg-pink-soft active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink",
-  bare: "cursor-pointer rounded text-sm max-md:min-h-11 transition motion-reduce:transition-none disabled:cursor-default disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink",
+  ghost: "cursor-pointer rounded-full bg-transparent px-2.5 py-1 text-sm font-semibold text-pink-dark transition motion-reduce:transition-none hover:bg-pink-soft active:translate-y-px disabled:cursor-default disabled:opacity-60 max-md:min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
+  bare: "cursor-pointer rounded-full text-sm max-md:min-h-11 transition motion-reduce:transition-none disabled:cursor-default disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
 };
-const FIELD = "w-full rounded border border-ink/50 bg-white px-3 py-2.5 focus:border-pink focus:outline-none focus:ring-3 focus:ring-pink/20 max-md:min-h-11 max-md:text-base";
+const FIELD = "w-full border px-4 py-2.5 transition focus:outline-none focus:ring-3 max-md:min-h-11 max-md:text-base";
+const FIELD_LIGHT = "border-ink/50 bg-white focus:border-pink-dark focus:ring-pink/40";
+const FIELD_DARK = "border-transparent bg-ink text-white placeholder:text-white/55 focus:border-pink focus:ring-pink/50";
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(" ");
 
 export function Button({ variant = "primary", className, ...rest }: React.ComponentProps<"button"> & { variant?: keyof typeof BUTTON }) {
   return <button {...rest} className={cx(BUTTON[variant], className)} />;
 }
-export const Input = ({ className, ...rest }: React.ComponentProps<"input">) => <input {...rest} className={cx(FIELD, className)} />;
-export const Select = ({ className, ...rest }: React.ComponentProps<"select">) => <select {...rest} className={cx(FIELD, className)} />;
-export const Textarea = ({ className, ...rest }: React.ComponentProps<"textarea">) => <textarea {...rest} className={cx(FIELD, "min-h-21 resize-y", className)} />;
+export const Input = ({ className, dark, ...rest }: React.ComponentProps<"input"> & { dark?: boolean }) => <input {...rest} className={cx(FIELD, "rounded-full", dark ? FIELD_DARK : FIELD_LIGHT, className)} />;
+export const Select = ({ className, ...rest }: React.ComponentProps<"select">) => <select {...rest} className={cx(FIELD, "rounded-full", FIELD_LIGHT, className)} />;
+export const Textarea = ({ className, ...rest }: React.ComponentProps<"textarea">) => <textarea {...rest} className={cx(FIELD, "rounded-md", FIELD_LIGHT, "min-h-21 resize-y", className)} />;
 
-export const TH = "border-b border-line bg-canvas px-4 py-3 text-xs font-semibold uppercase tracking-wider text-mute tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5";
+export const TH = "border-b border-line bg-pink-soft/60 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-mute tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5";
 export const TD = "border-b border-line px-4 py-3 tabular-nums max-md:whitespace-nowrap max-md:px-3 max-md:py-2.5 max-md:text-sm";
-export const TBODY = "[&>tr:last-child>td]:border-b-0 [&>tr:hover>td]:bg-canvas";
+export const TBODY = "[&>tr:last-child>td]:border-b-0 [&>tr:hover>td]:bg-pink-soft/40";
 
 export type Tone = "ok" | "warn" | "bad" | "info" | "muted";
 
@@ -62,7 +64,7 @@ export function StatCard({ label, value, hint, tone }: { label: string; value: R
 export const Stats = ({ children }: { children: React.ReactNode }) => <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4 max-md:grid-cols-2 max-md:gap-2.5">{children}</div>;
 
 export function Badge({ tone = "muted", children }: { tone?: Tone; children: React.ReactNode }) {
-  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm px-2.5 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-sm before:bg-current before:opacity-80 before:content-[''] ${BADGE[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-0.5 text-xs font-semibold before:size-1.5 before:rounded-full before:bg-current before:opacity-80 before:content-[''] ${BADGE[tone]}`}>{children}</span>;
 }
 
 export function Notice({ tone = "info", children }: { tone?: Tone; children: React.ReactNode }) {
@@ -90,8 +92,8 @@ export function Modal({
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/50 p-4" onMouseDown={onClose}>
-      <div className={`${CARD} max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-md p-6 shadow-lg max-md:max-h-[96vh] max-md:p-4`} role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/50 p-4 backdrop-blur-sm" onMouseDown={onClose}>
+      <div className="max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-lg border border-white/70 bg-white p-6 shadow-float max-md:max-h-[96vh] max-md:p-4" role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
         <h2 className="mb-3 text-lg font-semibold">{title}</h2>
         <div className="mb-5 grid gap-4">{children}</div>
         {footer && <div className="flex flex-wrap justify-end gap-2 max-md:flex-col-reverse max-md:[&>button]:w-full">{footer}</div>}
@@ -126,15 +128,15 @@ export function Loading({ loading, error }: { loading: boolean; error: string })
 }
 
 export function Progress({ value, tone = "info" }: { value: number; tone?: Tone }) {
-  return <div className="h-2 overflow-hidden rounded-sm bg-line/40"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
+  return <div className="h-2 overflow-hidden rounded-full bg-line/40"><div className={`h-full ${BAR[tone]}`} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
 export function Steps({ current, steps }: { current: number; steps: string[] }) {
   return (
     <ol className="m-0 flex list-none gap-2 overflow-x-auto p-0 md:flex-wrap">
       {steps.map((s, i) => (
-        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-line/40 text-mute"}`}>
-          <span className="grid size-5.5 place-items-center rounded-sm bg-white text-xs font-bold">{i + 1}</span> {s}
+        <li key={s} className={`flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm ${i + 1 < current ? "bg-ok-bg text-ok" : i + 1 === current ? "bg-pink-soft font-semibold text-pink-dark" : "bg-line/40 text-mute"}`}>
+          <span className="grid size-5.5 place-items-center rounded-full bg-white text-xs font-bold">{i + 1}</span> {s}
         </li>
       ))}
     </ol>
@@ -148,7 +150,7 @@ export function BarChart({ data, label = "Sales this week" }: { data: { day: str
       {data.map((d, i) => (
         <div key={d.day} className="group flex h-full flex-1 flex-col items-center justify-end gap-1 text-xs">
           <span className="text-[.7rem] text-mute">{Math.round(d.total).toLocaleString()}</span>
-          <div className={`min-h-0.75 w-full max-w-11 rounded-t-sm transition-colors ${i === data.length - 1 ? "bg-pink" : "bg-pink/30 group-hover:bg-pink/50"}`} style={{ height: `${(d.total / max) * 100}%` }} />
+          <div className={`min-h-0.75 w-full max-w-11 rounded-t-md transition-colors ${i === data.length - 1 ? "bg-pink" : "bg-pink/30 group-hover:bg-pink/50"}`} style={{ height: `${(d.total / max) * 100}%` }} />
           <span className="text-mute">{shortDay(d.day)}</span>
         </div>
       ))}
