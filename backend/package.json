@@ -13,7 +13,7 @@
     "admin:create": "tsx src/scripts/createOwner.ts",
     "test:princess": "npm run build && node --experimental-test-module-mocks --import tsx --test-force-exit --test ../tests/princess/*.test.mjs",
     "test:princess:serve": "node --experimental-test-module-mocks ../tests/princess/serve.mjs",
-    "test": "vitest run",
+    "test": "vitest run --reporter=verbose",
     "test:watch": "vitest"
   },
   "dependencies": {
