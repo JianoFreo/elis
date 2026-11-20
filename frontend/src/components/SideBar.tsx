@@ -31,7 +31,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
     <>
       {open && <div className="fixed inset-0 z-40 hidden bg-ink/45 max-md:block" onClick={onClose} />}
       <aside
-        className={`${collapsed ? "md:hidden" : "md:w-64"} sticky top-4 flex h-[calc(100vh-2rem)] flex-none flex-col gap-5 overflow-y-auto rounded-xl border border-white/60 bg-white/70 px-4 py-5 shadow-soft backdrop-blur-xl max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:rounded-l-none max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
+        className={`${collapsed ? "md:hidden" : "md:w-64"} sticky top-4 flex h-[calc(100vh-2rem)] flex-none flex-col gap-5 overflow-hidden rounded-xl border border-white/60 bg-white/70 px-4 py-5 shadow-soft backdrop-blur-xl max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:rounded-l-none max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
@@ -43,14 +43,14 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
           </div>
           <Button variant="bare" className="hidden size-9 place-items-center bg-transparent p-0 text-mute hover:bg-pink-soft hover:text-ink max-md:grid" aria-label="Close menu" onClick={onClose}><Icon d={CLOSE} /></Button>
         </div>
-        <nav className="grid flex-1 content-start gap-0.5">
+        <nav className="scroll-soft -mr-2 grid min-h-0 flex-1 content-start gap-0.5 overflow-y-auto pr-2">
           {items.map((i) => (
             <Button variant="bare" key={i.key} className={`${navBtn} ${i.key === currentKey ? navOn : "bg-transparent"}`} onClick={() => onSelect(i.key)}>
               {i.label}
             </Button>
           ))}
         </nav>
-        <div className="grid gap-3 border-t border-ink/10 pt-4 text-sm">
+        <div className="grid flex-none gap-3 border-t border-ink/10 pt-4 text-sm">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="grid size-8.5 flex-none place-items-center rounded-md bg-pink-soft text-xs font-semibold text-pink-dark">{initials}</span>
             <div className="grid min-w-0 leading-snug">

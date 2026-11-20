@@ -43,4 +43,8 @@
   body { @apply bg-canvas font-sans text-[15px] text-ink antialiased; background: var(--backdrop) fixed; }
   /* Grid items may shrink below their content, so wide tables scroll inside their card instead of stretching the page. */
   .grid > * { min-width: 0; }
+  /* Thin, low-contrast scrollbar for panels that scroll inside the glass shell. */
+  .scroll-soft { scrollbar-width: thin; scrollbar-color: rgb(29 22 38 / 0.25) transparent; }
+  .scroll-soft::-webkit-scrollbar { width: 6px; }
+  .scroll-soft::-webkit-scrollbar-thumb { background: rgb(29 22 38 / 0.25); border-radius: 3px; }
 }
