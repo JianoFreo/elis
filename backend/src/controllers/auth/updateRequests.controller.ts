@@ -3,7 +3,7 @@ import { sql } from "../../config/db.js";
 import { isGradient, isTheme } from "../../utils/appearance.js";
 import type { UpdatePreferences as U } from "./dto/update.dto.js";
 
-// Saves the signed-in user's own appearance. Only known theme and gradient ids are accepted.
+// Saves the signed-in user's own appearance. Only a known preset id or a strictly formatted custom colour is accepted.
 export async function updatePreferences(
   req: Request<{}, U.response | U.error, U.body>,
   res: Response<U.response | U.error>,
