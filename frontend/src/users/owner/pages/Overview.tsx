@@ -1,4 +1,4 @@
-import { Badge, BarChart, Button, Loading, Notice, PageHeader } from "../../../components/ui";
+import { Badge, BarChart, Button, Loading, Notice, PageHeader, PieChart } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { currentUser, useApi } from "../../../lib/useApi";
 import { fmtDate, peso } from "../../../lib/format";
@@ -77,6 +77,13 @@ export default function Overview() {
             <strong className={`text-3xl font-semibold tabular-nums ${attention ? "text-warn" : "text-ok"}`}>{attention}</strong>
             <Badge tone={attention ? "warn" : "ok"}>{attention ? "Action needed" : "All clear"}</Badge>
           </div>
+          <PieChart
+            label="Attention items by type"
+            data={[
+              { label: "Stock flags", value: data.open_flags, color: "#8a5a0b" },
+              { label: "Low supplies", value: data.low_supplies, color: "#c0262d" },
+            ]}
+          />
           <dl className="m-0 grid gap-2 text-sm">
             <div className="flex justify-between gap-4 border-t border-line pt-2"><dt className="text-ink/80">Stock flags</dt><dd className="m-0 font-semibold tabular-nums">{data.open_flags}</dd></div>
             <div className="flex justify-between gap-4 border-t border-line pt-2"><dt className="text-ink/80">Low supplies</dt><dd className="m-0 font-semibold tabular-nums">{data.low_supplies}</dd></div>

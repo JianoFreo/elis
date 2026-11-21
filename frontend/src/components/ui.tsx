@@ -158,6 +158,43 @@ export function BarChart({ data, label = "Sales this week" }: { data: { day: str
   );
 }
 
+export function PieChart({ data, label = "Chart" }: { data: { label: string; value: number; color: string }[]; label?: string }) {
+  const total = data.reduce((sum, segment) => sum + segment.value, 0);
+  let offset = 0;
+  const gradient = total
+    ? data.map((segment) => {
+      const start = offset;
+      offset += (segment.value / total) * 100;
+      return `${segment.color} ${start}% ${offset}%`;
+    }).join(", ")
+    : "var(--color-line) 0% 100%";
+
+  return (
+    <div className="flex flex-wrap items-center gap-5" aria-label={label}>
+      <div
+        className="size-36 shrink-0 rounded-full"
+        role="img"
+        aria-label={`${label}: ${data.map((segment) => `${segment.label}, ${segment.value}`).join("; ")}`}
+        style={{ background: `conic-gradient(${gradient})` }}
+      >
+        <div className="m-5 grid size-26 place-items-center rounded-full bg-white text-center">
+          <strong className="text-xl tabular-nums">{total}</strong>
+          <span className="-mt-5 text-xs text-mute">total</span>
+        </div>
+      </div>
+      <ul className="m-0 grid gap-2 p-0 text-sm">
+        {data.map((segment) => (
+          <li key={segment.label} className="flex items-center gap-2">
+            <span className="size-2.5 rounded-sm" style={{ backgroundColor: segment.color }} aria-hidden="true" />
+            <span>{segment.label}</span>
+            <strong className="tabular-nums">{segment.value}</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export interface Col<T> { header: string; render: (r: T) => React.ReactNode; align?: "right" }
 
 export function DataTable<T>({ rows, cols, empty = "No records yet." }: { rows: T[]; cols: Col<T>[]; empty?: string }) {
