@@ -4,7 +4,7 @@ import { api } from "../lib/axios";
 import SideBar, { type NavItem } from "./SideBar";
 import Header from "./Header";
 import Settings from "../users/shared/pages/Settings";
-import { DEFAULT_APPEARANCE, applyAppearance } from "../lib/appearance";
+import { applyRememberedAppearance } from "../lib/appearance";
 
 export type { NavItem };
 
@@ -31,7 +31,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
   async function logout() {
     try { await api.post("/api/auth/logout"); } catch { /* token may already be invalid */ }
     sessionStorage.clear();
-    applyAppearance(DEFAULT_APPEARANCE);
+    applyRememberedAppearance(); // the sign-in page keeps the theme this device last used
     navigate("/login", { replace: true });
   }
 

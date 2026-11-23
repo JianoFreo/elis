@@ -3,6 +3,7 @@ import { hexToHsv, hsvToHex, isHex } from "../lib/appearance";
 import { Input } from "./ui";
 
 const SIZE = 192; // px
+const MIN_V = 0; // the slider runs from black (0) to full brightness
 
 // Colour wheel: angle is the hue, distance from the centre is the saturation, the slider below is brightness.
 // Drag (mouse, touch or pen), use the arrow keys on the wheel, or type a hex value.
@@ -19,7 +20,12 @@ export default function ColorWheel({ label, value, onChange }: { label: string; 
   }, [value]);
 
   const [h, s, v] = hsv;
-  const commit = (next: [number, number, number]) => { setHsv(next); onChange(hsvToHex(...next)); };
+  // Brightness runs from black to full. Hue and saturation are kept at 0 brightness, so the thumb still moves.
+  const commit = (next: [number, number, number]) => {
+    const fixed: [number, number, number] = [next[0], next[1], Math.max(MIN_V, next[2])];
+    setHsv(fixed);
+    onChange(hsvToHex(...fixed));
+  };
 
   function fromPointer(e: React.PointerEvent) {
     const r = ref.current!.getBoundingClientRect();
@@ -67,8 +73,8 @@ export default function ColorWheel({ label, value, onChange }: { label: string; 
       <label className="grid w-full max-w-48 gap-1 text-sm font-medium">
         Brightness
         <input
-          type="range" min={0} max={100} value={Math.round(v * 100)} aria-label={`${label}: brightness`}
-          onChange={(e) => commit([h, s, Math.max(0.01, Number(e.target.value) / 100)])}
+          type="range" min={MIN_V * 100} max={100} value={Math.round(v * 100)} aria-label={`${label}: brightness`}
+          onChange={(e) => commit([h, s, Number(e.target.value) / 100])}
           className="w-full accent-ink"
         />
       </label>

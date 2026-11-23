@@ -102,11 +102,8 @@ export function deriveTheme(hex: string): Theme {
   return { label: "Custom", pink: accent, pinkDark: dark, pinkSoft: soft };
 }
 
-/** The wheel can reach very dark or very light colours; the backdrop is kept in a band where the dark text on glass stays legible. */
-const softenBackdrop = (hex: string) => {
-  const [h, s, l] = rgbToHsl(...hexToRgb(hex));
-  return hslToHex(h, s, clamp(l, 0.6, 0.88));
-};
+/** Custom backdrop colours are used exactly as picked, black included. */
+const softenBackdrop = (hex: string) => hex;
 
 export function themeOf(id: string): Theme {
   if (isCustomTheme(id)) return deriveTheme(id.slice(7));
@@ -145,10 +142,31 @@ export function applyAppearance(a: Appearance) {
   root.setProperty("--backdrop", backdropOf(a.gradient));
 }
 
-/** Applies the signed-in user's saved appearance (kept in sessionStorage from login), or the default. */
+// The signed-in user's choice lives in sessionStorage, which is wiped on sign-out. The last choice is also kept
+// on this device so the sign-in page can wear the same colours.
+const REMEMBER_KEY = "eyk:appearance";
+
+export function rememberAppearance(a: Appearance) {
+  try { localStorage.setItem(REMEMBER_KEY, JSON.stringify(a)); } catch { /* storage unavailable */ }
+}
+
+function rememberedAppearance(): Appearance {
+  try { return normalize(JSON.parse(localStorage.getItem(REMEMBER_KEY) ?? "{}")); } catch { return DEFAULT_APPEARANCE; }
+}
+
+/** Applies the last appearance used on this device (what the sign-in page shows), or the default. */
+export function applyRememberedAppearance() {
+  applyAppearance(rememberedAppearance());
+}
+
+/** Applies the signed-in user's saved appearance (kept in sessionStorage from login); with nobody signed in, the remembered one. */
 export function applySavedAppearance() {
   try {
-    applyAppearance(normalize(JSON.parse(sessionStorage.getItem("user") ?? "{}")));
+    const user = JSON.parse(sessionStorage.getItem("user") ?? "null");
+    if (!user) return applyRememberedAppearance();
+    const a = normalize(user);
+    applyAppearance(a);
+    rememberAppearance(a);
   } catch {
     applyAppearance(DEFAULT_APPEARANCE);
   }

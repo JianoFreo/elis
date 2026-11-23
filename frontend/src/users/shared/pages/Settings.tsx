@@ -2,7 +2,7 @@ import { useState } from "react";
 import { api } from "../../../lib/axios";
 import { errMsg } from "../../../lib/useApi";
 import {
-  GRADIENTS, THEMES, applyAppearance, backdropOf, customGradient, customTheme, isCustomGradient, isCustomTheme,
+  GRADIENTS, THEMES, applyAppearance, backdropOf, rememberAppearance, customGradient, customTheme, isCustomGradient, isCustomTheme,
   normalize, stopsOf, themeOf, type Appearance, type GradientId, type ThemeId,
 } from "../../../lib/appearance";
 import { Button, Notice, PageHeader } from "../../../components/ui";
@@ -41,6 +41,7 @@ export default function Settings() {
       const { data } = await api.patch("/api/auth/preferences", draft);
       const next = normalize(data.preferences);
       sessionStorage.setItem("user", JSON.stringify({ ...user, ...next }));
+      rememberAppearance(next);
       setSaved(next);
       setDraft(next);
       setMsg({ tone: "ok", text: "Appearance saved to your account." });
@@ -142,7 +143,7 @@ export default function Settings() {
               />
             </div>
             <div className="grid content-start gap-3">
-              <p className="m-0 text-sm text-mute">Pick a start and an end colour and the app blends between them. Very dark or very light colours are softened so text stays readable.</p>
+              <p className="m-0 text-sm text-mute">Pick a start and an end colour and the app blends between them. </p>
               <span className="h-20 max-w-md border border-line" style={{ background: backdropOf(draft.gradient) }} aria-hidden="true" />
             </div>
           </div>
