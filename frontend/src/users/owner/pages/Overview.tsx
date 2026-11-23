@@ -1,13 +1,21 @@
+import { useState } from "react";
 import { Badge, BarChart, Button, Loading, Notice, PageHeader, PieChart } from "../../../components/ui";
 import { useGo } from "../../../lib/nav";
 import { currentUser, useApi } from "../../../lib/useApi";
-import { fmtDate, peso } from "../../../lib/format";
+import { dayOfMonth, fmtDate, peso, shortMonth } from "../../../lib/format";
 
 interface Overview {
   date: string; sales_today: number; items_today: number; available_products: number; locations: number; in_transit: number;
-  open_flags: number; low_supplies: number; week: { day: string; total: number }[];
+  open_flags: number; low_supplies: number; range: Range; week: { day: string; total: number }[];
   priorities: { kind: string; ref: string; text: string }[];
 }
+
+type Range = "week" | "month" | "year";
+const RANGES: { id: Range; label: string; total: string; chart: string }[] = [
+  { id: "week", label: "Week", total: "this week", chart: "Sales this week" },
+  { id: "month", label: "Month", total: "in the last 30 days", chart: "Sales in the last 30 days" },
+  { id: "year", label: "Year", total: "in the last 12 months", chart: "Sales in the last 12 months" },
+];
 
 const CARD = "rounded-lg border border-white/70 bg-white shadow-soft p-5 max-md:p-4";
 
@@ -20,14 +28,17 @@ function trend(today: number, prev: number | undefined): string {
 }
 
 export default function Overview() {
-  const { data, error, loading } = useApi<Overview>("/api/owner/overview");
+  const [range, setRange] = useState<Range>("week");
+  const { data, error, loading } = useApi<Overview>("/api/owner/overview", { range });
   const { go } = useGo();
   if (!data) return <Loading loading={loading} error={error} />;
   const first = currentUser().full_name.split(" ")[0];
-  const weekTotal = data.week.reduce((s, d) => s + d.total, 0);
+  const meta = RANGES.find((r) => r.id === range)!;
+  const rangeTotal = data.week.reduce((s, d) => s + d.total, 0);
   const attention = data.open_flags + data.low_supplies;
-  const prev = data.week.length > 1 ? data.week[data.week.length - 2].total : undefined;
-  const chartLabel = `Sales this week, ${peso(weekTotal)} in total. ${data.week.map((d) => `${d.day}: ${peso(d.total)}`).join(", ")}`;
+  // the series ends today, so the bar before it is yesterday; a monthly series has no such bar
+  const prev = range !== "year" && data.week.length > 1 ? data.week[data.week.length - 2].total : undefined;
+  const chartLabel = `${meta.chart}, ${peso(rangeTotal)} in total. ${data.week.map((d) => `${range === "year" ? shortMonth(d.day) : d.day}: ${peso(d.total)}`).join(", ")}`;
 
   return (
     <div className="grid gap-5">
@@ -47,14 +58,22 @@ export default function Overview() {
             <div className="grid gap-1">
               <h2 id="ov-sales" className="m-0 text-xs font-semibold uppercase tracking-wider text-mute">Today's sales</h2>
               <strong className="text-5xl font-semibold leading-none tracking-tight tabular-nums max-md:text-4xl">{peso(data.sales_today)}</strong>
-              <span className="text-sm text-ink/80">{trend(data.sales_today, prev)}</span>
+              <span className="text-sm text-ink/80">{range === "year" ? `${data.items_today} items sold today` : trend(data.sales_today, prev)}</span>
             </div>
-            <div className="grid gap-1 text-right text-sm text-mute max-md:text-left">
-              <span>{data.items_today} items sold today</span>
-              <span>{peso(weekTotal)} this week</span>
+            <div className="grid justify-items-end gap-2 text-right text-sm text-mute max-md:justify-items-start max-md:text-left">
+              <div role="group" aria-label="Sales period" className="inline-flex rounded-md border border-line bg-white p-0.5">
+                {RANGES.map((r) => (
+                  <button
+                    key={r.id} type="button" aria-pressed={range === r.id} onClick={() => setRange(r.id)}
+                    className={`rounded px-3 py-1 text-xs font-semibold transition-colors ${range === r.id ? "bg-pink-soft text-pink-dark" : "text-mute hover:text-ink"}`}
+                  >{r.label}</button>
+                ))}
+              </div>
+              {range !== "year" && <span>{data.items_today} items sold today</span>}
+              <span>{peso(rangeTotal)} {meta.total}</span>
             </div>
           </div>
-          <BarChart data={data.week} label={chartLabel} />
+          <BarChart data={data.week} label={chartLabel} tick={range === "year" ? shortMonth : range === "month" ? dayOfMonth : undefined} dense={range === "month"} />
         </section>
 
         <section className={`${CARD} grid content-between gap-5 lg:col-span-4`} aria-label="Stock and dispatch">

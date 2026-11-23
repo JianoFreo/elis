@@ -26,6 +26,11 @@ export const fmtDateTime = (v: string | null | undefined) => (v ? `${fmtDate(v)}
 export const shortDay = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Manila", weekday: "short" }).format(new Date(`${iso}T00:00:00+08:00`));
 
+export const shortMonth = (iso: string) => MONTHS[Number(iso.slice(5, 7)) - 1];
+
+/** "2026-11-08" -> "8" for the day-of-month axis of the 30-day chart. */
+export const dayOfMonth = (iso: string) => String(Number(iso.slice(8, 10)));
+
 export const signed = (n: number) => (n > 0 ? `+${n}` : String(n));
 
 export const DISPATCH_STATUS: Record<string, string> = { in_transit: "In transit", received: "Received", receipt_review: "Receipt review" };

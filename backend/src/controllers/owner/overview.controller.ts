@@ -3,16 +3,31 @@ import { sql } from "../../config/db.js";
 import { bizDate } from "../../utils/http.js";
 import { supplyAlerts } from "../production/getRequests.controller.js";
 
-export async function overview(_req: Request, res: Response) {
+type Range = "week" | "month" | "year";
+
+/** Sales per day (week: 7 days, month: 30 days) or per calendar month (year: 12 months ending this month). */
+function salesSeries(range: Range, date: string) {
+  if (range === "year") {
+    return sql`SELECT d::date::text AS day, COALESCE(SUM(s.line_total),0)::float AS total
+          FROM generate_series(date_trunc('month', ${date}::date) - interval '11 months', date_trunc('month', ${date}::date), interval '1 month') d
+          LEFT JOIN sales s ON s.status = 'synced' AND date_trunc('month', (s.sold_at AT TIME ZONE 'Asia/Manila')::date) = d
+         GROUP BY d ORDER BY d`;
+  }
+  const back = range === "month" ? 29 : 6;
+  return sql`SELECT d::date::text AS day, COALESCE(SUM(s.line_total),0)::float AS total
+          FROM generate_series(${date}::date - ${back}::int, ${date}::date, interval '1 day') d
+          LEFT JOIN sales s ON s.status = 'synced' AND (s.sold_at AT TIME ZONE 'Asia/Manila')::date = d::date
+         GROUP BY d ORDER BY d`;
+}
+
+export async function overview(req: Request, res: Response) {
   const date = bizDate();
+  const range: Range = req.query.range === "month" || req.query.range === "year" ? req.query.range : "week";
   // each round trip to the database is slow, so run the independent queries together
   const [[today], week, [stock], [transit], flags, { low, near }] = await Promise.all([
     sql`SELECT COALESCE(SUM(line_total),0)::float AS total, COALESCE(SUM(quantity),0)::int AS items
           FROM sales WHERE status = 'synced' AND (sold_at AT TIME ZONE 'Asia/Manila')::date = ${date}::date`,
-    sql`SELECT d::date::text AS day, COALESCE(SUM(s.line_total),0)::float AS total
-          FROM generate_series(${date}::date - 6, ${date}::date, interval '1 day') d
-          LEFT JOIN sales s ON s.status = 'synced' AND (s.sold_at AT TIME ZONE 'Asia/Manila')::date = d::date
-         GROUP BY d ORDER BY d`,
+    salesSeries(range, date),
     sql`SELECT COALESCE(SUM(quantity),0)::int AS qty, COUNT(DISTINCT branch_id)::int AS locations FROM stock_ledger`,
     sql`SELECT COUNT(*)::int AS n FROM dispatches WHERE status = 'in_transit'`,
     sql`SELECT d.disc_code, d.source_type, b.name AS branch, p.name AS product, d.variance
@@ -35,7 +50,7 @@ export async function overview(_req: Request, res: Response) {
     available_products: stock.qty, locations: stock.locations,
     in_transit: transit.n, open_flags: flags.length,
     low_supplies: low.length + near.filter((n) => !low.some((l) => l.material_code === n.material_code)).length,
-    week, priorities,
+    range, week, priorities,
   });
 }
 

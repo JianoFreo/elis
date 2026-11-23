@@ -143,15 +143,19 @@ export function Steps({ current, steps }: { current: number; steps: string[] }) 
   );
 }
 
-export function BarChart({ data, label = "Sales this week" }: { data: { day: string; total: number }[]; label?: string }) {
+export function BarChart({ data, label = "Sales this week", tick = shortDay, dense = false }: {
+  data: { day: string; total: number }[]; label?: string; tick?: (iso: string) => string;
+  /** Many bars (a 30-day view): hide the per-bar values and thin out the axis labels. */
+  dense?: boolean;
+}) {
   const max = Math.max(1, ...data.map((d) => d.total));
   return (
-    <div className="flex h-50 items-end gap-2.5 pt-5 max-md:gap-1" role="img" aria-label={label}>
+    <div className={`flex h-50 items-end pt-5 ${dense ? "gap-0.5" : "gap-2.5 max-md:gap-1"}`} role="img" aria-label={label}>
       {data.map((d, i) => (
-        <div key={d.day} className="group flex h-full flex-1 flex-col items-center justify-end gap-1 text-xs">
-          <span className="text-[.7rem] text-mute">{Math.round(d.total).toLocaleString()}</span>
-          <div className={`min-h-0.75 w-full max-w-11 rounded-t-lg transition-colors ${i === data.length - 1 ? "bg-pink" : "bg-pink/30 group-hover:bg-pink/50"}`} style={{ height: `${(d.total / max) * 100}%` }} />
-          <span className="text-mute">{shortDay(d.day)}</span>
+        <div key={d.day} className="group flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1 text-xs" title={`${tick(d.day)}: ${Math.round(d.total).toLocaleString()}`}>
+          {!dense && <span className="text-[.7rem] text-mute">{Math.round(d.total).toLocaleString()}</span>}
+          <div className={`min-h-0.75 w-full rounded-t-lg transition-colors ${dense ? "" : "max-w-11"} ${i === data.length - 1 ? "bg-pink" : "bg-pink/30 group-hover:bg-pink/50"}`} style={{ height: `${(d.total / max) * 100}%` }} />
+          <span className="h-4 whitespace-nowrap text-mute">{dense && i % 5 !== 0 && i !== data.length - 1 ? "" : tick(d.day)}</span>
         </div>
       ))}
     </div>

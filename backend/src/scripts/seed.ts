@@ -59,7 +59,7 @@ for (const u of DEMO_USERS) {
   await sql`INSERT INTO users (username, password_hash, full_name, email, role, branch_id)
     VALUES (${u.username}, ${hash}, ${u.full_name}, ${u.username + "@elis.local"}, ${u.role},
             (SELECT id FROM branches WHERE name = ${u.branch}))
-    ON CONFLICT (username) DO NOTHING`;
+    ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash`;
 }
 
 // ---------------------------------------------------------------------------
