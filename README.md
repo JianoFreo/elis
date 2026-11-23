@@ -1,6 +1,15 @@
-# SAD Group 3 - Eli's Yummy Kitchen Inventory & Sales System
+<div align="center">
+
+<img src="frontend/public/logo.png" alt="Eli&#39;s Yummy Kitchen" width="220" />
+
+# Eli&#39;s Yummy Kitchen Inventory & Sales System
 
 
+<img src="https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=white&labelColor=555" alt="React 19" /> <img src="https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?style=flat&logo=tailwindcss&logoColor=white&labelColor=555" alt="Tailwind CSS 4" /> <img src="https://img.shields.io/badge/Vite-6-646CFF?style=flat&logo=vite&logoColor=white&labelColor=555" alt="Vite 6" /> <img src="https://img.shields.io/badge/Express-5-000000?style=flat&logo=express&logoColor=white&labelColor=555" alt="Express 5" /> <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white&labelColor=555" alt="TypeScript 5" /> <img src="https://img.shields.io/badge/PostgreSQL-Neon-336791?style=flat&logo=postgresql&logoColor=white&labelColor=555" alt="PostgreSQL Neon" />
+
+<a href="https://elis-kitchen.onrender.com"><b>Live Application</b></a>
+
+</div>
 
 ## Overview
 A web-based system that tracks sales, product stock, dispatches to branches, raw materials, discrepancies, weekly audits, staff accounts, and reports for Eli's Yummy Kitchen.
