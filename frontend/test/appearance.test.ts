@@ -73,8 +73,10 @@ describe("themeOf / stopsOf / backdropOf", () => {
     expect(s).toHaveLength(4);
     s.forEach((c) => expect(c).toMatch(/^#[0-9a-f]{6}$/));
   });
-  it("custom backdrop stays light enough for dark text", () => {
-    stopsOf("custom:#000000,#000000").forEach((c) => expect(contrast("#1d1626", c)).toBeGreaterThan(4.5));
+  it("custom backdrop colours are used exactly as picked, black included", () => {
+    stopsOf("custom:#000000,#000000").forEach((c) => expect(c).toBe("#000000"));
+    const [a, , , d] = stopsOf("custom:#336699,#cc3366");
+    expect([a, d]).toEqual(["#336699", "#cc3366"]);
   });
   it("backdropOf builds a linear gradient from the stops", () => {
     const [a, b, c, d] = GRADIENTS.sunset.stops;
