@@ -48,7 +48,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9.5 flex-none place-items-center rounded-md bg-pink text-lg font-bold text-ink shadow-soft">E</span>
+            <img src="/logo.png" alt="" width={150} height={150} className="size-12 flex-none rounded-md object-cover shadow-soft" />
             <div className="leading-tight">
               <h2 className="m-0 text-[.95rem] font-semibold">Eli&apos;s Yummy Kitchen</h2>
               <small className="text-xs text-mute">{title}</small>

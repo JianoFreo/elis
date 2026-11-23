@@ -16,7 +16,7 @@
 .login-form > div:nth-of-type(3) { line-height: 1.4; }
 .login-card > aside { display: block; min-width: 0; min-height: 600px; background: var(--color-pink-dark); color: #fff; }
 .login-form > div:first-child { display: flex; align-items: center; gap: 12px; }
-.login-form > div:first-child > div:first-child { width: 48px; height: 48px; flex: 0 0 48px; display: grid; place-items: center; border-radius: 14px; background: var(--color-pink-dark); color: #fff; font-size: 20px; font-weight: 700; }
+.login-form > div:first-child > .login-logo { width: 72px; height: 72px; flex: 0 0 72px; display: block; border-radius: 18px; background: transparent; }
 .login-form > div:first-child strong, .login-form > div:first-child span { display: block; }
 .login-form h1 { margin: 0; color: inherit; font-size: 36px; line-height: 1.15; letter-spacing: -.035em; }
 .login-form h1 + p { margin: 8px 0 0; color: #657087; }
