@@ -1,101 +1,92 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { api } from "../lib/axios";
 import { applySavedAppearance } from "../lib/appearance";
 import { ROLE_HOME } from "../lib/roles";
-import { Button, Input } from "../components/ui";
+import "./login.css";
 
-// Optional: show quick-fill demo accounts (set VITE_DEMO_ACCOUNTS=true, and VITE_DEMO_PASSWORD to prefill the password).
 const SHOW_DEMO = import.meta.env.VITE_DEMO_ACCOUNTS === "true";
 const DEMO_PASSWORD = (import.meta.env.VITE_DEMO_PASSWORD as string | undefined) ?? "";
+const THEME_KEY = "eyk:login-theme";
+const REMEMBER_KEY = "eyk:login-username";
 const DEMOS = [
   { username: "juan.delacruz", label: "Business Owner" },
   { username: "ana.reyes", label: "Sales Staff · Main Street" },
   { username: "marco.santos", label: "Production Head" },
   { username: "rica.cruz", label: "Production Staff" },
 ];
+type ThemeChoice = "light" | "dark" | "system";
+
+const readLocal = (key: string) => { try { return localStorage.getItem(key) ?? ""; } catch { return ""; } };
+function initialTheme(): ThemeChoice { const saved = readLocal(THEME_KEY); return saved === "light" || saved === "dark" || saved === "system" ? saved : "system"; }
+
+function Eye({ crossed }: { crossed: boolean }) { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-5" aria-hidden="true"><path d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z" /><circle cx="12" cy="12" r="2.5" />{crossed && <path d="m3 3 18 18" />}</svg>; }
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(() => readLocal(REMEMBER_KEY));
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
+  const [remember, setRemember] = useState(() => Boolean(readLocal(REMEMBER_KEY)));
+  const [theme, setTheme] = useState<ThemeChoice>(initialTheme);
+  const [systemDark, setSystemDark] = useState(() => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
+  const [online, setOnline] = useState(() => navigator.onLine);
+  const [showHelp, setShowHelp] = useState(false);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
+  const dark = theme === "dark" || (theme === "system" && systemDark);
   const existingRole = sessionStorage.getItem("role");
-  if (sessionStorage.getItem("token") && existingRole && ROLE_HOME[existingRole])
-    return <Navigate to={ROLE_HOME[existingRole]} replace />;
+  if (sessionStorage.getItem("token") && existingRole && ROLE_HOME[existingRole]) return <Navigate to={ROLE_HOME[existingRole]} replace />;
+
+  useEffect(() => { try { localStorage.setItem(THEME_KEY, theme); } catch { /* unavailable */ } }, [theme]);
+  useEffect(() => { const m = window.matchMedia("(prefers-color-scheme: dark)"), f = () => setSystemDark(m.matches); m.addEventListener?.("change", f); return () => m.removeEventListener?.("change", f); }, []);
+  useEffect(() => { const f = () => setOnline(navigator.onLine); window.addEventListener("online", f); window.addEventListener("offline", f); return () => { window.removeEventListener("online", f); window.removeEventListener("offline", f); }; }, []);
+  useEffect(() => { (username ? passwordRef : usernameRef).current?.focus(); }, []);
+  const clearError = () => error && setError("");
 
   async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault(); const name = username.trim();
+    if (!name) { setError("Enter your username or email."); usernameRef.current?.focus(); return; }
+    if (!password) { setError("Enter your password."); passwordRef.current?.focus(); return; }
+    if (!online) { setError("Sign-in needs an internet connection. Reconnect and try again."); return; }
+    setError(""); setLoading(true);
     try {
-      const { data } = await api.post("/api/auth/login", { username, password });
-      sessionStorage.setItem("token", data.token);
-      sessionStorage.setItem("role", data.user.role);
-      sessionStorage.setItem("user", JSON.stringify(data.user));
-      applySavedAppearance();
-      navigate(ROLE_HOME[data.user.role] ?? "/login", { replace: true });
+      const { data } = await api.post("/api/auth/login", { username: name, password });
+      try { remember ? localStorage.setItem(REMEMBER_KEY, name) : localStorage.removeItem(REMEMBER_KEY); } catch { /* unavailable */ }
+      sessionStorage.setItem("token", data.token); sessionStorage.setItem("role", data.user.role); sessionStorage.setItem("user", JSON.stringify(data.user));
+      applySavedAppearance(); navigate(ROLE_HOME[data.user.role] ?? "/login", { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message ?? "Unable to sign in");
-    } finally {
-      setLoading(false);
-    }
+      const msg = err.response?.data?.message?.toLowerCase?.() ?? "";
+      if (msg.includes("deactiv") || msg.includes("lock")) setError("This account is locked or disabled. Contact the Business Owner.");
+      else if (err.response?.status === 401 || msg.includes("credential")) { setError("Username or password is incorrect."); passwordRef.current?.focus(); }
+      else if (!err.response) setError("The server could not be reached. Check your connection and try again.");
+      else setError(err.response.data?.message ?? "Something went wrong. Please try again.");
+    } finally { setLoading(false); }
   }
 
-  return (
-    <main className="grid min-h-screen place-items-center p-4 md:p-8">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-xl border border-white/50 bg-white/35 p-3 shadow-float backdrop-blur-2xl md:grid-cols-2 md:gap-3 md:p-4">
-        <form className="grid content-center gap-5 p-5 md:p-10 [&_h1]:m-0 [&_p]:m-0 [&_label]:grid [&_label]:gap-1.5 [&_label]:text-sm [&_label]:font-medium" onSubmit={onSubmit}>
-          <span className="grid size-11 place-items-center rounded-md bg-ink text-lg font-bold text-white">E</span>
-          <div className="grid gap-1">
-            <h1 className="text-4xl font-bold tracking-tight">Welcome back</h1>
-            <p className="text-ink/75">Sign in to Eli&apos;s Yummy Kitchen</p>
-          </div>
-          <label>
-            Username
-            <Input dark value={username} onChange={(e) => setUsername(e.target.value)} placeholder="your.username" autoFocus required autoComplete="username" />
-          </label>
-          <label>
-            Password
-            <Input dark type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoComplete="current-password" />
-          </label>
-          {error && <p role="alert" className="rounded-md bg-bad-bg px-4 py-2 text-sm text-danger">{error}</p>}
-          <Button type="submit" className="py-3.5 text-base" disabled={loading}>{loading ? "Signing in..." : "Sign in to dashboard"}</Button>
-          {SHOW_DEMO && (
-            <div className="grid gap-1.5">
-              <span className="text-sm text-ink/75">Demo accounts: choose a role</span>
-              {DEMOS.map((d) => (
-                <Button key={d.username} variant="secondary" type="button" className="text-left" onClick={() => { setUsername(d.username); setPassword(DEMO_PASSWORD); }}>
-                  {d.label} ({d.username})
-                </Button>
-              ))}
-            </div>
-          )}
-        </form>
+  function chooseDemo(d: typeof DEMOS[number]) { setUsername(d.username); setPassword(DEMO_PASSWORD); setError(""); requestAnimationFrame(() => submitRef.current?.focus()); }
+  const currentThemeIcon = theme === "light" ? "☼" : theme === "dark" ? "◐" : "◌";
+  const nextTheme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
 
-        <aside className="relative hidden overflow-hidden rounded-lg bg-panel p-10 text-white md:block" aria-label="About the workspace">
-          <svg className="pointer-events-none absolute -bottom-10 -right-10 size-80 text-violet/80" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-            {Array.from({ length: 24 }, (_, n) => {
-              const a = (n / 24) * Math.PI * 2;
-              const inner = n % 2 ? 26 : 18;
-              const outer = n % 2 ? 62 : 92;
-              return <line key={n} x1={100 + Math.cos(a) * inner} y1={100 + Math.sin(a) * inner} x2={100 + Math.cos(a) * outer} y2={100 + Math.sin(a) * outer} />;
-            })}
-          </svg>
-          <h2 className="relative m-0 max-w-[14ch] text-4xl font-bold leading-tight tracking-tight">Every batch, every branch, every sale.</h2>
-          <p className="relative mt-4 max-w-[32ch] text-white/75">Production, dispatch and sales stay in one workspace, from the main hub to each branch counter.</p>
-          <div className="relative mt-6 flex flex-wrap gap-2">
-            <span className="rounded-md bg-white/10 px-3 py-1 text-sm">Main hub + 3 branches</span>
-            <span className="rounded-md bg-white/10 px-3 py-1 text-sm">Works offline at the counter</span>
-          </div>
-          <div className="absolute bottom-8 left-8 right-8 rounded-lg bg-white p-5 text-ink shadow-float">
-            <strong className="block text-lg leading-snug">Weekly audits, signed off with confidence.</strong>
-            <span className="mt-1 block text-sm text-mute">Counts, deliveries and closings reconcile before the week ends.</span>
-          </div>
-        </aside>
-      </div>
-    </main>
-  );
+  return <main data-theme={dark ? "dark" : "light"} className="login-page min-h-screen bg-[#f7f8fc] px-4 py-6 text-[#202438] transition-colors data-[theme=dark]:bg-[#10131d] data-[theme=dark]:text-[#f4f6fb] sm:px-6 sm:py-8 motion-reduce:transition-none">
+    <div className="login-toolbar mx-auto flex w-full max-w-6xl justify-end"><button type="button" onClick={() => setTheme(nextTheme)} aria-label={`Theme: ${theme}. Switch to ${nextTheme}`} title={`Theme: ${theme} · click for ${nextTheme}`} className="login-theme-button">{currentThemeIcon}</button></div>
+    <div className="login-stage mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-6xl place-items-center py-8"><div className="login-card grid w-full overflow-hidden rounded-[1.75rem] border border-[#e1e4ee] bg-white shadow-[0_24px_70px_rgba(35,42,72,0.12)] data-[theme=dark]:border-white/10 data-[theme=dark]:bg-[#191d2a] data-[theme=dark]:shadow-[0_24px_70px_rgba(0,0,0,0.35)] md:grid-cols-[minmax(0,1fr)_0.86fr]">
+      <form onSubmit={onSubmit} noValidate className="login-form grid gap-6 p-7 sm:p-10 lg:p-14">
+        <div className="flex items-center gap-3"><div className="grid size-12 place-items-center rounded-2xl bg-[#252a40] text-xl font-bold text-white shadow-lg">E<span className="sr-only">Eli&apos;s Yummy Kitchen</span></div><div><strong className="block text-sm tracking-wide">Eli&apos;s Yummy Kitchen</strong><span className="text-xs text-[#778097]">Inventory &amp; sales workspace</span></div></div>
+        <div className="grid gap-2"><h1 className="m-0 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">Welcome back</h1><p className="m-0 text-[#657087] data-[theme=dark]:text-[#b0b8cb]">Sign in to continue to your workspace.</p></div>
+        <div className="grid gap-4"><label className="grid gap-2 text-sm font-medium" htmlFor="username">Username or email<input ref={usernameRef} id="username" value={username} onChange={e => { setUsername(e.target.value); clearError(); }} placeholder="your.username" autoComplete="username" className="h-12 w-full rounded-xl border border-[#d8dce7] bg-[#fbfcfe] px-4 text-[#202438] outline-none transition placeholder:text-[#9ba3b5] focus:border-[#7668e8] focus:ring-4 focus:ring-[#7668e8]/15 data-[theme=dark]:border-white/15 data-[theme=dark]:bg-[#11141e] data-[theme=dark]:text-white" /></label><label className="grid gap-2 text-sm font-medium" htmlFor="password">Password<span className="relative"><input ref={passwordRef} id="password" type={showPassword ? "text" : "password"} value={password} onChange={e => { setPassword(e.target.value); clearError(); }} onKeyUp={e => setCapsLock(e.getModifierState("CapsLock"))} onBlur={() => setCapsLock(false)} placeholder="Enter your password" autoComplete="current-password" className="h-12 w-full rounded-xl border border-[#d8dce7] bg-[#fbfcfe] px-4 pr-12 text-[#202438] outline-none transition placeholder:text-[#9ba3b5] focus:border-[#7668e8] focus:ring-4 focus:ring-[#7668e8]/15 data-[theme=dark]:border-white/15 data-[theme=dark]:bg-[#11141e] data-[theme=dark]:text-white" /><button type="button" onClick={() => { setShowPassword(!showPassword); requestAnimationFrame(() => passwordRef.current?.focus()); }} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-[#778097] hover:bg-[#eef0f7] focus-visible:outline-2 focus-visible:outline-[#7668e8]"><Eye crossed={!showPassword} /></button></span></label>{capsLock && <p className="m-0 text-xs font-medium text-[#a15c00]" role="status">Caps Lock is on</p>}</div>
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm"><label className="flex items-center gap-2 text-[#657087]"><input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} className="size-4 accent-[#7668e8]" /> Remember me on this device</label><button type="button" onClick={() => setShowHelp(!showHelp)} className="font-medium text-[#5545c8] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-[#7668e8]">Forgot password?</button></div>
+        {showHelp && <div className="rounded-xl border border-[#dcd8ff] bg-[#f4f2ff] px-4 py-3 text-sm text-[#4d477b] data-[theme=dark]:border-[#514b82] data-[theme=dark]:bg-[#292541] data-[theme=dark]:text-[#d7d2ff]" role="note">Contact the Business Owner or administrator to reset your password.</div>}
+        {error && <p role="alert" aria-live="polite" className="m-0 rounded-xl border border-[#f0caca] bg-[#fff2f2] px-4 py-3 text-sm text-[#a63232] data-[theme=dark]:border-[#713d46] data-[theme=dark]:bg-[#321e27] data-[theme=dark]:text-[#ffb7bd]">{error}</p>}
+        <button ref={submitRef} type="submit" disabled={loading} aria-busy={loading} className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#252a40] px-5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#343a57] focus-visible:outline-2 focus-visible:outline-[#7668e8] disabled:cursor-not-allowed disabled:opacity-60">{loading && <span className="size-4 animate-spin rounded-full border-2 border-white/35 border-t-white" aria-hidden="true" />}{loading ? "Signing in..." : "Sign in to dashboard"}</button>{!online && <p className="m-0 text-center text-xs font-medium text-[#a15c00]" role="status">You are offline. Sign-in needs a connection.</p>}
+        {SHOW_DEMO && <div className="grid gap-3 border-t border-[#e7e9f0] pt-5"><div><p className="m-0 text-sm font-semibold">Quick sign-in <span className="font-normal text-[#778097]">(demo)</span></p><p className="m-0 mt-1 text-xs text-[#778097]">Choose a role to fill the form.</p></div><div className="grid gap-2 sm:grid-cols-2">{DEMOS.map(d => <button key={d.username} type="button" onClick={() => chooseDemo(d)} className="rounded-xl border border-[#dfe2eb] px-3 py-2 text-left text-xs text-[#657087] transition hover:border-[#aaa0ff] hover:bg-[#f7f6ff] focus-visible:outline-2 focus-visible:outline-[#7668e8]"><strong className="block text-[#30354a]">{d.label}</strong>{d.username}</button>)}</div></div>}
+        <p className="m-0 text-center text-xs text-[#8991a4]">Systems Analysis and Design, TUP Manila</p>
+      </form>
+      <aside className="relative hidden min-h-[600px] overflow-hidden bg-[#252a40] p-10 text-white lg:block" aria-label="About the workspace"><div className="absolute -right-20 -top-20 size-80 rounded-full border border-white/10 bg-[#7668e8]/20 blur-2xl" aria-hidden="true" /><div className="relative flex h-full flex-col justify-between"><div><span className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-[#d9d6ff]">Built for confident operations</span><h2 className="mt-10 max-w-[10ch] text-5xl font-semibold leading-[1.05] tracking-[-0.045em]">Every batch, every branch, every sale.</h2><p className="mt-5 max-w-[32ch] text-sm leading-6 text-white/70">Production, dispatch and sales stay in one workspace, from the main hub to each branch counter.</p></div><div className="rounded-2xl border border-white/10 bg-white/10 p-5"><div className="mb-5 flex items-center gap-2"><span className="size-2 rounded-full bg-[#b9b0ff]" /><span className="text-xs font-medium uppercase tracking-wider text-white/60">Weekly control</span></div><strong className="block text-xl leading-snug">Weekly audits, signed off with confidence.</strong><span className="mt-2 block text-sm leading-6 text-white/60">Counts, deliveries and closings reconcile before the week ends.</span></div></div></aside>
+    </div></div>
+  </main>;
 }
