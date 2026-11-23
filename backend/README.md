@@ -46,6 +46,6 @@ src/
 
 ## Demo data
 `npm run seed` creates six demo accounts (`juan.delacruz` owner, `ana.reyes` / `paolo.garcia` / `liza.mendoza` sales staff,
-`marco.santos` production head, `rica.cruz` production staff), all with password `Eli2026!demo` (override with `SEED_PASSWORD`).
+`marco.santos` production head, `rica.cruz` production staff), all with password `password` (override with `SEED_PASSWORD`).
 The history ends on **08 Nov 2026**, so set `BUSINESS_DATE=2026-11-08` in `.env` for the dashboards to treat that day as "today".
 Leave it empty in production and "today" is the real Philippine date.

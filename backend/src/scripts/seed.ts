@@ -53,7 +53,7 @@ await sql`INSERT INTO materials (name, category, unit, cost, threshold, supplier
   WHERE NOT EXISTS (SELECT 1 FROM materials m WHERE m.name = v.name)`;
 
 // Demo accounts, one per role. Same password for all; override with SEED_PASSWORD.
-const demoPassword = process.env.SEED_PASSWORD ?? "Eli2026!demo";
+const demoPassword = process.env.SEED_PASSWORD ?? "password";
 const hash = await bcrypt.hash(demoPassword, 10);
 for (const u of DEMO_USERS) {
   await sql`INSERT INTO users (username, password_hash, full_name, email, role, branch_id)
