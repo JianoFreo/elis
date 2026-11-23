@@ -1,20 +1,20 @@
 .login-page { min-height: 100vh; box-sizing: border-box; color: #202438; background: transparent; }
 .login-page *, .login-page *::before, .login-page *::after { box-sizing: border-box; }
 .login-stage { min-height: calc(100vh - 7rem); }
-.login-card { width: min(100%, 1024px); min-height: 600px; border: 1px solid #e1e4ee; border-radius: 20px; background: #fff; box-shadow: 0 24px 70px rgba(35,42,72,.12); }
+.login-card { width: min(100%, 1024px); min-height: 600px; border: 1px solid rgba(255,255,255,.8); border-radius: 32px; background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,255,255,.5)); -webkit-backdrop-filter: blur(32px) saturate(185%); backdrop-filter: blur(32px) saturate(185%); box-shadow: 0 1px 1px rgba(255,255,255,.7) inset, 0 40px 90px -25px rgba(40,20,80,.5); }
 .login-form { min-width: 0; align-content: center; gap: 24px; padding: 56px; }
 .login-form label { display: grid; gap: 8px; color: #30354a; line-height: 1.35; }
-.login-form label > input { width: 100%; min-width: 0; height: 46px; border: 1px solid #d8dce7; border-radius: 9px; background: #fbfcfe; padding: 0 14px; color: #202438; font-size: 15px; }
+.login-form label > input { width: 100%; min-width: 0; height: 46px; border: 1px solid rgba(255,255,255,.85); border-radius: 14px; background: rgba(255,255,255,.7); box-shadow: 0 2px 6px rgba(60,30,90,.08) inset; padding: 0 16px; color: #202438; font-size: 15px; }
 .login-form label > input::placeholder { color: #7b8499; opacity: 1; }
 .login-form label > span { min-width: 0; }
-.login-form label > span > input { width: 100%; min-width: 0; height: 46px; border: 1px solid #d8dce7; border-radius: 9px; background: #fbfcfe; padding: 0 48px 0 14px; color: #202438; font-size: 15px; }
+.login-form label > span > input { width: 100%; min-width: 0; height: 46px; border: 1px solid rgba(255,255,255,.85); border-radius: 14px; background: rgba(255,255,255,.7); box-shadow: 0 2px 6px rgba(60,30,90,.08) inset; padding: 0 48px 0 16px; color: #202438; font-size: 15px; }
 .login-form label > input:focus, .login-form label > span > input:focus { border-color: var(--color-pink-dark); box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-pink) 40%, transparent); outline: none; }
-.login-form > button[type="submit"] { width: 100%; min-height: 48px; border: 0; border-radius: 9px; background: var(--color-pink-dark); color: #fff; font-weight: 700; cursor: pointer; }
+.login-form > button[type="submit"] { width: 100%; min-height: 48px; border: 1px solid rgba(255,255,255,.35); border-radius: 9999px; background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 55%), var(--color-pink-dark); box-shadow: 0 10px 24px -8px var(--color-pink-dark); color: #fff; font-weight: 700; cursor: pointer; }
 .login-form > button[type="submit"]:hover { filter: brightness(1.1); }
 .login-form > button[type="submit"]:disabled { cursor: not-allowed; opacity: .6; }
 .login-form input[type="checkbox"] { width: 17px; height: 17px; margin: 0; accent-color: var(--color-pink-dark); }
 .login-form > div:nth-of-type(3) { line-height: 1.4; }
-.login-card > aside { display: block; min-width: 0; min-height: 600px; background: var(--color-pink-dark); color: #fff; }
+.login-card > aside { display: block; min-width: 0; min-height: 600px; background: linear-gradient(160deg, color-mix(in srgb, var(--color-pink-dark) 88%, transparent), color-mix(in srgb, var(--color-pink-dark) 96%, #000)); border-left: 1px solid rgba(255,255,255,.3); color: #fff; }
 .login-form > div:first-child { display: flex; align-items: center; gap: 12px; }
 .login-form > div:first-child > .login-logo { width: 72px; height: 72px; flex: 0 0 72px; display: block; border-radius: 18px; background: transparent; }
 .login-form > div:first-child strong, .login-form > div:first-child span { display: block; }
@@ -36,7 +36,7 @@
 @media (max-width: 767px) {
   .login-page { padding: 16px; }
   .login-stage { min-height: auto; padding: 24px 0; }
-  .login-card { min-height: auto; border-radius: 16px; }
+  .login-card { min-height: auto; border-radius: 24px; }
   .login-form { padding: 28px 22px; gap: 20px; }
   .login-card > aside { display: none; }
 }

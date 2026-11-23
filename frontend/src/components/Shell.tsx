@@ -49,7 +49,7 @@ export default function Shell({ title, items }: { title: string; items: NavItem[
         onSettings={() => { setParams({ page: "settings" }); setOpen(false); }}
         onLogout={logout}
       />
-      <div className="min-w-0 flex-1 rounded-xl border border-white/60 bg-white/80 shadow-soft backdrop-blur-xl">
+      <div className="min-w-0 flex-1 glass glass-float rounded-xl">
         <Header label={inSettings ? "Settings" : current.label} title={title} collapsed={collapsed} onToggle={toggleSidebar} />
         <section className="p-4 md:p-8">{inSettings ? <Settings /> : current.element}</section>
       </div>

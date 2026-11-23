@@ -23,8 +23,8 @@ interface SideBarProps {
   onLogout: () => void;
 }
 
-const navBtn = "relative px-4 py-2.5 text-left font-medium text-ink/75 hover:bg-white/70 hover:text-ink";
-const navOn = "bg-ink font-semibold text-white hover:bg-ink hover:text-white";
+const navBtn = "relative rounded-full px-4 py-2.5 text-left font-medium text-ink/75 hover:bg-white/60 hover:text-ink";
+const navOn = "bg-ink/90 font-semibold text-white shadow-soft ring-1 ring-white/30 hover:bg-ink hover:text-white";
 
 export default function SideBar({ title, items, currentKey, open, collapsed, user, onSelect, onClose, onSettings, onLogout }: SideBarProps) {
   const [menu, setMenu] = useState(false);
@@ -44,7 +44,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
     <>
       {open && <div className="fixed inset-0 z-40 hidden bg-ink/45 max-md:block" onClick={onClose} />}
       <aside
-        className={`${collapsed ? "md:hidden" : "md:w-64"} sticky top-4 flex h-[calc(100vh-2rem)] flex-none flex-col gap-5 overflow-hidden rounded-xl border border-white/60 bg-white/70 px-4 py-5 shadow-soft backdrop-blur-xl max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:rounded-l-none max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
+        className={`${collapsed ? "md:hidden" : "md:w-64"} sticky top-4 flex h-[calc(100vh-2rem)] flex-none flex-col gap-5 glass glass-float overflow-hidden rounded-xl px-4 py-5 max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-41 max-md:h-auto max-md:rounded-l-none max-md:w-65 max-md:max-w-[82vw] max-md:transition-transform ${open ? "max-md:translate-x-0 max-md:shadow-2xl" : "max-md:-translate-x-full"}`}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
@@ -65,7 +65,7 @@ export default function SideBar({ title, items, currentKey, open, collapsed, use
         </nav>
         <div ref={menuRef} className="relative flex-none border-t border-ink/10 pt-4 text-sm">
           {menu && (
-            <div role="menu" aria-label="Account" className="absolute bottom-full left-0 right-0 mb-2 grid gap-0.5 rounded-lg border border-white/70 bg-white p-1.5 shadow-float">
+            <div role="menu" aria-label="Account" className="absolute bottom-full left-0 right-0 mb-2 grid gap-0.5 glass glass-float rounded-lg p-1.5">
               <Button variant="bare" role="menuitem" className="px-3 py-2.5 text-left font-medium hover:bg-pink-soft" onClick={() => { setMenu(false); onSettings(); }}>Settings</Button>
               <Button variant="bare" role="menuitem" className="px-3 py-2.5 text-left font-medium text-danger hover:bg-bad-bg" onClick={() => { setMenu(false); onLogout(); }}>Log out</Button>
             </div>
