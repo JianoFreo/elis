@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { shortDay } from "../lib/format";
 
 const CARD = "glass-card rounded-lg";
@@ -91,14 +92,16 @@ export function Modal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
   if (!open) return null;
-  return (
+  // Portal to <body>: a backdrop-filter ancestor (.glass) would otherwise become the containing block for `fixed`.
+  return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/30 p-4 backdrop-blur-md" onMouseDown={onClose}>
       <div className="glass glass-float max-h-[92vh] w-full max-w-130 overflow-y-auto rounded-xl p-6 max-md:max-h-[96vh] max-md:p-4" role="dialog" aria-modal="true" aria-label={title} onMouseDown={(e) => e.stopPropagation()}>
         <h2 className="mb-3 text-lg font-semibold">{title}</h2>
         <div className="mb-5 grid gap-4">{children}</div>
         {footer && <div className="flex flex-wrap justify-end gap-2 max-md:flex-col-reverse max-md:[&>button]:w-full">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
